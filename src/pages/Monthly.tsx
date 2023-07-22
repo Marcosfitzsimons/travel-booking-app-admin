@@ -3,24 +3,24 @@ import { Box } from "@mui/material";
 import SectionTitle from "@/components/SectionTitle";
 import useFetch from "@/hooks/useFetch";
 import { ResponsiveLine } from "@nivo/line";
-import { convertToSpanishMonth } from "@/lib/utils/ConvertToSpanishMonth";
+import { convertToSpanishMonth } from "@/lib/utils/convertToSpanishMonth";
 
 const Monthly = () => {
-  const { data, loading } = useFetch(
+  const { data, loading }: any = useFetch(
     "https://fabebus-api-example.onrender.com/api/sales"
   );
   const [formattedData] = useMemo(() => {
     if (!data || !data.monthlyData) return [[], []]; // Add a check for data and monthlyData existence
 
     const { monthlyData } = data;
-    console.log(monthlyData);
+
     const totalSalesLine = {
       id: "Ingresos",
       color: "hsl(347, 70%, 50%)",
-      data: [],
+      data: [] as { x: string; y: number }[],
     };
 
-    Object.values(monthlyData).forEach(({ month, totalSales }) => {
+    Object.values(monthlyData).forEach(({ month, totalSales }: any) => {
       totalSalesLine.data = [
         ...totalSalesLine.data,
         { x: convertToSpanishMonth(month), y: totalSales },
@@ -53,24 +53,28 @@ const Monthly = () => {
             curve="catmullRom"
             axisTop={null}
             axisRight={null}
-            axisBottom={{
-              orient: "bottom",
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: 90,
-              legend: "Mes",
-              legendOffset: 60,
-              legendPosition: "middle",
-            }}
-            axisLeft={{
-              orient: "left",
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: 0,
-              legend: "Total",
-              legendOffset: -50,
-              legendPosition: "middle",
-            }}
+            axisBottom={
+              {
+                orient: "bottom",
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 90,
+                legend: "Mes",
+                legendOffset: 60,
+                legendPosition: "middle",
+              } as any
+            }
+            axisLeft={
+              {
+                orient: "left",
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legend: "Total",
+                legendOffset: -50,
+                legendPosition: "middle",
+              } as any
+            }
             enableGridX={false}
             enableGridY={false}
             pointSize={10}
@@ -107,7 +111,7 @@ const Monthly = () => {
             ]}
           />
         ) : (
-          <>Loading...</>
+          <p>Loading...</p>
         )}
       </Box>
     </Box>

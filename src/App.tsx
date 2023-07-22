@@ -33,6 +33,7 @@ import SingleSpecialTrip from "./pages/SingleSpecialTrip";
 import NewSpecialTrip from "./pages/NewSpecialTrip";
 import { Map, Users } from "lucide-react";
 import Overview from "./pages/Overview";
+import Monthly from "./pages/Monthly";
 
 type Props = {
   children: ReactElement;
@@ -48,9 +49,9 @@ function App() {
   };
 
   return (
-    <div className="App flex w-[min(95%,1600px)] mx-auto">
+    <div className="App flex w-[min(95%,1650px)] mx-auto">
       <SideBar />
-      <div className="flex-[6] w-[min(100%,1350px)]">
+      <div className="flex-[6] w-[min(100%,1450px)]">
         <Header />
         <main className="pt-6 py-2">
           <Routes>
@@ -78,6 +79,16 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <Overview />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
+              <Route path="monthly">
+                <Route
+                  index
+                  element={
+                    <ProtectedRoute>
+                      <Monthly />
                     </ProtectedRoute>
                   }
                 />
