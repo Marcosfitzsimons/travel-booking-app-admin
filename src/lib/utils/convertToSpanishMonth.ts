@@ -1,5 +1,5 @@
 function convertToSpanishMonth(month: string) {
-    const months = {
+    const months: { [key: string]: string } = {
       January: "Enero",
       February: "Febrero",
       March: "Marzo",
