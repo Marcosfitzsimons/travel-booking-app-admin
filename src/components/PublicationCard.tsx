@@ -1,6 +1,5 @@
 import { Eye, Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { toast } from "../hooks/ui/use-toast";
+import { toast, useToast } from "../hooks/ui/use-toast";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,9 +11,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
-
+import moment from "moment";
 import axios from "axios";
-import { Toast } from "./ui/toast";
 import { useState } from "react";
 import ActionButtonDatatable from "./ActionButtonDatatable";
 
@@ -37,12 +35,14 @@ interface PublicationCardProps {
 const PublicationCard = ({ item, setList, list }: PublicationCardProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState<any>(false);
-  const { _id, title, subtitle, description, createdAt } = item;
+  const { _id, title, subtitle, image, description, createdAt } = item;
 
   const token = localStorage.getItem("token");
   const headers = {
     Authorization: `Bearer ${token}`,
   };
+
+  const { toast } = useToast();
 
   const handleDelete = async (id: string) => {
     setIsLoading(true);
@@ -69,15 +69,39 @@ const PublicationCard = ({ item, setList, list }: PublicationCardProps) => {
     }
   };
 
+  const convertToArgentineTimezone = (dateStr: string) => {
+    const utcDate = moment.utc(dateStr);
+
+    const buenosAiresDate = utcDate.utcOffset(-3);
+    // Use moment.format to display the date in the desired format
+    const formattedDate = buenosAiresDate.format("ddd DD/MM - hh:mm A");
+
+    const datePart = formattedDate.slice(0, 10); // "Dom 16/07"
+    const timePart = formattedDate.slice(12); // "04:20 PM"
+
+    return { datePart, timePart };
+  };
+
+  moment.locale("es", {
+    weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+  });
+
+  const { datePart, timePart } = convertToArgentineTimezone(createdAt);
+
   return (
-    <article className="w-full flex flex-col gap-2 p-4 rounded-md border bg-card lg:flex-row lg:justify-between lg:h-[120px] dark:border-border-color-dark dark:hover:border-zinc-400">
-      <div className="overflow-y-scroll relative w-full">
+    <article className="w-full flex flex-col gap-2 p-4 rounded-md h-[140px] border bg-card lg:flex-row lg:justify-between dark:border-border-color-dark dark:hover:border-zinc-400">
+      <div className="overflow-y-hidden relative w-full">
         <h3 className="font-bold dark:text-white text-xl shrink-0">{title}</h3>
         {subtitle && <h4>{subtitle}</h4>}
         <p className="text-gray-500 dark:text-slate-500">{description}</p>
         <p className="absolute right-1 top-1 text-sm text-[#737373] font-extralight dark:text-slate-500">
-          {createdAt}
+          {datePart} {timePart}
         </p>
+        {image && (
+          <div className="relative after:bg-gradient-to-b after:from-transparent after:to-black/5 after:inset-0 after:absolute after:z-10 dark:after:to-black/20">
+            <img src={image} className="" alt="imagen adjunta" />
+          </div>
+        )}
       </div>
 
       <div className="flex items-center gap-2">

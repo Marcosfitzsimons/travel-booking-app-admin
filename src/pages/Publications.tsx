@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { History, Newspaper, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import useFetch from "../hooks/useFetch";
@@ -72,12 +71,6 @@ const PublicationsDatatable = () => {
             ))
           )}
         </div>
-      </div>
-      <div className="">
-        <h5 className="text-2xl flex items-center gap-2 ">
-          <History className="w-4 h-4 text-icon-color dark:text-icon-color-dark sm:h-5 sm:w-5" />
-          Historial de publicaciones
-        </h5>
       </div>
     </div>
   );

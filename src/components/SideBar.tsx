@@ -30,7 +30,7 @@ const SideBar = () => {
   return !user ? (
     <div className=""></div>
   ) : (
-    <div className="hidden flex-[1] h-screen lg:flex lg:flex-col lg:items-center lg:py-[160px] lg:border-r lg:mr-9">
+    <div className="hidden flex-[1] h-screen lg:flex lg:flex-col lg:items-center lg:py-[160px]">
       <div className="rounded-md flex flex-col mx-auto w-[13.5rem] gap-5">
         <nav className="flex flex-col gap-3">
           <ul className="flex flex-col">
