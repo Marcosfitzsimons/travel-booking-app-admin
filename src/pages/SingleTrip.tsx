@@ -1,23 +1,12 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import moment from "moment-timezone";
 import "moment/locale/es";
 import axios from "axios";
 import { passengerColumns } from "../datatablesource";
 import BackButton from "../components/BackButton";
 import PassengersDatatable from "../components/PassengersDatatable";
-import {
-  CalendarDays,
-  Clock,
-  Crop,
-  DollarSign,
-  Heart,
-  MapPin,
-  Milestone,
-  UserPlus,
-  Users,
-} from "lucide-react";
-import miniBus from "../assets/minibus1-sm.png";
+import { Crop, Milestone, UserPlus, Users } from "lucide-react";
 import SectionTitle from "../components/SectionTitle";
 import Loading from "../components/Loading";
 import DefaultButton from "../components/DefaultButton";
@@ -34,23 +23,22 @@ import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { useForm } from "react-hook-form";
 import { useToast } from "../hooks/ui/use-toast";
-import DatePickerContainer from "../components/DatePickerContainer";
-import Logo from "../components/Logo";
-import TimePickerContainer from "../components/TimePickerContainer";
 import { Separator } from "../components/ui/separator";
 import { AuthContext } from "../context/AuthContext";
-import { Button } from "@/components/ui/button";
 import ActionButton from "@/components/ActionButton";
+import TripCard from "@/components/TripCard";
 
 type Trip = {
+  _id: string;
   name: string;
-  date: Date | null | undefined;
+  date: null | undefined | string;
   from: string;
   departureTime: string;
   to: string;
   arrivalTime: string;
-  maxCapacity: string;
-  price: string;
+  maxCapacity: number | undefined;
+  price: number | undefined;
+  passengers: any[];
 };
 interface InputValidation {
   required: {
@@ -123,22 +111,21 @@ const INITIAL_STATES = {
 const SingleTrip = () => {
   const [data, setData] = useState(INITIAL_STATES);
   const [passengers, setPassengers] = useState([]);
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [loading, setLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [departureTimeValue, setDepartureTimeValue] = useState("");
+  const [arrivalTimeValue, setArrivalTimeValue] = useState("");
   const [isSubmitted2, setIsSubmitted2] = useState(false);
-  const [arrivalTimeValue, setArrivalTimeValue] = useState("10:00");
-  const [departureTimeValue, setDepartureTimeValue] = useState("10:00");
   const [addressCapitalValue, setAddressCapitalValue] = useState("");
   const [error, setError] = useState<unknown | boolean>(false);
   const [err, setErr] = useState<null | string>(null);
+
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
 
   const isMaxCapacity = data.passengers.length === data.maxCapacity;
   const availableSeats = `${data.passengers.length} / ${data.maxCapacity}`;
 
   const addressCapital1Ref = useRef(null);
-
-  const todayDate = moment().locale("es").format("ddd DD/MM");
 
   moment.locale("es", {
     weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
@@ -162,8 +149,8 @@ const SingleTrip = () => {
       to: "",
       departureTime: "",
       arrivalTime: "",
-      price: "",
-      maxCapacity: "",
+      price: undefined,
+      maxCapacity: undefined,
     },
   });
 
@@ -189,7 +176,7 @@ const SingleTrip = () => {
     Authorization: `Bearer ${token}`,
   };
 
-  const handleOnSubmit = async (data: Trip) => {
+  const handleOnSubmitEdit = async (data: Trip) => {
     setIsSubmitted(true);
     try {
       await axios.put(
@@ -414,278 +401,34 @@ const SingleTrip = () => {
 
   return (
     <section className="flex flex-col gap-3">
-      <SectionTitle>Información del viaje:</SectionTitle>
-      <div className="self-start mb-2">
+      <div className="self-start">
         <BackButton linkTo="/trips" />
       </div>
+      <SectionTitle>Información acerca del viaje</SectionTitle>
       {loading ? (
         <Loading />
       ) : (
-        <div className="flex flex-col gap-6">
-          <article
-            className={`${
-              data.maxCapacity === data.passengers.length
-                ? "dark:border-zinc-800"
-                : "dark:border"
-            } w-full flex justify-center items-center relative mx-auto rounded-md shadow-input pb-4 max-w-[400px] bg-card border dark:shadow-none`}
-          >
-            <div className="w-full px-2 pt-9 sm:px-4">
-              <div className="flex flex-col gap-2">
-                <div className="absolute top-[.5rem] left-1 sm:left-3">
-                  <img
-                    src={miniBus}
-                    alt="combi"
-                    className="w-10 h-9 lg:w-12 lg:h-11 hover:-rotate-12 transition-transform"
-                  />
-                </div>
-                <div className="absolute right-2 top-2 flex items-center gap-2 sm:right-4">
-                  <p className="text-teal-900 order-2 font-medium flex items-center select-none gap-1 rounded-lg border border-slate-800/60 bg-slate-200/30 dark:bg-slate-800/70 dark:border-slate-200/80 dark:text-white px-3">
-                    <CalendarDays className="w-4 h-4 relative lg:w-5 lg:h-5" />
-                    {data.date}
-                  </p>
-                  {data.date === todayDate && (
-                    <p className="text-green-900 bg-green-300/30 border border-green-800/80 order-1 select-none font-medium rounded-lg dark:bg-[#75f5a8]/20 dark:border-[#86dda9] dark:text-white px-3">
-                      HOY
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex flex-col gap-1 mt-4 lg:mt-7">
-                  <div className="flex flex-col sm:gap-2">
-                    <h3 className="font-bold text-lg lg:text-xl">
-                      {data.name}
-                    </h3>
-                    <h4 className="text-sm font-light">
-                      Información acerca del viaje:
-                    </h4>
-                  </div>
-                  <div className="flex flex-col w-full bg-background gap-2 border px-1 py-4 shadow-inner rounded-md dark:bg-[#171717]">
-                    <div className="flex flex-col gap-2 overflow-auto pb-2">
-                      <div className="flex items-center gap-1">
-                        <MapPin className="h-4 w-4 text-accent shrink-0 " />
-                        <span className="font-medium shrink-0 dark:text-white">
-                          Salida:
-                        </span>{" "}
-                        <span className="shrink-0">{data.from}</span>
-                        <Separator className="w-2 bg-border-color dark:bg-border-color-dark" />
-                        <Clock className="h-4 w-4 text-accent shrink-0 " />
-                        <span className="shrink-0">
-                          {data.departureTime} hs.
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <MapPin className="h-4 w-4 text-accent shrink-0 " />
-                        <span className="dark:text-white shrink-0 font-medium">
-                          Destino:
-                        </span>{" "}
-                        <span className="shrink-0">{data.to}</span>
-                        <Separator className="w-2 bg-border-color dark:bg-border-color-dark" />
-                        <Clock className="h-4 w-4 text-accent shrink-0 " />
-                        <span className="shrink-0">{data.arrivalTime} hs.</span>
-                      </div>
-                      <p className="flex items-center gap-1">
-                        <DollarSign className="h-4 w-4 text-accent " />
-                        <span className="dark:text-white font-medium">
-                          Precio:{" "}
-                        </span>
-                        <span className="">${data.price}</span>
-                      </p>
-                      <p className="flex items-center gap-1">
-                        <Users className="h-4 w-4 text-accent " />
-                        <span className="dark:text-white font-medium">
-                          Capacidad máxima:
-                        </span>{" "}
-                        {data.maxCapacity}
-                      </p>
-                    </div>
-                  </div>
-
-                  <Dialog>
-                    <div className="mt-2 relative w-full after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
-                      <DialogTrigger className="relative w-full rounded-lg px-6 py-1.5 lg:py-0 bg-primary text-slate-100 hover:text-white dark:shadow-input dark:shadow-black/5 dark:text-slate-100 dark:hover:text-white lg:h-[35px]">
-                        Editar
-                      </DialogTrigger>
-                    </div>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle className="text-center text-2xl lg:text-3xl">
-                          Editar viaje
-                        </DialogTitle>
-                        <DialogDescription className="text-center lg:text-lg">
-                          Hace cambios en el viaje.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="w-full flex flex-col items-center gap-5">
-                        <div className="w-full flex flex-col items-center gap-5">
-                          <form
-                            onSubmit={handleSubmit(handleOnSubmit)}
-                            className="w-full flex flex-col items-center gap-3"
-                          >
-                            <div className="grid w-full max-w-md items-center gap-2">
-                              <Label htmlFor="date">Fecha</Label>
-                              <DatePickerContainer
-                                setStartDate={setStartDate}
-                                id="date"
-                                startDate={startDate}
-                              />
-                            </div>
-                            <div className="grid w-full max-w-md items-center gap-2">
-                              <Label htmlFor="to">Hasta</Label>
-                              <Input
-                                type="text"
-                                id="to"
-                                {...register("to", {
-                                  required: {
-                                    value: true,
-                                    message:
-                                      "Por favor, ingresar lugar de llegada.",
-                                  },
-                                  minLength: {
-                                    value: 3,
-                                    message:
-                                      "Lugar de llegada no puede ser tan corto.",
-                                  },
-                                  maxLength: {
-                                    value: 25,
-                                    message:
-                                      "Lugar de llegada no puede ser tan largo.",
-                                  },
-                                })}
-                              />
-                              {errors.to && (
-                                <p className="text-red-600">
-                                  {errors.to.message}
-                                </p>
-                              )}
-                            </div>
-                            <div className="w-full flex flex-col max-w-md gap-2">
-                              <div className="grid w-full items-center gap-2">
-                                <Label htmlFor="departureTime">
-                                  Horario de salida:
-                                </Label>
-                                <TimePickerContainer
-                                  value={departureTimeValue}
-                                  onChange={setDepartureTimeValue}
-                                />
-                              </div>
-                              <div className="grid w-full items-center gap-2">
-                                <Label htmlFor="arrivalTime">
-                                  Horario de llegada:
-                                </Label>
-                                <TimePickerContainer
-                                  value={arrivalTimeValue}
-                                  onChange={setArrivalTimeValue}
-                                />
-                              </div>
-                              {err && (
-                                <p className="text-red-600 self-start">{err}</p>
-                              )}{" "}
-                            </div>
-                            <div className="grid w-full max-w-md items-center gap-2">
-                              <Label htmlFor="price">Precio</Label>
-                              <Input
-                                type="number"
-                                id="price"
-                                {...register("price", {
-                                  required: {
-                                    value: true,
-                                    message:
-                                      "Por favor, ingresar precio/persona del viaje.",
-                                  },
-                                })}
-                              />
-                              {errors.price && (
-                                <p className="text-red-600">
-                                  {errors.price.message}
-                                </p>
-                              )}
-                            </div>
-                            <div className="grid w-full max-w-md items-center gap-2">
-                              <Label htmlFor="maxCapacity">
-                                Capacidad máxima
-                              </Label>
-                              <Input
-                                type="number"
-                                id="maxCapacity"
-                                {...register("maxCapacity", {
-                                  required: {
-                                    value: true,
-                                    message:
-                                      "Por favor, ingresar precio/persona del viaje.",
-                                  },
-                                })}
-                              />
-                              {errors.maxCapacity && (
-                                <p className="text-red-600">
-                                  {errors.maxCapacity.message}
-                                </p>
-                              )}
-                            </div>
-                            <div className="grid w-full max-w-md items-center gap-2">
-                              <Label htmlFor="name">Nombre del viaje</Label>
-                              <Input
-                                type="text"
-                                id="name"
-                                {...register("name", {
-                                  required: {
-                                    value: true,
-                                    message:
-                                      "Por favor, ingresar nombre del viaje.",
-                                  },
-                                  minLength: {
-                                    value: 3,
-                                    message:
-                                      "Nombre del viaje no puede ser tan corto.",
-                                  },
-                                  maxLength: {
-                                    value: 30,
-                                    message:
-                                      "Nombre del viaje no puede ser tan largo.",
-                                  },
-                                })}
-                              />
-                              {errors.name && (
-                                <p className="text-red-600">
-                                  {errors.name.message}
-                                </p>
-                              )}
-                            </div>
-                            {err && (
-                              <p className="text-red-600 self-start">{err}</p>
-                            )}
-                            <DialogFooter>
-                              <div className="w-[min(28rem,100%)] flex justify-center">
-                                <DefaultButton loading={isSubmitted}>
-                                  Guardar cambios
-                                </DefaultButton>
-                              </div>
-                            </DialogFooter>
-                          </form>
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </div>
-            </div>
-            {data.maxCapacity === data.passengers.length && (
-              <p className="absolute px-4 py-4 font-medium order-3 flex flex-col items-center justify-center select-none gap-2 rounded-lg bg-white border border-border-color dark:border-zinc-500 dark:bg-black dark:text-white">
-                <Logo />
-                <span>¡Combi completa!</span>
-                <span className="flex items-center gap-1">
-                  <Heart
-                    className="w-4 h-4 relative top-[1px] dark:text-black"
-                    fill="red"
-                  />
-                </span>
-              </p>
-            )}
-          </article>
-
+        <>
+          <TripCard
+            data={data}
+            err={err}
+            handleOnSubmitEdit={handleOnSubmitEdit}
+            register={register}
+            departureTimeValue={departureTimeValue}
+            arrivalTimeValue={arrivalTimeValue}
+            setArrivalTimeValue={setArrivalTimeValue}
+            setStartDate={setStartDate}
+            errors={errors}
+            handleSubmit={handleSubmit}
+            isSubmitted={isSubmitted}
+            startDate={startDate}
+            setDepartureTimeValue={setDepartureTimeValue}
+          />
+          <Separator className="self-center w-4 my-4" />
           <div className="flex flex-col gap-2">
-            <div className="w-full flex flex-col gap-4">
-              <h3 className="font-bold text-xl uppercase dark:text-white lg:text-2xl">
-                Pasajeros:
+            <div className="w-full flex flex-col gap-2">
+              <h3 className=" text-center font-bold text-xl uppercase dark:text-white lg:text-2xl">
+                Pasajeros
               </h3>
               <div className="flex flex-col item-center gap-1 md:flex-row md:justify-between">
                 <div className="flex items-center justify-center gap-1 text-sm order-2 md:text-base md:order-1 md:self-end">
@@ -823,13 +566,13 @@ const SingleTrip = () => {
                                                     className="pl-[32px]"
                                                     {...register2(fieldName)}
                                                   />
-                                                  {errors[
-                                                    input.id as keyof typeof errors
+                                                  {errors2[
+                                                    input.id as keyof typeof errors2
                                                   ] && (
                                                     <p className="text-red-600">
                                                       {
-                                                        errors[
-                                                          input.id as keyof typeof errors
+                                                        errors2[
+                                                          input.id as keyof typeof errors2
                                                         ]?.message
                                                       }
                                                     </p>
@@ -930,7 +673,7 @@ const SingleTrip = () => {
               </div>
             )}
           </div>
-        </div>
+        </>
       )}
     </section>
   );
