@@ -40,8 +40,9 @@ type Props = {
 };
 
 function App() {
+  const { user } = useContext(AuthContext);
+
   const ProtectedRoute = ({ children }: Props) => {
-    const { user } = useContext(AuthContext);
     if (!user) {
       return <Navigate to="/login" />;
     }
@@ -51,7 +52,11 @@ function App() {
   return (
     <div className="App flex w-[min(95%,1650px)] mx-auto">
       <SideBar />
-      <div className="flex-[6] w-[min(100%,1450px)] lg:pl-10 lg:border-l">
+      <div
+        className={`flex-[6] w-[min(100%,1450px)] lg:pl-10 ${
+          user ? "lg:border-l" : ""
+        }`}
+      >
         <Header />
         <main className="pt-6 py-2">
           <Routes>

@@ -244,10 +244,10 @@ const SingleSpecialTrip = () => {
 
   return (
     <section className="flex flex-col gap-3">
-      <SectionTitle>Información del viaje:</SectionTitle>
-      <div className="self-start mb-2">
+      <div className="self-start">
         <BackButton linkTo="/special-trips" />
       </div>
+      <SectionTitle>Información acerca del viaje</SectionTitle>
       {loading ? (
         <Loading />
       ) : (
@@ -259,12 +259,10 @@ const SingleSpecialTrip = () => {
           >
             <div className="w-full px-2 pt-9 sm:px-4">
               <div className="flex flex-col gap-2">
-                <div className="absolute top-[.5rem] left-1 sm:left-3">
-                  <img
-                    src={miniBus}
-                    alt="combi"
-                    className="w-10 h-9 lg:w-12 lg:h-11 hover:-rotate-12 transition-transform"
-                  />
+                <div className="absolute top-[0.75rem] left-2.5 sm:left-4 flex flex-col gap-[3px] transition-transform ">
+                  <span className="w-8 h-[4px] bg-red-700 rounded-full " />
+                  <span className="w-4 h-[4px] bg-red-700 rounded-full " />
+                  <span className="w-2 h-[4px] bg-red-700 rounded-full " />
                 </div>
                 <div className="absolute right-2 top-2 flex items-center gap-2 sm:right-4">
                   <p className="text-teal-900 order-2 font-medium flex items-center select-none gap-1 rounded-lg border border-slate-800/60 bg-slate-200/30 dark:bg-slate-800/70 dark:border-slate-200/80 dark:text-white px-3">
@@ -278,12 +276,12 @@ const SingleSpecialTrip = () => {
                   )}
                 </div>
 
-                <div className="flex flex-col gap-1 mt-4 lg:mt-7">
-                  <div className="flex flex-col sm:gap-2">
+                <div className="flex flex-col gap-1">
+                  <div className="flex flex-col mt-2 sm:gap-2">
                     <h3 className="font-bold text-lg lg:text-xl">
                       {data.name}
                     </h3>
-                    <h4 className="text-sm font-light">
+                    <h4 className="text-sm font-light text-card-foreground">
                       Información acerca del viaje:
                     </h4>
                   </div>
@@ -326,10 +324,12 @@ const SingleSpecialTrip = () => {
                   </div>
 
                   <Dialog>
-                    <div className="mt-2 relative w-full after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-white/20 dark:after:shadow-highlight dark:after:shadow-blue-lagoon-100/20 after:transition focus-within:after:shadow-blue-lagoon-200 dark:focus-within:after:shadow-blue-lagoon-200">
-                      <DialogTrigger className="relative w-full rounded-lg px-6 py-1.5 lg:py-0 bg-[#9e4a4f] text-slate-100 hover:text-white dark:shadow-input dark:shadow-black/5 dark:text-slate-100 dark:hover:text-white dark:bg-[#9e4a4f] lg:h-[35px]">
-                        Editar
-                      </DialogTrigger>
+                    <div className="lg:self-end">
+                      <div className="mt-2 relative w-full after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
+                        <DialogTrigger className="relative w-full rounded-lg px-5 py-1.5 lg:py-0 bg-primary text-slate-100 hover:text-white dark:shadow-input dark:shadow-black/5 dark:text-slate-100 dark:hover:text-white lg:h-8">
+                          Editar
+                        </DialogTrigger>
+                      </div>
                     </div>
                     <DialogContent>
                       <DialogHeader>

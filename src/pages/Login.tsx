@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Separator } from "../components/ui/separator";
 import { Input } from "../components/ui/input";
@@ -28,7 +28,7 @@ const Login = () => {
 
   const [err, setErr] = useState<null | string>(null);
 
-  const { loading, dispatch, error } = useContext(AuthContext);
+  const { loading, dispatch, error, user } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -63,6 +63,11 @@ const Login = () => {
       }
     }
   };
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user]);
 
   return (
     <section className="">
