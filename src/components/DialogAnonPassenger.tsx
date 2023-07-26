@@ -11,7 +11,7 @@ import {
 } from "../components/ui/dialog";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
-import { Crop, Milestone, UserPlus } from "lucide-react";
+import { Crop, Fingerprint, Milestone, User, UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/ui/use-toast";
 import axios from "axios";
 import { AuthContext } from "@/context/AuthContext";
@@ -293,24 +293,28 @@ const DialogAnonPassenger = ({ setErr, err, id }: DialogAnonPassengerProps) => {
             <div className="w-full flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-2">
               <div className="grid w-full items-center gap-2">
                 <Label htmlFor="fullName">Nombre completo</Label>
-                <Input
-                  type="text"
-                  id="fullName"
-                  {...register2("fullName", {
-                    required: {
-                      value: true,
-                      message: "Por favor, ingresar nombre completo.",
-                    },
-                    minLength: {
-                      value: 3,
-                      message: "Nombre completo no puede ser tan corto.",
-                    },
-                    maxLength: {
-                      value: 25,
-                      message: "Nombre completo no puede ser tan largo.",
-                    },
-                  })}
-                />
+                <div className="relative flex items-center">
+                  <User className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] pb-[1px]" />
+                  <Input
+                    type="text"
+                    id="fullName"
+                    className="pl-[32px]"
+                    {...register2("fullName", {
+                      required: {
+                        value: true,
+                        message: "Por favor, ingresar nombre completo.",
+                      },
+                      minLength: {
+                        value: 3,
+                        message: "Nombre completo no puede ser tan corto.",
+                      },
+                      maxLength: {
+                        value: 25,
+                        message: "Nombre completo no puede ser tan largo.",
+                      },
+                    })}
+                  />
+                </div>
                 {errors2.fullName && (
                   <p className="text-red-600 text-sm">
                     {errors2.fullName.message}
@@ -324,12 +328,15 @@ const DialogAnonPassenger = ({ setErr, err, id }: DialogAnonPassengerProps) => {
                     (opcional)
                   </span>
                 </Label>
-                <Input
-                  type="number"
-                  className=""
-                  id="dni"
-                  {...register2("dni")}
-                />
+                <div className="relative flex items-center">
+                  <Fingerprint className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] pb-[1px]" />
+                  <Input
+                    type="number"
+                    className="pl-[32px]"
+                    id="dni"
+                    {...register2("dni")}
+                  />
+                </div>
                 {errors2.dni && (
                   <p className="text-red-600 text-sm">{errors2.dni.message}</p>
                 )}
@@ -366,12 +373,12 @@ const DialogAnonPassenger = ({ setErr, err, id }: DialogAnonPassengerProps) => {
                           className="pl-[32px]"
                           {...register2(fieldName)}
                         />
-                        {errors2[input.id as keyof typeof errors2] && (
-                          <p className="text-red-600 text-sm">
-                            {errors2[input.id as keyof typeof errors2]?.message}
-                          </p>
-                        )}
                       </div>
+                      {errors2[input.id as keyof typeof errors2] && (
+                        <p className="text-red-600 text-sm">
+                          {errors2[input.id as keyof typeof errors2]?.message}
+                        </p>
+                      )}
                     </div>
                   );
                 })}
