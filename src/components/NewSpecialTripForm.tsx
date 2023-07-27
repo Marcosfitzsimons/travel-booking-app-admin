@@ -14,7 +14,6 @@ type Trip = {
   date: Date | null;
   from: string;
   departureTime: string; // or number
-  to: string;
   maxCapacity: string;
   price: string;
 };
@@ -43,6 +42,7 @@ interface TripInput {
   label: string;
   type: string;
   name: any;
+  icon?: any;
   placeholder?: string;
   validation?: InputValidation;
 }
@@ -68,7 +68,6 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
       date: null,
       from: "",
       departureTime: "10:00",
-      to: "",
       price: "",
       maxCapacity: "",
     },
@@ -109,10 +108,10 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
       onSubmit={handleSubmit(handleOnSubmit)}
       className="relative w-full flex flex-col gap-3 p-3 py-6"
     >
+      <p className="text-lg text-red-600">
+        ADD PASSENGERS BY DEFAULT FUNCTIONALITY
+      </p>
       <div className="w-full flex flex-col gap-2 items-center lg:basis-2/3 lg:grid lg:grid-cols-2 lg:gap-3">
-        <h2 className="w-full text-center lg:text-start lg:col-start-1 lg:col-end-3">
-          Información acerca del viaje
-        </h2>
         <div className="grid w-full items-center gap-2">
           <Label htmlFor="date">Fecha</Label>
           <DatePickerContainer
@@ -121,7 +120,7 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
           />
         </div>
         <div className="w-full flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-          <div className="grid w-full items-center gap-2 lg:w-[144px]">
+          <div className="grid w-full items-center gap-2 lg:w-[155px]">
             <Label htmlFor="departureTime">Horario de salida:</Label>
             <TimePickerContainer
               value={departureTimeValue}
@@ -133,12 +132,16 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
         {inputs.map((input) => (
           <div key={input.id} className="grid w-full items-center gap-2">
             <Label htmlFor={input.id}>{input.label}</Label>
-            <Input
-              type={input.type}
-              id={input.id}
-              placeholder={input.placeholder}
-              {...register(input.id, input.validation)}
-            />
+            <div className="relative flex items-center">
+              {input.icon}
+              <Input
+                type={input.type}
+                id={input.id}
+                placeholder={input.placeholder}
+                className="pl-8"
+                {...register(input.id, input.validation)}
+              />
+            </div>
             {errors[input.id as keyof typeof errors] && (
               <p className="text-red-600">
                 {errors[input.id as keyof typeof errors]?.message}
@@ -146,7 +149,7 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
             )}
           </div>
         ))}
-        <div className="w-full mt-2 lg:w-[9rem] lg:justify-self-end lg:self-end">
+        <div className="w-full mt-2 lg:w-[9rem] lg:col-start-1 lg:col-end-3 lg:justify-self-center lg:self-center">
           <DefaultButton>Crear viaje</DefaultButton>
         </div>
       </div>
