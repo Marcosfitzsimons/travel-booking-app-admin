@@ -58,100 +58,67 @@ input[type="number"] {
 
 /* main */
 
-.MuiDataGrid-main {
-  background-color: white;
-  border-radius: 4px;
+.MuiDataGrid-main,
+.css-204u17-MuiDataGrid-main {
+  @apply rounded-md rounded-b-none;
   font-family: "Nunito", sans-serif;
 }
 
-.dark .MuiDataGrid-main {
-  background-color: rgba(0, 0, 0, 0.4);
+.MuiDataGrid-root,
+.MuiDataGrid-root--densityStandard,
+.MuiDataGrid-withBorderColor,
+.css-10i7yl7-MuiDataGrid-root {
+  @apply text-black md:text-[15px] dark:text-white;
+}
+
+.MuiDataGrid-withBorderColor {
+  @apply border-border dark:border-border;
 }
 
 /* header */
 
-.MuiDataGrid-columnHeaders {
-  background-color: #005f71;
-}
-
-.MuiDataGrid-columnHeaders .MuiDataGrid-columnHeaderTitle {
-  font-weight: 600;
-  color: white;
-}
-
-.dark .MuiDataGrid-columnHeaders {
-  background-color: rgba(0, 0, 0, 0.4);
+.MuiDataGrid-columnHeaders,
+.css-1iyq7zh-MuiDataGrid-columnHeaders {
+  @apply text-black bg-slate-50 dark:bg-black/50 dark:text-white;
 }
 
 /* row */
 
 .MuiDataGrid-row {
-  background-color: #fdfdfd;
-}
-.MuiDataGrid-row:nth-child(2n) {
-  background-color: #fafafa;
+  @apply max-h-20 h-20 bg-[#fdfdfd] even:bg-gray-50 dark:even:bg-[#202020] dark:bg-[#2e2e2e];
 }
 
-.dark .MuiDataGrid-row:nth-child(2n) {
-  background-color: #191919;
-}
-
-.dark .MuiDataGrid-row {
-  background-color: #212121;
-}
-
-.dark .css-1kicwkw-MuiDataGrid-root .MuiDataGrid-row:hover,
-.css-1kicwkw-MuiDataGrid-root .MuiDataGrid-row.Mui-hovered {
-  background-color: rgb(0 62 74 / 0.4);
+.MuiDataGrid-row:hover {
+  @apply even:hover:bg-black/5 odd:hover:bg-black/5 dark:even:hover:bg-white/20 dark:odd:hover:bg-white/20;
 }
 
 /* cell */
 
 .MuiDataGrid-cell {
-  color: #005f71;
-  border: 0px;
-}
-
-.dark .MuiDataGrid-cell {
-  color: #e6f2f5;
-}
-
-.MuiDataGrid-cell:hover {
-  color: #007f96;
-}
-
-.dark .MuiDataGrid-cell:hover {
-  color: white;
+  @apply border-none text-slate-500 hover:text-[#007f96] dark:text-[#e6f2f5] dark:hover:text-white;
 }
 
 /* checkbox */
 
 .MuiDataGrid-checkboxInput .MuiSvgIcon-root {
-  color: #005f71;
-}
-
-.dark .MuiDataGrid-checkboxInput .MuiSvgIcon-root {
-  color: #e6f2f5;
+  @apply text-slate-500 dark:text-[#e6f2f5];
 }
 
 /* footer */
 
 .MuiDataGrid-footerContainer {
-  background-color: white;
-  border-radius: 5px;
+  @apply bg-slate-50 rounded-md rounded-t-none dark:bg-black/50;
 }
 
-.dark .MuiDataGrid-footerContainer {
-  background-color: rgba(0, 0, 0, 0.4);
-  border-top: 1px solid rgb(0 62 74 / 0.4);
+.MuiTablePagination-actions {
+  @apply cursor-pointer;
 }
 
-.dark .MuiTablePagination-root {
-  color: #e6f2f5;
-}
-
-.dark .MuiSvgIcon-root {
-  color: #e6f2f5;
+.MuiDataGrid-footerContainer,
+.MuiSvgIcon-root,
+.MuiTablePagination-root,
+.css-levciy-MuiTablePagination-displayedRows {
+  @apply text-black dark:text-white;
 }
 
 @tailwind utilities;
