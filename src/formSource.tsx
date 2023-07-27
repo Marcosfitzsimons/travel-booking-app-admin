@@ -1,3 +1,5 @@
+import { DollarSign, HelpingHand, Milestone, UserMinus2 } from "lucide-react";
+
 export const userInputs = [
   {
     id: "username",
@@ -203,6 +205,9 @@ export const tripInputs = [
     label: "Desde",
     type: "text",
     placeholder: "Carmen",
+    icon: (
+      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+    ),
     validation: {
       required: {
         value: true,
@@ -224,6 +229,9 @@ export const tripInputs = [
     label: "Hasta",
     type: "text",
     placeholder: "Capital",
+    icon: (
+      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+    ),
     validation: {
       required: {
         value: true,
@@ -245,6 +253,9 @@ export const tripInputs = [
     label: "Precio",
     type: "number",
     placeholder: "2500",
+    icon: (
+      <DollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+    ),
     validation: {
       required: {
         value: true,
@@ -258,6 +269,9 @@ export const tripInputs = [
     label: "Capacidad máxima",
     type: "number",
     placeholder: "15",
+    icon: (
+      <UserMinus2 className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+    ),
     validation: {
       required: {
         value: true,
@@ -271,6 +285,9 @@ export const tripInputs = [
     label: "Nombre del viaje",
     type: "text",
     placeholder: "De carmen a Capital",
+    icon: (
+      <HelpingHand className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+    ),
     validation: {
       required: {
         value: true,
@@ -295,6 +312,9 @@ export const specialTripInputs = [
     label: "Desde",
     type: "text",
     placeholder: "Carmen",
+    icon: (
+      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+    ),
     validation: {
       required: {
         value: true,
@@ -311,32 +331,14 @@ export const specialTripInputs = [
     },
   },
   {
-    id: "to",
-    name: "to",
-    label: "Hasta",
-    type: "text",
-    placeholder: "Capital",
-    validation: {
-      required: {
-        value: true,
-        message: "Por favor, ingresar lugar de llegada.",
-      },
-      minLength: {
-        value: 3,
-        message: "Lugar de llegada no puede ser tan corto.",
-      },
-      maxLength: {
-        value: 25,
-        message: "Lugar de llegada no puede ser tan largo.",
-      },
-    },
-  },
-  {
     id: "price",
     name: "price",
     label: "Precio",
     type: "number",
     placeholder: "2500",
+    icon: (
+      <DollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+    ),
     validation: {
       required: {
         value: true,
@@ -350,6 +352,9 @@ export const specialTripInputs = [
     label: "Capacidad máxima",
     type: "number",
     placeholder: "15",
+    icon: (
+      <UserMinus2 className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+    ),
     validation: {
       required: {
         value: true,
@@ -363,6 +368,9 @@ export const specialTripInputs = [
     label: "Nombre del viaje",
     type: "text",
     placeholder: "De carmen a Capital",
+    icon: (
+      <HelpingHand className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+    ),
     validation: {
       required: {
         value: true,
