@@ -180,7 +180,7 @@ const DialogAnonPassenger = ({ setErr, err, id }: DialogAnonPassengerProps) => {
     {
       id: "street",
       icon: (
-        <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] pb-[2px] " />
+        <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px]" />
       ),
       label: "Calle",
       type: "text",
@@ -203,7 +203,7 @@ const DialogAnonPassenger = ({ setErr, err, id }: DialogAnonPassengerProps) => {
     {
       id: "streetNumber",
       icon: (
-        <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] pb-[2px] " />
+        <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px]  " />
       ),
       label: "Número",
       type: "number",
@@ -230,7 +230,7 @@ const DialogAnonPassenger = ({ setErr, err, id }: DialogAnonPassengerProps) => {
     {
       id: "crossStreets",
       icon: (
-        <Crop className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] pb-[2px] " />
+        <Crop className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px]" />
       ),
       label: "Calles que cruzan",
       type: "text",

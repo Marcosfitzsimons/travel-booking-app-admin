@@ -101,6 +101,9 @@ const NewTripForm = ({ inputs }: NewPublicationFormProps) => {
       onSubmit={handleSubmit(handleOnSubmit)}
       className="relative w-full flex flex-col gap-3 p-3 py-6"
     >
+      <p className="text-lg text-red-600">
+        ACTUALIZAR SECCION URGENTE! TEXTAREA
+      </p>
       <div className="w-full flex flex-col gap-2 items-center lg:basis-2/3 lg:grid lg:grid-cols-2 lg:gap-3">
         {inputs.map((input) => (
           <div key={input.id} className="grid w-full items-center gap-2">

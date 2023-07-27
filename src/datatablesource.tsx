@@ -1,4 +1,4 @@
-import { Check, User, X } from "lucide-react";
+import { Check, Clock, User, X } from "lucide-react";
 import moment from "moment";
 import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
 
@@ -86,7 +86,7 @@ export const tripColumns = [
   {
     field: "date",
     headerName: "Fecha",
-    width: 130,
+    width: 140,
     renderCell: (params: any) => {
       const formattedDate = formatDate(params.row.date);
       const isToday = formattedDate === todayDate;
@@ -107,20 +107,62 @@ export const tripColumns = [
       );
     },
   },
-  { field: "name", headerName: "Nombre", width: 180 },
-  { field: "from", headerName: "Salida", width: 120 },
-  { field: "departureTime", headerName: "Hora", width: 70 },
-  { field: "to", headerName: "Llegada", width: 120 },
-  { field: "arrivalTime", headerName: "Hora", width: 70 },
-  { field: "price", headerName: "Precio", width: 70 },
-  { field: "maxCapacity", headerName: "Capacidad máxima", width: 80 },
+  { field: "name", headerName: "Nombre", flex: 1 },
+  {
+    field: "from",
+    headerName: "Salida",
+    flex: 1,
+    renderCell: (params: any) => {
+      return (
+        <div className="flex flex-col gap-[2px]">
+          {params.row.from}
+          <div className="flex items-center gap-1">
+            <Clock className="h-4 w-4 text-accent shrink-0" />
+            {params.row.departureTime}
+          </div>
+        </div>
+      );
+    },
+  },
+  {
+    field: "to",
+    headerName: "Llegada",
+    flex: 1,
+    renderCell: (params: any) => {
+      return (
+        <div className="flex flex-col gap-[2px]">
+          {params.row.to}
+          <div className="flex items-center gap-1">
+            <Clock className="h-4 w-4 text-accent shrink-0" />
+            {params.row.arrivalTime}
+          </div>
+        </div>
+      );
+    },
+  },
+  {
+    field: "price",
+    headerName: "Precio",
+    width: 120,
+    renderCell: (params: any) => {
+      return <div className="">${params.row.price}</div>;
+    },
+  },
+  {
+    field: "maxCapacity",
+    headerName: "Cap. máxima",
+    width: 120,
+    renderCell: (params: any) => {
+      return <div className="">{params.row.maxCapacity}</div>;
+    },
+  },
 ];
 
 export const specialTripColumns = [
   {
     field: "date",
     headerName: "Fecha",
-    width: 130,
+    width: 140,
     renderCell: (params: any) => {
       const formattedDate = formatDate(params.row.date);
       const isToday = formattedDate === todayDate;
@@ -141,12 +183,39 @@ export const specialTripColumns = [
       );
     },
   },
-  { field: "name", headerName: "Nombre", width: 180 },
-  { field: "from", headerName: "Salida", width: 120 },
-  { field: "departureTime", headerName: "Hora", width: 70 },
-  { field: "to", headerName: "Llegada", width: 120 },
-  { field: "price", headerName: "Precio", width: 70 },
-  { field: "maxCapacity", headerName: "Capacidad máxima", width: 80 },
+  { field: "name", headerName: "Nombre", flex: 1 },
+  {
+    field: "from",
+    headerName: "Salida",
+    flex: 1,
+    renderCell: (params: any) => {
+      return (
+        <div className="flex flex-col gap-[2px]">
+          {params.row.from}
+          <div className="flex items-center gap-1">
+            <Clock className="h-4 w-4 text-accent shrink-0" />
+            {params.row.departureTime}
+          </div>
+        </div>
+      );
+    },
+  },
+  {
+    field: "price",
+    headerName: "Precio",
+    width: 120,
+    renderCell: (params: any) => {
+      return <div className="">${params.row.price}</div>;
+    },
+  },
+  {
+    field: "maxCapacity",
+    headerName: "Cap. máxima",
+    width: 120,
+    renderCell: (params: any) => {
+      return <div className="mx-auto">{params.row.maxCapacity}</div>;
+    },
+  },
 ];
 
 export const passengerColumns = [

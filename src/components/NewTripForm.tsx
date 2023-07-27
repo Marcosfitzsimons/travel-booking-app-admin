@@ -8,6 +8,7 @@ import { useToast } from "../hooks/ui/use-toast";
 import DefaultButton from "./DefaultButton";
 import DatePickerContainer from "./DatePickerContainer";
 import TimePickerContainer from "./TimePickerContainer";
+import { Separator } from "./ui/separator";
 
 type Trip = {
   name: string;
@@ -44,6 +45,7 @@ interface TripInput {
   label: string;
   type: string;
   name: any;
+  icon?: any;
   placeholder?: string;
   validation?: InputValidation;
 }
@@ -122,14 +124,15 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
           />
         </div>
         <div className="w-full flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-          <div className="grid w-full items-center gap-2 lg:w-[144px]">
+          <div className="grid w-full items-center gap-2 lg:w-[155px]">
             <Label htmlFor="departureTime">Horario de salida:</Label>
             <TimePickerContainer
               value={departureTimeValue}
               onChange={setDepartureTimeValue}
             />
           </div>
-          <div className="grid w-full items-center gap-2 lg:w-[144px]">
+          <Separator className="w-4 mt-5" />
+          <div className="grid w-full items-center gap-2 lg:w-[155px]">
             <Label htmlFor="arrivalTime">Horario de llegada:</Label>
             <TimePickerContainer
               value={arrivalTimeValue}
@@ -141,12 +144,16 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
         {inputs.map((input) => (
           <div key={input.id} className="grid w-full items-center gap-2">
             <Label htmlFor={input.id}>{input.label}</Label>
-            <Input
-              type={input.type}
-              id={input.id}
-              placeholder={input.placeholder}
-              {...register(input.id, input.validation)}
-            />
+            <div className="relative flex items-center">
+              {input.icon}
+              <Input
+                type={input.type}
+                id={input.id}
+                placeholder={input.placeholder}
+                className="pl-[32px]"
+                {...register(input.id, input.validation)}
+              />
+            </div>
             {errors[input.id as keyof typeof errors] && (
               <p className="text-red-600">
                 {errors[input.id as keyof typeof errors]?.message}

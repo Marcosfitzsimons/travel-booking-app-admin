@@ -7,7 +7,8 @@ import { useLocation } from "react-router-dom";
 interface Column {
   field: string;
   headerName: string;
-  width: number;
+  flex?: number;
+  width?: number;
   renderCell?: (params: any) => JSX.Element;
 }
 
@@ -23,7 +24,7 @@ const List = ({ icon, title, columns, linkText }: ListProps) => {
   const path = location.pathname.split("/")[1];
 
   return (
-    <section className="flex flex-col gap-5">
+    <section className="flex flex-col gap-6">
       <SectionTitle>
         {icon}
         {title}
