@@ -22,6 +22,9 @@ import { Button } from "./ui/button";
 import ActionButton from "./ActionButton";
 import { Plus } from "lucide-react";
 import ActionButtonDatatable from "./ActionButtonDatatable";
+import TotalCountCard from "./TotalCountCard";
+import TrashButtonDatatable from "./TrashButtonDatatable";
+import { getRowHeight } from "@/lib/utils/getRowHeight";
 
 type Trip = {
   _id: string;
@@ -64,8 +67,6 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
   const headers = {
     Authorization: `Bearer ${token}`,
   };
-
-  console.log(data);
 
   const handleDelete = async (id: string) => {
     setIsLoading(true);
@@ -115,28 +116,28 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
       width: 180,
       renderCell: (params: any) => {
         return (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <div className="relative flex items-center">
               <ActionButtonDatatable
                 text="Ver"
                 icon={
-                  <Eye className="absolute left-[13px] top-[5.5px] h-4 w-4" />
+                  <Eye className="absolute left-[13px] top-[5.5px] h-4 w-4 md:h-[18px] md:w-[18px] md:top-[4.5px] md:left-[11.4px]" />
                 }
                 linkTo={`/trips/${params.row._id}`}
               />
             </div>
             <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <div className="relative flex items-center">
-                  <button
-                    disabled={isLoading}
-                    className="pl-[21px] rounded-md text-[#b4343a] font-semibold transition-colors hover:text-red-300"
-                  >
-                    <Trash2 className="absolute left-1 top-[.6px] h-4 w-4" />
-                    Borrar
-                  </button>
-                </div>
-              </AlertDialogTrigger>
+              <div className="relative flex items-center">
+                <AlertDialogTrigger className="z-50">
+                  <TrashButtonDatatable
+                    isLoading={isLoading}
+                    icon={
+                      <Trash2 className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />
+                    }
+                    text="Borrar"
+                  />
+                </AlertDialogTrigger>
+              </div>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
@@ -173,52 +174,50 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
   }, [startDate]);
 
   return (
-    <div className="h-[600px] w-full">
-      <div className="w-full my-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div className="relative flex items-end gap-1 w-[min(100%,184px)]">
-          <DatePickerContainer
-            startDate={startDate}
-            setStartDate={setStartDate}
+    <div className="h-[650px] w-full max-w-[1500px]">
+      <div className="relative w-full my-3 flex flex-col items-center gap-3">
+        <div className="md:absolute md:right-0 md:top-[-100px]">
+          <TotalCountCard
+            icon={<Map className="text-accent h-8 w-8" />}
+            title="Viajes disponibles"
+            value={loading ? "0" : list.length}
           />
-          <div className="absolute -right-[46px] h-full">
-            <div className="relative flex w-[38px] h-full aspect-square before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300">
-              <Button
-                className="absolute w-[38px] h-full flex items-center justify-center cursor-pointer p-2 bg-card rounded-lg border border-slate-800/20 shadow-input dark:bg-[hsl(0,0%,11%)] dark:border-slate-800 dark:shadow-none !outline-none dark:hover:text-white"
-                onClick={() => setStartDate(null)}
-              >
-                <RotateCcw className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-          {err && <p>{err}</p>}
-          {error && <p>{error}</p>}
         </div>
-        <div className="flex justify-between items-end gap-1 lg:gap-3">
-          <div className="flex items-center gap-1 text-sm lg:text-base">
-            <Map className="text-accent hidden animate-pulse sm:flex sm:h-5 sm:w-5 -dark" />
-            <p className="font-medium">Viajes disponibles:</p>
-            <p className="font-light flex items-center gap-1">
-              <span
-                className={`animate-pulse w-3 h-3 rounded-full ${
-                  list.length > 0 ? "bg-green-500" : "bg-red-600"
-                }`}
-              />
-              {loading ? "" : list.length}
-            </p>
+        <div className="w-full flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
+          <div className="relative flex items-end gap-1 w-[min(100%,184px)]">
+            <DatePickerContainer
+              startDate={startDate}
+              setStartDate={setStartDate}
+            />
+            <div className="absolute -right-[46px] h-full">
+              <div className="relative flex w-[38px] h-full aspect-square before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300">
+                <Button
+                  className="absolute w-[38px] h-full flex items-center justify-center cursor-pointer p-2 bg-card rounded-lg border border-slate-800/20 shadow-input dark:bg-[hsl(0,0%,11%)] dark:border-slate-800 dark:shadow-none !outline-none dark:hover:text-white"
+                  onClick={() => setStartDate(null)}
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+            {err && <p>{err}</p>}
+            {error && <p>{error}</p>}
           </div>
-          <ActionButton
-            text="Crear viaje"
-            icon={
-              <Plus className="absolute cursor-pointer left-[13px] top-[7.3px] h-[18px] w-[18px]" />
-            }
-            linkTo={"/trips/new"}
-          />
+          <div className="self-end">
+            <ActionButton
+              text="Crear viaje nuevo"
+              icon={
+                <Plus className="absolute cursor-pointer left-[13px] top-[7.3px] h-[18px] w-[18px] md:top-[4px] md:left-[8px] md:h-6 md:w-6" />
+              }
+              linkTo={"/trips/new"}
+            />
+          </div>
         </div>
       </div>
       {filteredList.length > 0 ? (
         <DataGrid
           rows={filteredList}
           columns={actionColumn.concat(columns)}
+          getRowHeight={getRowHeight}
           checkboxSelection
           hideFooterSelectedRowCount
           initialState={{
@@ -229,7 +228,6 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
             },
           }}
           sx={{
-            borderColor: "#007F9633",
             borderRadius: "7px",
             "&>.MuiDataGrid-main": {
               "&>.MuiDataGrid-columnHeaders": {
@@ -246,12 +244,13 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
           }}
           pageSizeOptions={[9]}
           getRowId={(row) => row._id}
-          className="w-[min(100%,1400px)] shadow-md border-none dark:border-border-color-dark dark:text-neutral-100"
+          className="max-w-[1500px]"
         />
       ) : (
         <DataGrid
           rows={list}
           columns={actionColumn.concat(columns)}
+          getRowHeight={getRowHeight}
           checkboxSelection
           hideFooterSelectedRowCount
           initialState={{
@@ -264,7 +263,6 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
           pageSizeOptions={[9]}
           getRowId={(row) => row._id}
           sx={{
-            borderColor: "#007F9633",
             borderRadius: "7px",
             "&>.MuiDataGrid-main": {
               "&>.MuiDataGrid-columnHeaders": {
@@ -279,7 +277,7 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
               borderTop: "none",
             },
           }}
-          className="w-[min(100%,1400px)] shadow-md dark:border-border-color-dark dark:text-neutral-100"
+          className="max-w-[1500px]"
         />
       )}
     </div>
