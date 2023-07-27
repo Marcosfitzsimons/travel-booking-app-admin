@@ -150,7 +150,7 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
                 type={input.type}
                 id={input.id}
                 placeholder={input.placeholder}
-                className="pl-[32px]"
+                className="pl-8"
                 {...register(input.id, input.validation)}
               />
             </div>

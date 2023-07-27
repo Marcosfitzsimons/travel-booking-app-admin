@@ -519,18 +519,17 @@ const SingleSpecialTrip = () => {
                       </p>
                     ) : (
                       <Dialog>
-                        <div className="lg:flex lg:items-center lg:justify-end">
-                          <DialogTrigger
-                            asChild
-                            className="mt-2 flex items-center px-3.5 py-1 pl-[37px] z-20 rounded-md border border-teal-800 bg-teal-800/60 text-white font-semibold transition-colors hover:border-black dark:border-teal-600 dark:bg-teal-700/60 dark:hover:text-inherit dark:hover:border-teal-500"
-                          >
-                            <ActionButton
-                              text="Agregar pasajero"
-                              linkTo={`/passengers/newPassenger/${id}`}
-                              icon={
+                        <div className="flex items-center self-center ">
+                          <DialogTrigger asChild>
+                            <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
+                              <Button
+                                className="h-[32px] px-3.5 pl-[35px] relative bg-teal-800/60 text-white shadow-input hover:text-white
+dark:text-slate-100 dark:bg-teal-700/60 md:text-base dark:hover:text-white dark:shadow-none"
+                              >
                                 <UserPlus className="absolute cursor-pointer left-3 top-[6px] h-5 w-5" />
-                              }
-                            />
+                                Agregar pasajero
+                              </Button>
+                            </div>
                           </DialogTrigger>
                         </div>
                         <DialogContent>

@@ -89,7 +89,7 @@ input[type="number"] {
 /* row */
 
 .MuiDataGrid-row {
-  @apply max-h-20 h-20 bg-[#fdfdfd] even:bg-gray-50 dark:even:bg-[#202020] dark:bg-[#2e2e2e];
+  @apply max-h-20 h-20 bg-[#fdfdfd] transition-all even:bg-gray-50 dark:even:bg-[#202020] dark:bg-[#2e2e2e];
 }
 
 .MuiDataGrid-row:hover {

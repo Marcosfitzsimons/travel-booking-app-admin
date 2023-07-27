@@ -37,10 +37,10 @@ type NewTripProps = {
 const NewTrip = ({ inputs, title }: NewTripProps) => {
   return (
     <section className="flex flex-col gap-5">
-      <SectionTitle>{title}</SectionTitle>
-      <div className="self-start mb-2">
+      <div className="self-start">
         <BackButton linkTo="/trips" />
       </div>
+      <SectionTitle>{title}</SectionTitle>
       <div className="relative px-5 py-10 rounded-lg bg-card w-full max-w-md self-center border lg:max-w-3xl lg:self-start">
         <div className="absolute top-[0.75rem] left-2.5 sm:left-4 flex flex-col gap-[3px] transition-transform ">
           <span className="w-8 h-[4px] bg-red-700 rounded-full " />

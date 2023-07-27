@@ -367,7 +367,7 @@ export const specialTripInputs = [
     name: "name",
     label: "Nombre del viaje",
     type: "text",
-    placeholder: "De carmen a Capital",
+    placeholder: "Viaje a cancha de San Lorenzo",
     icon: (
       <HelpingHand className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
     ),
