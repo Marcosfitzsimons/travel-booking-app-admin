@@ -50,10 +50,11 @@ function App() {
   };
 
   return (
-    <div className="App flex w-[min(95%,1650px)] mx-auto">
+    <div className="w-full flex">
       <SideBar />
+
       <div
-        className={`flex-[6] w-[min(100%,1450px)] lg:pl-10 ${
+        className={`flex-[6] min-w-[330px] px-2 lg:px-10 lg:pr-20 ${
           user ? "lg:border-l" : ""
         }`}
       >
