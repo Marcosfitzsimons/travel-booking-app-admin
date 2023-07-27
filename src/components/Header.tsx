@@ -13,6 +13,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { Separator } from "./ui/separator";
 
 const Header = () => {
   const { dispatch, user } = useContext(AuthContext);
@@ -24,7 +25,6 @@ const Header = () => {
         type: "LOGOUT",
       });
       localStorage.removeItem("token");
-      localStorage.removeItem("user");
     }
     navigate("/login");
   };
@@ -36,11 +36,12 @@ const Header = () => {
           !user ? "lg:justify-start lg:gap-3" : "justify-between"
         } py-2 flex items-center justify-between z-50 lg:py-[12.5px]`}
       >
-        <Logo />
+        <div className="flex items-center gap-2">
+          <Logo />
+          <Separator orientation="vertical" className="h-4 ml-2" />
+          <ThemeToggle />
+        </div>
         <div className="flex items-center gap-1">
-          <div className="relative top-[1px]">
-            <ThemeToggle />
-          </div>
           <DropdownMenu>
             <DropdownMenuTrigger className="lg:hidden" asChild>
               <Button
