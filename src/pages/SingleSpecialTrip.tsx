@@ -11,7 +11,10 @@ import {
   Clock,
   DollarSign,
   Heart,
+  HelpingHand,
   MapPin,
+  Milestone,
+  UserMinus2,
   UserPlus,
   Users,
 } from "lucide-react";
@@ -255,7 +258,7 @@ const SingleSpecialTrip = () => {
           <article
             className={`${
               isMaxCapacity ? "dark:border-zinc-800" : "dark:border"
-            } w-full flex justify-center items-center relative mx-auto rounded-md shadow-md pb-4 max-w-[400px] bg-card border dark:shadow-none`}
+            }  w-full flex justify-center items-center relative mx-auto rounded-md shadow-input pb-4 max-w-[400px] bg-card border dark:shadow-none`}
           >
             <div className="w-full px-2 pt-9 sm:px-4">
               <div className="flex flex-col gap-2">
@@ -331,7 +334,17 @@ const SingleSpecialTrip = () => {
                         </DialogTrigger>
                       </div>
                     </div>
-                    <DialogContent>
+                    <DialogContent className="relative pb-10">
+                      <div className="absolute top-[0.75rem] left-2.5 sm:left-4 flex flex-col gap-[3px] transition-transform ">
+                        <span className="w-8 h-[4px] bg-red-700 rounded-full " />
+                        <span className="w-4 h-[4px] bg-red-700 rounded-full " />
+                        <span className="w-2 h-[4px] bg-red-700 rounded-full " />
+                      </div>
+                      <div className="absolute bottom-[0.75rem] right-2.5 sm:left-4 flex flex-col rotate-180 gap-[3px] transition-transform ">
+                        <span className="w-8 h-[4px] bg-red-700 rounded-full " />
+                        <span className="w-4 h-[4px] bg-red-700 rounded-full " />
+                        <span className="w-2 h-[4px] bg-red-700 rounded-full " />
+                      </div>
                       <DialogHeader>
                         <DialogTitle className="text-center text-2xl lg:text-3xl">
                           Editar viaje
@@ -341,108 +354,19 @@ const SingleSpecialTrip = () => {
                         </DialogDescription>
                       </DialogHeader>
                       <div className="w-full flex flex-col items-center gap-5">
-                        <div className="w-full flex flex-col items-center gap-5">
-                          <form
-                            key={1}
-                            onSubmit={handleSubmit(handleOnSubmit)}
-                            className="w-full flex flex-col items-center gap-3"
-                          >
-                            <div className="grid w-full max-w-md items-center gap-2">
-                              <Label htmlFor="date">Fecha</Label>
-                              <DatePickerContainer
-                                setStartDate={setStartDate}
-                                id="date"
-                                startDate={startDate}
-                              />
-                            </div>
-                            <div className="grid w-full max-w-md items-center gap-2">
-                              <Label htmlFor="to">Hasta</Label>
-                              <Input
-                                type="text"
-                                id="to"
-                                {...register("to", {
-                                  required: {
-                                    value: true,
-                                    message:
-                                      "Por favor, ingresar lugar de llegada.",
-                                  },
-                                  minLength: {
-                                    value: 3,
-                                    message:
-                                      "Lugar de llegada no puede ser tan corto.",
-                                  },
-                                  maxLength: {
-                                    value: 25,
-                                    message:
-                                      "Lugar de llegada no puede ser tan largo.",
-                                  },
-                                })}
-                              />
-                              {errors.to && (
-                                <p className="text-red-600">
-                                  {errors.to.message}
-                                </p>
-                              )}
-                            </div>
-                            <div className="w-full flex flex-col max-w-md gap-2">
-                              <div className="grid w-full items-center gap-2">
-                                <Label htmlFor="departureTime">
-                                  Horario de salida:
-                                </Label>
-                                <TimePickerContainer
-                                  value={departureTimeValue}
-                                  onChange={setDepartureTimeValue}
-                                />
-                              </div>
-                              {err && (
-                                <p className="text-red-600 self-start">{err}</p>
-                              )}{" "}
-                            </div>
-                            <div className="grid w-full max-w-md items-center gap-2">
-                              <Label htmlFor="price">Precio</Label>
-                              <Input
-                                type="number"
-                                id="price"
-                                {...register("price", {
-                                  required: {
-                                    value: true,
-                                    message:
-                                      "Por favor, ingresar precio/persona del viaje.",
-                                  },
-                                })}
-                              />
-                              {errors.price && (
-                                <p className="text-red-600">
-                                  {errors.price.message}
-                                </p>
-                              )}
-                            </div>
-                            <div className="grid w-full max-w-md items-center gap-2">
-                              <Label htmlFor="maxCapacity">
-                                Capacidad máxima
-                              </Label>
-                              <Input
-                                type="number"
-                                id="maxCapacity"
-                                {...register("maxCapacity", {
-                                  required: {
-                                    value: true,
-                                    message:
-                                      "Por favor, ingresar precio/persona del viaje.",
-                                  },
-                                })}
-                              />
-                              {errors.maxCapacity && (
-                                <p className="text-red-600">
-                                  {errors.maxCapacity.message}
-                                </p>
-                              )}
-                            </div>
-                            <div className="grid w-full max-w-md items-center gap-2">
-                              <Label htmlFor="name">Nombre del viaje</Label>
+                        <form
+                          key={1}
+                          onSubmit={handleSubmit(handleOnSubmit)}
+                          className="w-full flex flex-col items-center gap-3"
+                        >
+                          <div className="grid w-full max-w-2xl items-center gap-2">
+                            <Label htmlFor="name">Nombre del viaje</Label>
+                            <div className="relative flex items-center">
+                              <HelpingHand className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
                               <Input
                                 type="text"
                                 id="name"
+                                className="pl-8"
                                 {...register("name", {
                                   required: {
                                     value: true,
@@ -461,24 +385,176 @@ const SingleSpecialTrip = () => {
                                   },
                                 })}
                               />
-                              {errors.name && (
-                                <p className="text-red-600">
-                                  {errors.name.message}
+                            </div>
+                            {errors.name && (
+                              <p className="text-red-600 text-sm">
+                                {errors.name.message}
+                              </p>
+                            )}
+                          </div>
+                          <div className="w-full flex flex-col max-w-2xl gap-2 sm:flex-row sm:items-center">
+                            <div className="grid w-full items-center gap-2">
+                              <Label htmlFor="date">Fecha</Label>
+                              <DatePickerContainer
+                                setStartDate={setStartDate}
+                                id="date"
+                                startDate={startDate}
+                              />
+                            </div>
+
+                            <div className="w-full flex items-center max-w-2xl gap-2">
+                              <div className="grid w-full items-center gap-2">
+                                <Label htmlFor="departureTime">
+                                  Horario de salida:
+                                </Label>
+                                <TimePickerContainer
+                                  value={departureTimeValue}
+                                  onChange={setDepartureTimeValue}
+                                />
+                              </div>
+                              {err && (
+                                <p className="text-red-600 text-sm self-start">
+                                  {err}
+                                </p>
+                              )}{" "}
+                            </div>
+                          </div>
+
+                          <div className="w-full flex flex-col max-w-2xl gap-2 sm:flex-row sm:items-center">
+                            <div className="grid w-full max-w-md items-center gap-2">
+                              <Label htmlFor="from">Desde</Label>
+                              <div className="relative flex items-center">
+                                <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                                <Input
+                                  type="text"
+                                  id="from"
+                                  className="pl-8"
+                                  {...register("from", {
+                                    required: {
+                                      value: true,
+                                      message:
+                                        "Por favor, ingresar lugar de salida.",
+                                    },
+                                    minLength: {
+                                      value: 3,
+                                      message:
+                                        "Lugar de salida no puede ser tan corto.",
+                                    },
+                                    maxLength: {
+                                      value: 25,
+                                      message:
+                                        "Lugar de salida no puede ser tan largo.",
+                                    },
+                                  })}
+                                />
+                              </div>
+
+                              {errors.from && (
+                                <p className="text-red-600 text-sm">
+                                  {errors.from.message}
                                 </p>
                               )}
                             </div>
-                            {err && (
-                              <p className="text-red-600 self-start">{err}</p>
-                            )}
-                            <DialogFooter>
-                              <div className="w-[min(28rem,100%)] flex justify-center">
-                                <DefaultButton loading={isSubmitted}>
-                                  Guardar cambios
-                                </DefaultButton>
+                            <div className="grid w-full max-w-md items-center gap-2">
+                              <Label htmlFor="to">Hasta</Label>
+                              <div className="relative flex items-center">
+                                <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                                <Input
+                                  type="text"
+                                  id="to"
+                                  className="pl-8"
+                                  {...register("to", {
+                                    required: {
+                                      value: true,
+                                      message:
+                                        "Por favor, ingresar lugar de llegada.",
+                                    },
+                                    minLength: {
+                                      value: 3,
+                                      message:
+                                        "Lugar de llegada no puede ser tan corto.",
+                                    },
+                                    maxLength: {
+                                      value: 25,
+                                      message:
+                                        "Lugar de llegada no puede ser tan largo.",
+                                    },
+                                  })}
+                                />
                               </div>
-                            </DialogFooter>
-                          </form>
-                        </div>
+
+                              {errors.to && (
+                                <p className="text-red-600 text-sm">
+                                  {errors.to.message}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="w-full flex items-center max-w-2xl gap-2">
+                            <div className="grid w-full items-center gap-2">
+                              <Label htmlFor="price">Precio</Label>
+                              <div className="relative flex items-center">
+                                <DollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                                <Input
+                                  type="number"
+                                  id="price"
+                                  className="pl-8"
+                                  {...register("price", {
+                                    required: {
+                                      value: true,
+                                      message:
+                                        "Por favor, ingresar precio/persona del viaje.",
+                                    },
+                                  })}
+                                />
+                              </div>
+
+                              {errors.price && (
+                                <p className="text-red-600 text-sm">
+                                  {errors.price.message}
+                                </p>
+                              )}
+                            </div>
+                            <div className="grid w-full items-center gap-2">
+                              <Label htmlFor="maxCapacity">
+                                Capacidad máxima
+                              </Label>
+                              <div className="relative flex items-center">
+                                <UserMinus2 className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                                <Input
+                                  type="number"
+                                  id="maxCapacity"
+                                  className="pl-8"
+                                  {...register("maxCapacity", {
+                                    required: {
+                                      value: true,
+                                      message:
+                                        "Por favor, ingresar capacidad máxima del viaje.",
+                                    },
+                                  })}
+                                />
+                              </div>
+                              {errors.maxCapacity && (
+                                <p className="text-red-600 text-sm">
+                                  {errors.maxCapacity.message}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          {err && (
+                            <p className="text-red-600 text-sm self-start">
+                              {err}
+                            </p>
+                          )}
+                          <DialogFooter>
+                            <div className="w-[min(28rem,100%)] flex justify-center">
+                              <DefaultButton loading={isSubmitted}>
+                                Guardar cambios
+                              </DefaultButton>
+                            </div>
+                          </DialogFooter>
+                        </form>
                       </div>
                     </DialogContent>
                   </Dialog>
