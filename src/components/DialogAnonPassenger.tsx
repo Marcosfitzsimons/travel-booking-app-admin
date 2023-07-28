@@ -403,6 +403,7 @@ const DialogAnonPassenger = ({ setErr, err, id }: DialogAnonPassengerProps) => {
             <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
               <Button
                 disabled={isSubmitted2}
+                type="submit"
                 className="w-auto h-8 z-20 rounded-lg bg-primary text-slate-100 hover:text-white dark:text-slate-100 dark:hover:text-white dark:bg-primary"
               >
                 Crear pasajero
@@ -413,6 +414,7 @@ const DialogAnonPassenger = ({ setErr, err, id }: DialogAnonPassengerProps) => {
               <Button
                 onClick={handleOnSubmitAnonymousPassenger}
                 disabled={isSubmitted2}
+                type="button"
                 className="w-auto h-8 z-20 rounded-lg bg-black/80 text-slate-100 hover:text-white dark:text-slate-100 dark:hover:text-white"
               >
                 Crear pasajero anónimo
