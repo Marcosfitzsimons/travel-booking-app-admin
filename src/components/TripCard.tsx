@@ -3,7 +3,10 @@ import {
   Clock,
   DollarSign,
   Heart,
+  HelpingHand,
   MapPin,
+  Milestone,
+  UserMinus2,
   Users,
 } from "lucide-react";
 import {
@@ -154,7 +157,10 @@ const TripCard = ({
                   </DialogTrigger>
                 </div>
               </div>
-              <DialogContent className="relative pb-10">
+              <DialogContent
+                className="relative pb-10"
+                onOpenAutoFocus={(e) => e.preventDefault}
+              >
                 <div className="absolute top-[0.75rem] left-2.5 sm:left-4 flex flex-col gap-[3px] transition-transform ">
                   <span className="w-8 h-[4px] bg-red-700 rounded-full " />
                   <span className="w-4 h-[4px] bg-red-700 rounded-full " />
@@ -179,12 +185,14 @@ const TripCard = ({
                       onSubmit={handleSubmit(handleOnSubmitEdit)}
                       className="w-full flex flex-col items-center gap-3"
                     >
-                      <div className="w-full flex flex-col max-w-xl gap-2 sm:flex-row sm:items-center">
-                        <div className="grid w-full max-w-lg items-center gap-2">
-                          <Label htmlFor="name">Nombre del viaje</Label>
+                      <div className="grid w-full max-w-2xl items-center gap-2">
+                        <Label htmlFor="name">Nombre del viaje</Label>
+                        <div className="relative flex items-center">
+                          <HelpingHand className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
                           <Input
                             type="text"
                             id="name"
+                            className="pl-8"
                             {...register("name", {
                               required: {
                                 value: true,
@@ -203,14 +211,15 @@ const TripCard = ({
                               },
                             })}
                           />
-
-                          {errors.name && (
-                            <p className="text-red-600 text-sm">
-                              {errors.name.message}
-                            </p>
-                          )}
                         </div>
-                        <div className="grid w-full max-w-lg items-center gap-2">
+                        {errors.name && (
+                          <p className="text-red-600 text-sm">
+                            {errors.name.message}
+                          </p>
+                        )}
+                      </div>
+                      <div className="w-full flex flex-col max-w-2xl gap-2 sm:flex-row sm:items-center">
+                        <div className="grid w-full items-center gap-2">
                           <Label htmlFor="date">Fecha</Label>
                           <DatePickerContainer
                             setStartDate={setStartDate}
@@ -218,31 +227,63 @@ const TripCard = ({
                             startDate={startDate}
                           />
                         </div>
+
+                        <div className="w-full flex items-center max-w-2xl gap-2">
+                          <div className="grid w-full items-center gap-2">
+                            <Label htmlFor="departureTime">
+                              Horario de salida:
+                            </Label>
+                            <TimePickerContainer
+                              value={departureTimeValue}
+                              onChange={setDepartureTimeValue}
+                            />
+                          </div>
+                          <div className="grid w-full items-center gap-2">
+                            <Label htmlFor="arrivalTime">
+                              Horario de llegada:
+                            </Label>
+                            <TimePickerContainer
+                              value={arrivalTimeValue}
+                              onChange={setArrivalTimeValue}
+                            />
+                          </div>
+                          {err && (
+                            <p className="text-red-600 text-sm self-start">
+                              {err}
+                            </p>
+                          )}{" "}
+                        </div>
                       </div>
 
-                      <div className="w-full flex flex-col max-w-xl gap-2 sm:flex-row sm:items-center">
+                      <div className="w-full flex flex-col max-w-2xl gap-2 sm:flex-row sm:items-center">
                         <div className="grid w-full max-w-md items-center gap-2">
                           <Label htmlFor="from">Desde</Label>
-                          <Input
-                            type="text"
-                            id="from"
-                            {...register("from", {
-                              required: {
-                                value: true,
-                                message: "Por favor, ingresar lugar de salida.",
-                              },
-                              minLength: {
-                                value: 3,
-                                message:
-                                  "Lugar de salida no puede ser tan corto.",
-                              },
-                              maxLength: {
-                                value: 25,
-                                message:
-                                  "Lugar de salida no puede ser tan largo.",
-                              },
-                            })}
-                          />
+                          <div className="relative flex items-center">
+                            <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                            <Input
+                              type="text"
+                              id="from"
+                              className="pl-8"
+                              {...register("from", {
+                                required: {
+                                  value: true,
+                                  message:
+                                    "Por favor, ingresar lugar de salida.",
+                                },
+                                minLength: {
+                                  value: 3,
+                                  message:
+                                    "Lugar de salida no puede ser tan corto.",
+                                },
+                                maxLength: {
+                                  value: 25,
+                                  message:
+                                    "Lugar de salida no puede ser tan largo.",
+                                },
+                              })}
+                            />
+                          </div>
+
                           {errors.from && (
                             <p className="text-red-600 text-sm">
                               {errors.from.message}
@@ -251,27 +292,32 @@ const TripCard = ({
                         </div>
                         <div className="grid w-full max-w-md items-center gap-2">
                           <Label htmlFor="to">Hasta</Label>
-                          <Input
-                            type="text"
-                            id="to"
-                            {...register("to", {
-                              required: {
-                                value: true,
-                                message:
-                                  "Por favor, ingresar lugar de llegada.",
-                              },
-                              minLength: {
-                                value: 3,
-                                message:
-                                  "Lugar de llegada no puede ser tan corto.",
-                              },
-                              maxLength: {
-                                value: 25,
-                                message:
-                                  "Lugar de llegada no puede ser tan largo.",
-                              },
-                            })}
-                          />
+                          <div className="relative flex items-center">
+                            <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                            <Input
+                              type="text"
+                              id="to"
+                              className="pl-8"
+                              {...register("to", {
+                                required: {
+                                  value: true,
+                                  message:
+                                    "Por favor, ingresar lugar de llegada.",
+                                },
+                                minLength: {
+                                  value: 3,
+                                  message:
+                                    "Lugar de llegada no puede ser tan corto.",
+                                },
+                                maxLength: {
+                                  value: 25,
+                                  message:
+                                    "Lugar de llegada no puede ser tan largo.",
+                                },
+                              })}
+                            />
+                          </div>
+
                           {errors.to && (
                             <p className="text-red-600 text-sm">
                               {errors.to.message}
@@ -280,65 +326,48 @@ const TripCard = ({
                         </div>
                       </div>
 
-                      <div className="w-full flex items-center max-w-xl gap-2">
+                      <div className="w-full flex items-center max-w-2xl gap-2">
                         <div className="grid w-full items-center gap-2">
-                          <Label htmlFor="departureTime">
-                            Horario de salida:
-                          </Label>
-                          <TimePickerContainer
-                            value={departureTimeValue}
-                            onChange={setDepartureTimeValue}
-                          />
-                        </div>
-                        <div className="grid w-full items-center gap-2">
-                          <Label htmlFor="arrivalTime">
-                            Horario de llegada:
-                          </Label>
-                          <TimePickerContainer
-                            value={arrivalTimeValue}
-                            onChange={setArrivalTimeValue}
-                          />
-                        </div>
-                        {err && (
-                          <p className="text-red-600 text-sm self-start">
-                            {err}
-                          </p>
-                        )}{" "}
-                      </div>
-
-                      <div className="w-full flex items-center max-w-xl gap-2">
-                        <div className="grid w-full max-w-md items-center gap-2">
                           <Label htmlFor="price">Precio</Label>
-                          <Input
-                            type="number"
-                            id="price"
-                            {...register("price", {
-                              required: {
-                                value: true,
-                                message:
-                                  "Por favor, ingresar precio/persona del viaje.",
-                              },
-                            })}
-                          />
+                          <div className="relative flex items-center">
+                            <DollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                            <Input
+                              type="number"
+                              id="price"
+                              className="pl-8"
+                              {...register("price", {
+                                required: {
+                                  value: true,
+                                  message:
+                                    "Por favor, ingresar precio/persona del viaje.",
+                                },
+                              })}
+                            />
+                          </div>
+
                           {errors.price && (
                             <p className="text-red-600 text-sm">
                               {errors.price.message}
                             </p>
                           )}
                         </div>
-                        <div className="grid w-full max-w-md items-center gap-2">
+                        <div className="grid w-full items-center gap-2">
                           <Label htmlFor="maxCapacity">Capacidad máxima</Label>
-                          <Input
-                            type="number"
-                            id="maxCapacity"
-                            {...register("maxCapacity", {
-                              required: {
-                                value: true,
-                                message:
-                                  "Por favor, ingresar capacidad máxima del viaje.",
-                              },
-                            })}
-                          />
+                          <div className="relative flex items-center">
+                            <UserMinus2 className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                            <Input
+                              type="number"
+                              id="maxCapacity"
+                              className="pl-8"
+                              {...register("maxCapacity", {
+                                required: {
+                                  value: true,
+                                  message:
+                                    "Por favor, ingresar capacidad máxima del viaje.",
+                                },
+                              })}
+                            />
+                          </div>
                           {errors.maxCapacity && (
                             <p className="text-red-600 text-sm">
                               {errors.maxCapacity.message}
