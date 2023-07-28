@@ -25,6 +25,10 @@ import {
 import { User } from "lucide-react";
 import { DialogDescription } from "./ui/dialog";
 import { Separator } from "./ui/separator";
+import ActionButtonDatatable from "./ActionButtonDatatable";
+import { Button } from "./ui/button";
+import TrashButtonDatatable from "./TrashButtonDatatable";
+import { getRowHeight } from "@/lib/utils/getRowHeight";
 
 type Trip = {
   name: string;
@@ -117,27 +121,29 @@ const PassengersDatable = ({
     {
       field: "action",
       headerName: "Acción",
-      width: 180,
+      width: 170,
       renderCell: (params: any) => {
         const isPassenger = params.row.createdBy;
         return (
           <div className="flex items-center gap-2">
             <div className="relative flex items-center">
               {isPassenger ? (
-                <Link
-                  to={`/passengers/${params.row.createdBy._id}/${tripId}`}
-                  className="px-[12px] pl-[29px] py-[2px] z-20 rounded-md border border-teal-800 bg-teal-800/60 text-white transition-colors hover:border-black font-semibold dark:border-teal-600 dark:bg-teal-700/60 dark:hover:text-inherit dark:hover:border-teal-500"
-                >
-                  <Eye className="absolute left-3 top-[4px] h-4 w-4" />
-                  Ver
-                </Link>
+                <ActionButtonDatatable
+                  text="Ver"
+                  icon={
+                    <Eye className="absolute left-[13px] top-[5.5px] h-4 w-4 md:h-[18px] md:w-[18px] md:top-[4.5px] md:left-[11.4px]" />
+                  }
+                  linkTo={`/passengers/${params.row._id}/${tripId}`}
+                />
               ) : (
                 <div className="relative flex items-center">
                   <Dialog>
-                    <div className="lg:flex lg:items-center lg:justify-end">
-                      <DialogTrigger className="px-[12px] pl-[29px] py-[2px] z-20 rounded-md border border-teal-800 bg-teal-800/60 text-white transition-colors hover:border-black font-semibold dark:border-teal-600 dark:bg-teal-700/60 dark:hover:text-inherit dark:hover:border-teal-500">
-                        <Eye className="absolute left-3 top-[4px] h-4 w-4" />
-                        Ver
+                    <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
+                      <DialogTrigger asChild>
+                        <Button className="h-[28px] px-[13px] pl-[32px] relative bg-teal-800/60 text-white shadow-input md:text-[15px] hover:text-white dark:text-slate-100 dark:bg-teal-700/60 dark:hover:text-white dark:shadow-none">
+                          <Eye className="absolute left-[13px] top-[5.5px] h-4 w-4 md:h-[18px] md:w-[18px] md:top-[4.5px] md:left-[11.4px]" />
+                          Ver
+                        </Button>
                       </DialogTrigger>
                     </div>
                     <DialogContent>
@@ -150,27 +156,27 @@ const PassengersDatable = ({
                           <span>{params.row._id ? params.row._id : ""}</span>
                         </DialogDescription>
                       </DialogHeader>
-                      <div className="flex flex-col w-full overflow-hidden gap-2 max-w-sm items-start px-2 lg:px-0 lg:flex-row lg:pt-0 lg:justify-around lg:max-w-6xl">
-                        <div className="w-full flex flex-col gap-1 lg:basis-1/3 lg:my-2">
-                          <Separator className="w-8 self-center my-2 bg-border-color lg:hidden dark:bg-border-color-dark" />
+                      <div className="flex flex-col w-full overflow-hidden gap-2 max-w-xl px-2 mx-auto">
+                        <div className="w-full flex flex-col gap-1 max-w-sm mx-auto">
+                          <Separator className="w-8 self-center my-2 lg:hidden" />
                           <h5 className="text-center w-full font-medium dark:text-white lg:mb-2 lg:text-xl">
                             Datos personales
                           </h5>
 
-                          <ul className="flex flex-col w-full overflow-hidden gap-1 lg:shadow-md lg:py-2 lg:px-4 lg:rounded-md lg:bg-white lg:border lg:border-border-color lg:dark:border-border-color-dark lg:dark:bg-black">
-                            <li>
-                              <User className="h-4 w-4 text-icon-color dark:text-icon-color-dark" />
-                              <span className="font-bold">
-                                Nombre completo:
-                              </span>
-                              <span>
-                                {params.row.fullName
-                                  ? params.row.fullName
-                                  : "Pasajero anónimo"}
-                              </span>
+                          <ul className="flex flex-col w-full overflow-hidden gap-1 rounded-md shadow-input py-2 px-4 bg-background border dark:shadow-none">
+                            <li className="flex items-center gap-1">
+                              <User className="h-[17px] w-[17px] text-accent" />
+                              {params.row.fullName ? (
+                                <>
+                                  <span className="">Nombre completo:</span>
+                                  {params.row.fullName}
+                                </>
+                              ) : (
+                                "Pasajero anónimo"
+                              )}
                             </li>
                             <li className="flex items-center gap-1 shrink-0">
-                              <Fingerprint className="w-4 h-4 text-icon-color dark:text-icon-color-dark shrink-0" />
+                              <Fingerprint className="w-4 h-4 text-accent" />
                               <span className="font-medium shrink-0">DNI:</span>
                               <span className="shrink-0">
                                 {params.row.dni ? params.row.dni : "-"}
@@ -179,37 +185,37 @@ const PassengersDatable = ({
                           </ul>
                         </div>
 
-                        <div className="w-full flex flex-col gap-1 lg:basis-[60%] lg:my-2">
-                          <Separator className="w-8 self-center my-2 bg-border-color lg:hidden dark:bg-border-color-dark" />
+                        <div className="w-full flex flex-col gap-1">
+                          <Separator className="w-8 self-center my-2 lg:hidden" />
                           <h5 className="text-center w-full font-medium dark:text-white lg:mb-2 lg:text-xl">
                             Domicilios
                           </h5>
-                          <div className="flex flex-col gap-1 lg:shadow-md lg:flex-row lg:justify-between lg:py-2 lg:px-4 lg:rounded-md lg:bg-white lg:border lg:border-border-color lg:dark:border-border-color-dark lg:dark:bg-black">
-                            <div className="flex flex-col gap-1 lg:basis-[55%]">
-                              <h6 className="font-serif text-icon-color dark:text-icon-color-dark">
+                          <div className="flex flex-col gap-1 rounded-md shadow-input py-2 px-4 bg-background border sm:flex-row sm:justify-between dark:shadow-none ">
+                            <div className="flex flex-col gap-1">
+                              <h6 className="font-serif text-accent ">
                                 Carmen de Areco
                               </h6>
                               <div className="flex items-center gap-1">
-                                <Milestone className="w-4 h-4 text-icon-color dark:text-icon-color-dark" />
+                                <Milestone className="w-4 h-4 text-accent " />
                                 <span className="font-medium dark:text-white">
                                   Dirreción:
                                 </span>
                                 <span>
-                                  {params.row.addressCda
+                                  {params.row.addressCda?.street
                                     ? `${params.row.addressCda.street} ${params.row.addressCda.streetNumber}`
                                     : "-"}
                                 </span>
                               </div>
                               <div className="flex flex-col gap-[2px] sm:flex-row sm:items-center sm:gap-1">
                                 <div className="flex items-center gap-1">
-                                  <Crop className="w-4 h-4 text-icon-color dark:text-icon-color-dark" />
+                                  <Crop className="w-4 h-4 text-accent " />
                                   <span className="font-medium dark:text-white">
                                     Calles que cruzan:
                                   </span>
                                 </div>
                                 <span className="">
                                   {" "}
-                                  {params.row.addressCda
+                                  {params.row.addressCda?.crossStreets
                                     ? params.row.addressCda.crossStreets
                                     : "-"}
                                 </span>
@@ -217,11 +223,11 @@ const PassengersDatable = ({
                             </div>
 
                             <div className="flex flex-col gap-1 lg:basis-[40%]">
-                              <h6 className="font-serif text-icon-color dark:text-icon-color-dark">
+                              <h6 className="font-serif text-accent ">
                                 Capital Federal
                               </h6>
                               <div className="flex items-center gap-1">
-                                <Milestone className="w-4 h-4 text-icon-color dark:text-icon-color-dark" />
+                                <Milestone className="w-4 h-4 text-accent " />
                                 <span className="font-medium dark:text-white">
                                   Dirreción:
                                 </span>{" "}
@@ -241,14 +247,17 @@ const PassengersDatable = ({
               )}
             </div>
             <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <div className="relative flex items-center">
-                  <button className="pl-[21px] rounded-md text-[#b4343a] font-semibold transition-colors hover:text-red-300">
-                    <Trash2 className="absolute left-1 top-[.6px] h-4 w-4" />
-                    Borrar
-                  </button>
-                </div>
-              </AlertDialogTrigger>
+              <div className="relative flex items-center">
+                <AlertDialogTrigger className="z-50">
+                  <TrashButtonDatatable
+                    isLoading={loading}
+                    icon={
+                      <Trash2 className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />
+                    }
+                    text="Borrar"
+                  />
+                </AlertDialogTrigger>
+              </div>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
@@ -281,12 +290,15 @@ const PassengersDatable = ({
   ];
 
   return (
-    <div className={`${list.length > 0 ? "h-[600px]" : ""} w-full`}>
+    <div
+      className={`${list.length > 0 ? "h-[650px]  max-w-[1500px]" : ""} w-full`}
+    >
       {list.length > 0 ? (
         <DataGrid
           rows={list}
           columns={actionColumn.concat(columns)}
           checkboxSelection
+          getRowHeight={getRowHeight}
           hideFooterSelectedRowCount
           initialState={{
             pagination: {
@@ -298,7 +310,6 @@ const PassengersDatable = ({
           pageSizeOptions={[9]}
           getRowId={(row) => row._id}
           sx={{
-            borderColor: "#007F9633",
             borderRadius: "7px",
             "&>.MuiDataGrid-main": {
               "&>.MuiDataGrid-columnHeaders": {
@@ -313,7 +324,7 @@ const PassengersDatable = ({
               borderTop: "none",
             },
           }}
-          className="w-[min(100%,1400px)] shadow-input dark:text-neutral-100"
+          className="max-w-[1500px]"
         />
       ) : (
         <div className="mx-auto flex flex-col items-center gap-3">

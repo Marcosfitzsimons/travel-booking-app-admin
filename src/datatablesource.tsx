@@ -25,14 +25,14 @@ export const userColumns = [
     renderCell: (params: any) => {
       return (
         <div className="flex items-center gap-2">
-          <Avatar className="w-8 h-8">
+          <Avatar className="w-10 h-10">
             <AvatarImage
               className="origin-center hover:origin-bottom hover:scale-105 transition-all duration-200 z-90 align-middle"
               src={params.row.image || ""}
               alt="avatar"
             />
             <AvatarFallback>
-              <User className="w-12 h-12 dark:text-blue-lagoon-100" />
+              <User className="w-10 h-10" />
             </AvatarFallback>
           </Avatar>
           {params.row.fullName}
@@ -41,34 +41,14 @@ export const userColumns = [
     },
   },
   {
-    field: "addressCda",
-    headerName: "Dirección (Carmen)",
-    width: 220,
-    renderCell: (params: any) => {
-      return (
-        <div className="flex flex-col gap-1">
-          <span>
-            {params.row.addressCda.street} {params.row.addressCda.streetNumber}
-          </span>
-          <span>Entre: {params.row.addressCda.crossStreets}</span>
-        </div>
-      );
-    },
-  },
-  {
-    field: "addressCapital",
-    headerName: "Dirección (Capital)",
-    width: 160,
-  },
-  {
     field: "phone",
     headerName: "Celular",
-    width: 130,
+    width: 180,
   },
   {
     field: "dni",
     headerName: "DNI",
-    width: 130,
+    width: 180,
   },
   {
     field: "username",
@@ -78,7 +58,7 @@ export const userColumns = [
   {
     field: "email",
     headerName: "Email",
-    width: 230,
+    flex: 1,
   },
 ];
 
@@ -222,7 +202,7 @@ export const passengerColumns = [
   {
     field: "isPaid",
     headerName: "Estado pago",
-    width: 120,
+    width: 110,
     renderCell: (params: any) => {
       return (
         <div className="">
@@ -244,7 +224,7 @@ export const passengerColumns = [
   {
     field: "user",
     headerName: "Nombre completo",
-    width: 230,
+    flex: 1,
     renderCell: (params: any) => {
       const isPassenger = params.row.createdBy;
       return (
@@ -273,26 +253,9 @@ export const passengerColumns = [
     },
   },
   {
-    field: "dni",
-    headerName: "DNI",
-    width: 130,
-    renderCell: (params: any) => {
-      const isPassenger = params.row.createdBy;
-      return (
-        <div className="">
-          {isPassenger ? (
-            <span>{params.row.createdBy.dni}</span>
-          ) : (
-            <span>{params.row.dni ? params.row.dni : ""}</span>
-          )}
-        </div>
-      );
-    },
-  },
-  {
     field: "addressCda",
     headerName: "Dirección (Carmen)",
-    width: 230,
+    flex: 1,
     renderCell: (params: any) => {
       const isPassenger = params.row.createdBy;
       return (
@@ -331,7 +294,7 @@ export const passengerColumns = [
   {
     field: "addressCapital",
     headerName: "Dirección (Capital)",
-    width: 180,
+    flex: 1,
     renderCell: (params: any) => {
       const isPassenger = params.row.createdBy;
 
@@ -351,38 +314,12 @@ export const passengerColumns = [
   {
     field: "phone",
     headerName: "Celular",
-    width: 130,
-    renderCell: (params: any) => {
-      const isPassenger = params.row.createdBy;
-      return (
-        <p className="">
-          {isPassenger ? <span>{params.row.createdBy.phone}</span> : "-"}
-        </p>
-      );
-    },
-  },
-  {
-    field: "username",
-    headerName: "Usuario",
     width: 150,
     renderCell: (params: any) => {
       const isPassenger = params.row.createdBy;
       return (
         <p className="">
-          {isPassenger ? <span>{params.row.createdBy.username}</span> : "-"}
-        </p>
-      );
-    },
-  },
-  {
-    field: "email",
-    headerName: "Email",
-    width: 230,
-    renderCell: (params: any) => {
-      const isPassenger = params.row.createdBy;
-      return (
-        <p className="">
-          {isPassenger ? <span>{params.row.createdBy.email}</span> : "-"}
+          {isPassenger ? <span>{params.row.createdBy.phone}</span> : "-"}
         </p>
       );
     },

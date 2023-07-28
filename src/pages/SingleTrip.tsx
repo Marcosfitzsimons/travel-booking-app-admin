@@ -201,10 +201,24 @@ const SingleTrip = () => {
               </h3>
               <div className="flex flex-col item-center gap-1 md:flex-row md:justify-between">
                 <div className="flex items-center justify-center gap-1 text-sm order-2 md:text-base md:order-1 md:self-end">
-                  <Users className="animate-pulse text-accent h-4 w-4 lg:w-5 lg:h-5 shrink-0 " />
-                  <p className="shrink-0">Lugares: {passengersCount}</p>
+                  <article className="flex items-center gap-4 bg-card py-4 px-8 border shadow-input rounded-lg dark:shadow-none">
+                    <div className="">
+                      <Users className="text-accent h-8 w-8 shrink-0 " />
+                    </div>
+                    <div className="flex flex-col">
+                      <h4 className="text-card-foreground">Pasajeros</h4>
+                      <p className="text-lg font-bold flex items-center gap-1">
+                        <span
+                          className={`animate-pulse w-3 h-3 rounded-full ${
+                            isMaxCapacity ? "bg-red-600" : "bg-green-500"
+                          }`}
+                        />
+                        {passengersCount}
+                      </p>
+                    </div>
+                  </article>
                 </div>
-                <div className="flex items-center justify-center relative md:order-2">
+                <div className="flex items-center justify-center relative md:order-2 md:self-end">
                   <div className="flex items-center relative">
                     {isMaxCapacity ? (
                       <p className="text-green-900 bg-green-300/30 border order-2 border-green-800/80 select-none font-medium rounded-md dark:bg-[#75f5a8]/30 dark:border-[#4ca770] dark:text-white px-1">

@@ -8,6 +8,7 @@ import NewPassengerDatatable from "../components/NewPassengerDatatable";
 interface Column {
   field: string;
   headerName: string;
+  flex?: number;
   width: number;
   renderCell?: (params: any) => JSX.Element;
 }
@@ -66,10 +67,10 @@ const NewPassenger = ({ title, columns }: NewPassengerProps) => {
 
   return (
     <section className="flex flex-col gap-5">
-      <SectionTitle>{title}</SectionTitle>
-      <div className="self-start mb-2">
+      <div className="self-start">
         <BackButton linkTo={`/trips/${tripId}`} />{" "}
       </div>
+      <SectionTitle>{title}</SectionTitle>
 
       <NewPassengerDatatable columns={columns} tripId={tripId} />
     </section>

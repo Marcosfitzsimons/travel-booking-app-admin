@@ -113,7 +113,7 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
     {
       field: "action",
       headerName: "Acción",
-      width: 180,
+      width: 170,
       renderCell: (params: any) => {
         return (
           <div className="flex items-center gap-2.5">

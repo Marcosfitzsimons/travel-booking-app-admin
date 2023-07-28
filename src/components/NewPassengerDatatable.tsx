@@ -28,6 +28,7 @@ import SearchUserInput from "./SearchUserInput";
 import { ContactIcon } from "lucide-react";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
+import { getRowHeight } from "@/lib/utils/getRowHeight";
 
 type UserDataTableProps = {
   columns: any;
@@ -220,7 +221,7 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
   }, [data]);
 
   return (
-    <div className="h-[600px] w-full">
+    <div className="h-[650px] w-full max-w-[1500px]">
       <div className="my-3">
         <SearchUserInput list={list} setFilteredList={setFilteredList} />
       </div>
@@ -241,7 +242,6 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
           pageSizeOptions={[9]}
           getRowId={(row) => row._id}
           sx={{
-            borderColor: "#007F9633",
             borderRadius: "7px",
             "&>.MuiDataGrid-main": {
               "&>.MuiDataGrid-columnHeaders": {
@@ -256,7 +256,8 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
               borderTop: "none",
             },
           }}
-          className="w-[min(100%,1400px)] shadow-md border-border  dark:text-neutral-100"
+          getRowHeight={getRowHeight}
+          className="max-w-[1500px]"
         />
       ) : (
         <DataGrid<MyRowType>
@@ -274,7 +275,6 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
           pageSizeOptions={[9]}
           getRowId={(row) => row._id}
           sx={{
-            borderColor: "#007F9633",
             borderRadius: "7px",
             "&>.MuiDataGrid-main": {
               "&>.MuiDataGrid-columnHeaders": {
@@ -289,7 +289,8 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
               borderTop: "none",
             },
           }}
-          className="w-[min(100%,1400px)] shadow-md border-border  dark:text-neutral-100"
+          className="max-w-[1500px]"
+          getRowHeight={getRowHeight}
         />
       )}
     </div>
