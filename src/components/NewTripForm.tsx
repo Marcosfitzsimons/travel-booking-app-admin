@@ -39,7 +39,6 @@ interface InputValidation {
     message: string;
   };
 }
-
 interface TripInput {
   id: any;
   label: string;

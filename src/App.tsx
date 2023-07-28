@@ -52,7 +52,6 @@ function App() {
   return (
     <div className="w-full flex">
       <SideBar />
-
       <div
         className={`flex-[6] min-w-[330px] px-2 lg:px-10 lg:pr-20 ${
           user ? "lg:border-l" : ""

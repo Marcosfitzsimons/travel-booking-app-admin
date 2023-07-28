@@ -57,7 +57,7 @@ const SingleTrip = () => {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
 
   const isMaxCapacity = data.passengers.length === data.maxCapacity;
-  const availableSeats = `${data.passengers.length} / ${data.maxCapacity}`;
+  const passengersCount = `${data.passengers.length} / ${data.maxCapacity}`;
 
   moment.locale("es", {
     weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
@@ -202,9 +202,7 @@ const SingleTrip = () => {
               <div className="flex flex-col item-center gap-1 md:flex-row md:justify-between">
                 <div className="flex items-center justify-center gap-1 text-sm order-2 md:text-base md:order-1 md:self-end">
                   <Users className="animate-pulse text-accent h-4 w-4 lg:w-5 lg:h-5 shrink-0 " />
-                  <p className="shrink-0">
-                    Lugares disponibles: {availableSeats}
-                  </p>
+                  <p className="shrink-0">Lugares: {passengersCount}</p>
                 </div>
                 <div className="flex items-center justify-center relative md:order-2">
                   <div className="flex items-center relative">
