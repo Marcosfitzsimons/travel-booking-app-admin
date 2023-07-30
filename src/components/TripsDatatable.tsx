@@ -174,7 +174,7 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
   }, [startDate]);
 
   return (
-    <div className="h-[650px] w-full max-w-[1500px]">
+    <div className="h-[650px] w-full max-w-[1400px]">
       <div className="relative w-full my-3 flex flex-col items-center gap-3">
         <div className="md:absolute md:right-0 md:top-[-100px]">
           <TotalCountCard
@@ -244,7 +244,7 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
           }}
           pageSizeOptions={[9]}
           getRowId={(row) => row._id}
-          className="max-w-[1500px]"
+          className="max-w-[1400px]"
         />
       ) : (
         <DataGrid
@@ -277,7 +277,7 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
               borderTop: "none",
             },
           }}
-          className="max-w-[1500px]"
+          className="max-w-[1400px]"
         />
       )}
     </div>

@@ -78,6 +78,20 @@ const TripCard = ({
     weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
   });
 
+  const validateMaxCapacity = async (value: any) => {
+    const maxCapacity = parseInt(value, 10);
+
+    if (isNaN(maxCapacity)) {
+      return "Por favor, ingresa un número válido.";
+    }
+
+    if (maxCapacity <= data.passengers.length) {
+      return "La capacidad máxima debe ser mayor o igual al número actual de pasajeros.";
+    }
+
+    return true;
+  };
+
   return (
     <article
       className={`${
@@ -357,11 +371,9 @@ const TripCard = ({
                             id="maxCapacity"
                             className="pl-8"
                             {...register("maxCapacity", {
-                              required: {
-                                value: true,
-                                message:
-                                  "Por favor, ingresar capacidad máxima del viaje.",
-                              },
+                              required:
+                                "Por favor, ingresar capacidad máxima del viaje.",
+                              validate: validateMaxCapacity, // Using the custom validation function
                             })}
                           />
                         </div>

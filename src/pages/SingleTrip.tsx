@@ -27,7 +27,36 @@ type Trip = {
   arrivalTime: string;
   maxCapacity: number | undefined;
   price: number | undefined;
-  passengers: any[];
+  passengers: Passenger[];
+};
+
+type addressCda = {
+  street: string;
+  streetNumber: number | undefined;
+  crossStreets: string;
+};
+
+type UserData = {
+  _id: string;
+  username: string;
+  fullName: string;
+  addressCda: addressCda;
+  addressCapital: string;
+  email: string;
+  phone: number | undefined;
+  dni: number | undefined;
+  image?: string;
+  myTrips: Trip[];
+};
+
+type Passenger = {
+  _id: string;
+  createdBy?: UserData;
+  addressCda?: addressCda;
+  addressCapital?: string;
+  fullName?: string;
+  isPaid: boolean;
+  dni?: string;
 };
 
 const INITIAL_STATES = {
@@ -46,18 +75,19 @@ const INITIAL_STATES = {
 
 const SingleTrip = () => {
   const [data, setData] = useState(INITIAL_STATES);
-  const [passengers, setPassengers] = useState([]);
+  const [passengers, setPassengers] = useState<Passenger[]>([]);
   const [loading, setLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [departureTimeValue, setDepartureTimeValue] = useState("");
   const [arrivalTimeValue, setArrivalTimeValue] = useState("");
   const [error, setError] = useState<unknown | boolean>(false);
   const [err, setErr] = useState<null | string>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [startDate, setStartDate] = useState<Date | null>(new Date());
 
   const isMaxCapacity = data.passengers.length === data.maxCapacity;
-  const passengersCount = `${data.passengers.length} / ${data.maxCapacity}`;
+  const passengersCount = `${passengers.length} / ${data.maxCapacity}`;
 
   moment.locale("es", {
     weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
@@ -72,6 +102,7 @@ const SingleTrip = () => {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
     reset,
   } = useForm({
     defaultValues: {
@@ -94,7 +125,7 @@ const SingleTrip = () => {
   const handleOnSubmitEdit = async (data: Trip) => {
     setIsSubmitted(true);
     try {
-      await axios.put(
+      const res = await axios.put(
         `https://fabebus-api-example.onrender.com/api/trips/${id}`,
         {
           ...data,
@@ -104,18 +135,50 @@ const SingleTrip = () => {
         },
         { headers }
       );
+      setIsSubmitted(false);
+      formatDate(res.data.date);
+      setData({ ...res.data, date: formatDate(res.data.date) });
       toast({
         description: "Viaje ha sido editado con éxito.",
       });
-      setTimeout(() => {
-        location.reload();
-      }, 1000);
     } catch (err: any) {
       console.log(err);
       const errorMsg = err.response.data.err.message;
       setErr(errorMsg);
       toast({
         description: "Error al editar viaje. Intentar más tarde.",
+      });
+    }
+  };
+
+  const handleDelete = async (userId: string) => {
+    setIsLoading(true);
+    try {
+      await axios.delete(
+        `https://fabebus-api-example.onrender.com/api/passengers/${userId}/${id}`,
+        { headers }
+      );
+      toast({
+        description: "Lugar cancelado con éxito.",
+      });
+      setIsLoading(false);
+      setPassengers(
+        passengers.filter((item) => {
+          return !(
+            (item.createdBy && item.createdBy._id === userId) ||
+            (!item.createdBy && item._id === userId)
+          );
+        })
+      );
+    } catch (err: any) {
+      console.log(err);
+      setLoading(false);
+      setErr(err.message);
+      toast({
+        variant: "destructive",
+        description: `Error al cancelar lugar, intente más tarde. ${
+          err ? `"${err}"` : ""
+        }`,
       });
     }
   };
@@ -169,7 +232,7 @@ const SingleTrip = () => {
   }, []);
 
   return (
-    <section className="flex flex-col gap-3">
+    <section className="flex flex-col gap-3 w-full max-w-[1400px]">
       <div className="self-start">
         <BackButton linkTo="/trips" />
       </div>
@@ -252,11 +315,13 @@ const SingleTrip = () => {
               </div>
             </div>
 
-            {data.passengers && data.passengers.length > 0 ? (
+            {passengers && passengers.length > 0 ? (
               <PassengersDatatable
                 tripPassengers={passengers}
                 columns={passengerColumns}
                 tripId={id}
+                isLoading={isLoading}
+                handleDelete={handleDelete}
               />
             ) : (
               <div className="mx-auto flex flex-col items-center gap-3">

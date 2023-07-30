@@ -60,62 +60,22 @@ type UserData = {
   myTrips: Trip[];
 };
 
-type Passenger = {
-  _id: string;
-  createdBy?: UserData;
-  addressCda?: addressCda;
-  addressCapital?: string;
-  fullName?: string;
-  dni?: string;
-};
-
 type DataTableProps = {
   columns: any;
-  tripPassengers: Passenger[];
+  tripPassengers: any;
   tripId: string | undefined;
+  handleDelete: any;
+  isLoading: boolean;
 };
 
 const PassengersDatable = ({
   columns,
   tripPassengers,
   tripId,
+  handleDelete,
+  isLoading,
 }: DataTableProps) => {
-  const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<null | string>(null);
-  const [list, setList] = useState(tripPassengers);
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-
-  console.log(list);
-
-  const handleDelete = async (userId: string) => {
-    setLoading(true);
-    try {
-      await axios.delete(
-        `https://fabebus-api-example.onrender.com/api/passengers/${userId}/${tripId}`,
-        { headers }
-      );
-      toast({
-        description: "Lugar cancelado con éxito.",
-      });
-      setLoading(false);
-      setTimeout(() => {
-        location.reload();
-      }, 1000);
-    } catch (err: any) {
-      console.log(err);
-      setLoading(false);
-      setErr(err.message);
-      toast({
-        variant: "destructive",
-        description: `Error al cancelar lugar, intente más tarde. ${
-          err ? `"${err}"` : ""
-        }`,
-      });
-    }
-  };
 
   const actionColumn = [
     {
@@ -250,7 +210,7 @@ const PassengersDatable = ({
               <div className="relative flex items-center">
                 <AlertDialogTrigger className="z-50">
                   <TrashButtonDatatable
-                    isLoading={loading}
+                    isLoading={isLoading}
                     icon={
                       <Trash2 className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />
                     }
@@ -291,11 +251,13 @@ const PassengersDatable = ({
 
   return (
     <div
-      className={`${list.length > 0 ? "h-[650px]  max-w-[1500px]" : ""} w-full`}
+      className={`${
+        tripPassengers.length > 0 ? "h-[650px] max-w-[1400px]" : ""
+      } w-full`}
     >
-      {list.length > 0 ? (
+      {tripPassengers.length > 0 ? (
         <DataGrid
-          rows={list}
+          rows={tripPassengers}
           columns={actionColumn.concat(columns)}
           checkboxSelection
           getRowHeight={getRowHeight}
@@ -324,7 +286,7 @@ const PassengersDatable = ({
               borderTop: "none",
             },
           }}
-          className="max-w-[1500px]"
+          className="max-w-[1400px]"
         />
       ) : (
         <div className="mx-auto flex flex-col items-center gap-3">

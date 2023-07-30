@@ -331,6 +331,30 @@ export const specialTripInputs = [
     },
   },
   {
+    id: "to",
+    name: "to",
+    label: "Hasta",
+    type: "text",
+    placeholder: "Capital",
+    icon: (
+      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+    ),
+    validation: {
+      required: {
+        value: true,
+        message: "Por favor, ingresar lugar de llegada.",
+      },
+      minLength: {
+        value: 3,
+        message: "Lugar de llegada no puede ser tan corto.",
+      },
+      maxLength: {
+        value: 25,
+        message: "Lugar de llegada no puede ser tan largo.",
+      },
+    },
+  },
+  {
     id: "price",
     name: "price",
     label: "Precio",

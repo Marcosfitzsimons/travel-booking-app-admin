@@ -120,12 +120,21 @@ export const tripColumns = [
       );
     },
   },
+
   {
     field: "price",
     headerName: "Precio",
     width: 120,
     renderCell: (params: any) => {
       return <div className="">${params.row.price}</div>;
+    },
+  },
+  {
+    field: "passengers",
+    headerName: "Pasajeros",
+    width: 120,
+    renderCell: (params: any) => {
+      return <div className="">{params.row.passengers.length}</div>;
     },
   },
   {
@@ -186,6 +195,14 @@ export const specialTripColumns = [
     width: 120,
     renderCell: (params: any) => {
       return <div className="">${params.row.price}</div>;
+    },
+  },
+  {
+    field: "passengers",
+    headerName: "Pasajeros",
+    width: 120,
+    renderCell: (params: any) => {
+      return <div className="">{params.row.passengers.length}</div>;
     },
   },
   {
