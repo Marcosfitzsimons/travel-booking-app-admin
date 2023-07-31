@@ -101,6 +101,7 @@ const NewUserForm = ({ inputs }: NewUserFormProps) => {
       email: "",
       phone: null,
       dni: null,
+      image: "",
       addressCda: {
         street: "",
         streetNumber: null,
@@ -156,7 +157,8 @@ const NewUserForm = ({ inputs }: NewUserFormProps) => {
       navigate("/users");
     } catch (err: any) {
       console.log(err);
-      const errorMsg = err.response.data.msg;
+      const errorMsg = err.response.data.err.message;
+      console.log(errorMsg);
       setIsLoading(false);
       setErr(errorMsg);
       toast({
@@ -180,6 +182,48 @@ const NewUserForm = ({ inputs }: NewUserFormProps) => {
           <span className="w-8 h-[4px] bg-red-700 rounded-full " />
           <span className="w-4 h-[4px] bg-red-700 rounded-full " />
           <span className="w-2 h-[4px] bg-red-700 rounded-full " />
+        </div>
+
+        <div className="relative flex flex-col items-center mb-2 lg:px-6">
+          <Avatar className="w-32 h-32">
+            <AvatarImage
+              className="origin-center hover:origin-bottom hover:scale-105 transition-all duration-200 z-90 align-middle"
+              src={image instanceof File ? URL.createObjectURL(image) : ""}
+              alt="avatar"
+            />
+            <AvatarFallback>
+              <User className="w-12 h-12 dark:text-blue-lagoon-100" />
+            </AvatarFallback>
+          </Avatar>
+
+          <div className="absolute -bottom-1">
+            <Label
+              htmlFor="image"
+              className="flex items-center gap-1 cursor-pointer h-7 px-3 py-2 rounded-lg shadow-sm shadow-blue-lagoon-900/30 border bg-card dark:text-blue-lagoon-100 dark:hover:border-zinc-300"
+            >
+              <Upload className="w-4 h-4 text-accent " />
+              Subir{" "}
+            </Label>
+            <Input
+              type="file"
+              id="image"
+              accept="image/*"
+              className="hidden"
+              {...register("image", {
+                onChange: (e) => {
+                  const file = e.target.files[0];
+                  if (file instanceof File) {
+                    setImage(file);
+                  } else {
+                    console.error("Invalid file type");
+                  }
+                },
+              })}
+            />
+            {errors.image && (
+              <p className="text-red-600">{errors.image.message}</p>
+            )}
+          </div>
         </div>
         <div className="w-full max-w-sm mx-auto flex flex-col items-center gap-2 lg:max-w-5xl">
           <div className="my-2 w-full flex flex-col items-center lg:mt-0">
@@ -243,6 +287,11 @@ const NewUserForm = ({ inputs }: NewUserFormProps) => {
                       maxLength: {
                         value: 15,
                         message: "Nombre de usuario no puede ser tan largo.",
+                      },
+                      pattern: {
+                        value: /^[a-zA-Z0-9]*$/,
+                        message:
+                          "El nombre de usuario no debe tener espacios ni caracteres especiales.",
                       },
                     })}
                   />
