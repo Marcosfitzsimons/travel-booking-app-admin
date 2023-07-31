@@ -75,8 +75,6 @@ const PassengersDatable = ({
   handleDelete,
   isLoading,
 }: DataTableProps) => {
-  const [err, setErr] = useState<null | string>(null);
-
   const actionColumn = [
     {
       field: "action",

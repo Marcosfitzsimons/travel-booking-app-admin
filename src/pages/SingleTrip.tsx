@@ -6,7 +6,7 @@ import axios from "axios";
 import { passengerColumns } from "../datatablesource";
 import BackButton from "../components/BackButton";
 import PassengersDatatable from "../components/PassengersDatatable";
-import { Crop, Milestone, UserPlus, Users } from "lucide-react";
+import { Crop, Heart, Milestone, UserPlus, Users } from "lucide-react";
 import SectionTitle from "../components/SectionTitle";
 import Loading from "../components/Loading";
 import { useForm } from "react-hook-form";
@@ -16,6 +16,7 @@ import { AuthContext } from "../context/AuthContext";
 import ActionButton from "@/components/ActionButton";
 import TripCard from "@/components/TripCard";
 import DialogAnonPassenger from "@/components/DialogAnonPassenger";
+import Logo from "@/components/Logo";
 
 type Trip = {
   _id: string;
@@ -86,7 +87,7 @@ const SingleTrip = () => {
 
   const [startDate, setStartDate] = useState<Date | null>(new Date());
 
-  const isMaxCapacity = data.passengers.length === data.maxCapacity;
+  const isMaxCapacity = passengers.length === data.maxCapacity;
   const passengersCount = `${passengers.length} / ${data.maxCapacity}`;
 
   moment.locale("es", {
@@ -102,7 +103,6 @@ const SingleTrip = () => {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
     reset,
   } = useForm({
     defaultValues: {
@@ -145,6 +145,7 @@ const SingleTrip = () => {
       console.log(err);
       const errorMsg = err.response.data.err.message;
       setErr(errorMsg);
+      setIsSubmitted(false);
       toast({
         description: "Error al editar viaje. Intentar más tarde.",
       });
@@ -190,6 +191,42 @@ const SingleTrip = () => {
     const formatted_date = timezone_date.format("ddd DD/MM");
     // with more info: const formatted_date = timezone_date.format("ddd  DD/MM/YYYY HH:mm:ss [GMT]Z (z)");
     return formatted_date;
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      const res = await axios.get(
+        `https://fabebus-api-example.onrender.com/api/trips/${user?._id}/${id}`,
+        {
+          headers,
+        }
+      );
+      setPassengers(res.data.passengers);
+      formatDate(res.data.date);
+      setData({ ...res.data, date: formatDate(res.data.date) });
+      const tripData = { ...res.data };
+      reset({
+        name: tripData.name,
+        from: tripData.from,
+        date: tripData.date,
+        to: tripData.to,
+        departureTime: tripData.departureTime,
+        arrivalTime: tripData.arrivalTime,
+        price: tripData.price,
+        maxCapacity: tripData.maxCapacity,
+      });
+      setDepartureTimeValue(tripData.departureTime);
+      setArrivalTimeValue(tripData.arrivalTime);
+    } catch (err) {
+      setError(err);
+      console.log(err);
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -284,16 +321,16 @@ const SingleTrip = () => {
                 <div className="flex items-center justify-center relative md:order-2 md:self-end">
                   <div className="flex items-center relative">
                     {isMaxCapacity ? (
-                      <p className="text-green-900 bg-green-300/30 border order-2 border-green-800/80 select-none font-medium rounded-md dark:bg-[#75f5a8]/30 dark:border-[#4ca770] dark:text-white px-1">
-                        Combi completa
+                      <p className="px-4 py-4 font-medium flex flex-col items-center justify-center select-none gap-2 rounded-lg bg-card border shadow-input dark:shadow-none">
+                        <span>¡Combi completa!</span>
                       </p>
                     ) : (
                       <div className="flex flex-col gap-2 md:flex-row md:items-center ">
-                        {/* Add anon passenger dialog */}
                         <DialogAnonPassenger
                           setErr={setErr}
                           id={id}
                           err={err}
+                          fetchData={fetchData}
                         />
 
                         <Separator

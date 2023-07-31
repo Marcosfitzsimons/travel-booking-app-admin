@@ -91,9 +91,15 @@ type DialogAnonPassengerProps = {
   setErr: any;
   id: string | undefined;
   err: any;
+  fetchData: () => any;
 };
 
-const DialogAnonPassenger = ({ setErr, err, id }: DialogAnonPassengerProps) => {
+const DialogAnonPassenger = ({
+  setErr,
+  err,
+  id,
+  fetchData,
+}: DialogAnonPassengerProps) => {
   const [isSubmitted2, setIsSubmitted2] = useState(false);
   const [addressCapitalValue, setAddressCapitalValue] = useState("");
 
@@ -137,14 +143,13 @@ const DialogAnonPassenger = ({ setErr, err, id }: DialogAnonPassengerProps) => {
       toast({
         description: "Pasajero ha sido creado con éxito.",
       });
-      setTimeout(() => {
-        location.reload();
-      }, 1000);
+      fetchData();
       setIsSubmitted2(false);
     } catch (err: any) {
       console.log(err);
       const errorMsg = err.response.data.err.message;
       setErr(errorMsg);
+      setIsSubmitted2(false);
       toast({
         description: "Error al crear pasajero. Intentar más tarde.",
       });
@@ -162,14 +167,13 @@ const DialogAnonPassenger = ({ setErr, err, id }: DialogAnonPassengerProps) => {
       toast({
         description: "Pasajero anónimo ha sido creado con éxito.",
       });
+      fetchData();
       setIsSubmitted2(false);
-      setTimeout(() => {
-        location.reload();
-      }, 1000);
     } catch (err: any) {
       console.log(err);
       const errorMsg = err.response.data.err.message;
       setErr(errorMsg);
+      setIsSubmitted2(false);
       toast({
         description: "Error al crear pasajero anónimo. Intentar más tarde.",
       });
@@ -252,6 +256,7 @@ const DialogAnonPassenger = ({ setErr, err, id }: DialogAnonPassengerProps) => {
       },
     },
   ];
+
   return (
     <Dialog>
       <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
@@ -266,7 +271,7 @@ const DialogAnonPassenger = ({ setErr, err, id }: DialogAnonPassengerProps) => {
           <span className="w-4 h-[4px] bg-red-700 rounded-full " />
           <span className="w-2 h-[4px] bg-red-700 rounded-full " />
         </div>
-        <div className="absolute bottom-[0.75rem] right-2.5 sm:left-4 flex flex-col rotate-180 gap-[3px] transition-transform ">
+        <div className="absolute bottom-[0.75rem] right-2.5 sm:right-4 flex flex-col rotate-180 gap-[3px] transition-transform ">
           <span className="w-8 h-[4px] bg-red-700 rounded-full " />
           <span className="w-4 h-[4px] bg-red-700 rounded-full " />
           <span className="w-2 h-[4px] bg-red-700 rounded-full " />

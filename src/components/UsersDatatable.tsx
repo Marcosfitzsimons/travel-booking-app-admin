@@ -19,6 +19,9 @@ import SearchUserInput from "./SearchUserInput";
 import { toast } from "../hooks/ui/use-toast";
 import ActionButton from "./ActionButton";
 import ActionButtonDatatable from "./ActionButtonDatatable";
+import TrashButtonDatatable from "./TrashButtonDatatable";
+import { getRowHeight } from "@/lib/utils/getRowHeight";
+import TotalCountCard from "./TotalCountCard";
 
 type addressCda = {
   street: string;
@@ -106,17 +109,16 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
               }
             />
             <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <div className="relative flex items-center">
-                  <button
-                    disabled={isLoading}
-                    className="pl-[21px] rounded-md text-[#b4343a] font-semibold transition-colors hover:text-red-300"
-                  >
-                    <Trash2 className="absolute left-1 top-[.6px] h-4 w-4" />
-                    Borrar
-                  </button>
-                </div>
-              </AlertDialogTrigger>
+              <div className="relative flex items-center">
+                <AlertDialogTrigger>
+                  <TrashButtonDatatable
+                    icon={
+                      <Trash2 className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />
+                    }
+                    text="Borrar"
+                  />
+                </AlertDialogTrigger>
+              </div>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
@@ -149,22 +151,22 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
   }, [data]);
 
   return (
-    <div className="h-[600px] w-full">
+    <div className="h-[650px] w-full max-w-[1400px]">
       <div className="w-full my-3 flex flex-col items-center gap-3 md:flex-row md:items-end md:justify-between">
         <div className="flex flex-col gap-1">
           {error && <p className="text-red-500 order-2">{error.message}</p>}
           {isError && <p className="text-red-500 order-2">{isError}</p>}
           {isLoading && <p className="text-red-500 order-2">is loading...</p>}
           <SearchUserInput list={list} setFilteredList={setFilteredList} />
+          <p className="text-yellow-500">Add isActive field</p>
         </div>
-        <div className="w-full flex items-end justify-between sm:w-auto sm:gap-3">
-          <div className="flex items-center gap-1 text-sm lg:text-base">
-            <Users className="animate-pulse h-5 w-5 text-accent" />
-            <p className="font-medium">
-              Usuarios{" "}
-              <span className="hidden sm:inline-flex">registrados</span>:
-            </p>
-            <p className="font-light">{list.length > 0 && list.length}</p>
+        <div className="relative w-full flex items-end justify-between sm:w-auto sm:gap-3">
+          <div className="md:absolute md:right-0 md:top-[-100px]">
+            <TotalCountCard
+              icon={<Users className="text-accent h-8 w-8" />}
+              title="Usuarios"
+              value={loading ? "0" : list.length}
+            />
           </div>
           <ActionButton
             text="Crear usuario"
@@ -181,6 +183,18 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
           columns={actionColumn.concat(columns)}
           checkboxSelection
           hideFooterSelectedRowCount
+          slots={{
+            noRowsOverlay: () => (
+              <div className="h-full flex justify-center items-center">
+                Cargando usuarios...
+              </div>
+            ),
+            noResultsOverlay: () => (
+              <div className="h-full flex justify-center items-center">
+                No se encontraron usuarios
+              </div>
+            ),
+          }}
           initialState={{
             pagination: {
               paginationModel: {
@@ -189,7 +203,7 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
             },
           }}
           sx={{
-            borderRadius: "4px",
+            borderRadius: "7px",
             "&>.MuiDataGrid-main": {
               "&>.MuiDataGrid-columnHeaders": {
                 borderBottom: "none",
@@ -205,13 +219,24 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
           }}
           pageSizeOptions={[9]}
           getRowId={(row) => row._id ?? ""}
-          className="w-[min(100%,1400px)] shadow-input border dark:text-neutral-100"
+          getRowHeight={getRowHeight}
+          className="max-w-[1400px]"
         />
       ) : (
         <DataGrid
           rows={list}
           columns={actionColumn.concat(columns)}
           checkboxSelection
+          slots={{
+            noRowsOverlay: () => (
+              <div className="h-full flex justify-center items-center">
+                Cargando usuarios...
+              </div>
+            ),
+            noResultsOverlay: () => (
+              <div className="">No se encontraron usuarios</div>
+            ),
+          }}
           hideFooterSelectedRowCount
           initialState={{
             pagination: {
@@ -221,7 +246,6 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
             },
           }}
           sx={{
-            borderColor: "#007F9633",
             borderRadius: "7px",
             "&>.MuiDataGrid-main": {
               "&>.MuiDataGrid-columnHeaders": {
@@ -238,7 +262,8 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
           }}
           pageSizeOptions={[9]}
           getRowId={(row) => row._id ?? ""} // ?? operator is used to provide a default value of an empty string '' if row._id is null or undefined.
-          className="w-[min(100%,1400px)] shadow-input border dark:shadow-none dark:text-neutral-100"
+          getRowHeight={getRowHeight}
+          className="max-w-[1400px]"
         />
       )}
     </div>

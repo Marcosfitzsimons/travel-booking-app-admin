@@ -91,12 +91,12 @@ const AddressAutocomplete = ({ value, setValue }: AddressAutocompleteProps) => {
 
   return (
     <div>
-      <div className="relative flex items-center">
+      <div className="w-full relative flex items-center">
         <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px] pb-[2px] " />
         <Input
           id="location-input"
           placeholder="Las Heras 2304"
-          className="pl-[32px]"
+          className="pl-[32px] w-full"
           type="text"
           onBlur={() => {
             setTimeout(() => setSuggestions([]), 100); // Delay the onBlur event to allow the onClick event to trigger first
@@ -111,7 +111,7 @@ const AddressAutocomplete = ({ value, setValue }: AddressAutocompleteProps) => {
         )}
       </div>
       {suggestions.length > 0 && (
-        <div>
+        <div className="w-full">
           <ScrollArea className="h-72 w-full mt-2 rounded-md border">
             <div className="p-4">
               <h4 className="mb-4 text-sm font-medium text-accent leading-none">

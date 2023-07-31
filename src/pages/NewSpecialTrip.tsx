@@ -48,7 +48,7 @@ const NewSpecialTrip = ({ inputs, title }: NewTripProps) => {
           <span className="w-4 h-[4px] bg-red-700 rounded-full " />
           <span className="w-2 h-[4px] bg-red-700 rounded-full " />
         </div>
-        <div className="absolute bottom-[0.75rem] right-2.5 sm:left-4 flex flex-col rotate-180 gap-[3px] transition-transform ">
+        <div className="absolute bottom-[0.75rem] right-2.5 sm:right-4 flex flex-col rotate-180 gap-[3px] transition-transform ">
           <span className="w-8 h-[4px] bg-red-700 rounded-full " />
           <span className="w-4 h-[4px] bg-red-700 rounded-full " />
           <span className="w-2 h-[4px] bg-red-700 rounded-full " />

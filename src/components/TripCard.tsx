@@ -85,7 +85,7 @@ const TripCard = ({
       return "Por favor, ingresa un número válido.";
     }
 
-    if (maxCapacity <= data.passengers.length) {
+    if (maxCapacity < data.passengers.length) {
       return "La capacidad máxima debe ser mayor o igual al número actual de pasajeros.";
     }
 
@@ -94,11 +94,7 @@ const TripCard = ({
 
   return (
     <article
-      className={`${
-        data.maxCapacity === data.passengers.length
-          ? "dark:border-zinc-800"
-          : "dark:border"
-      } w-full flex justify-center items-center relative mx-auto rounded-md shadow-input pb-4 max-w-[400px] bg-card border dark:shadow-none`}
+      className={`w-full flex justify-center items-center relative mx-auto rounded-md border shadow-input pb-4 max-w-[400px] bg-card border dark:shadow-none`}
     >
       <div className="w-full px-2 pt-9 sm:px-4">
         <div className="flex flex-col gap-2">
@@ -404,18 +400,6 @@ const TripCard = ({
           </div>
         </div>
       </div>
-      {data.maxCapacity === data.passengers.length && (
-        <p className="absolute px-4 py-4 font-medium order-3 flex flex-col items-center justify-center select-none gap-2 rounded-lg bg-white border border-border-color dark:border-zinc-500 dark:bg-black dark:text-white">
-          <Logo />
-          <span>¡Combi completa!</span>
-          <span className="flex items-center gap-1">
-            <Heart
-              className="w-4 h-4 relative top-[1px] dark:text-black"
-              fill="red"
-            />
-          </span>
-        </p>
-      )}
     </article>
   );
 };

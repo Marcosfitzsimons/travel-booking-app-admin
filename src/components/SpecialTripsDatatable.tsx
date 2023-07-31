@@ -129,7 +129,6 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
               <div className="relative flex items-center">
                 <AlertDialogTrigger>
                   <TrashButtonDatatable
-                    isLoading={isLoading}
                     icon={
                       <Trash2 className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />
                     }
@@ -218,6 +217,18 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
           rows={filteredList}
           columns={actionColumn.concat(columns)}
           getRowHeight={getRowHeight}
+          slots={{
+            noRowsOverlay: () => (
+              <div className="h-full flex justify-center items-center">
+                No hay viajes
+              </div>
+            ),
+            noResultsOverlay: () => (
+              <div className="h-full flex justify-center items-center">
+                No se encontraron viajes en esa fecha
+              </div>
+            ),
+          }}
           checkboxSelection
           hideFooterSelectedRowCount
           initialState={{
@@ -250,6 +261,18 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
         <DataGrid
           rows={list}
           columns={actionColumn.concat(columns)}
+          slots={{
+            noRowsOverlay: () => (
+              <div className="h-full flex justify-center items-center">
+                No hay viajes
+              </div>
+            ),
+            noResultsOverlay: () => (
+              <div className="h-full flex justify-center items-center">
+                No se encontraron viajes en esa fecha
+              </div>
+            ),
+          }}
           getRowHeight={getRowHeight}
           checkboxSelection
           hideFooterSelectedRowCount
