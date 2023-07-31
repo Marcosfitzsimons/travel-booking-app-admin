@@ -60,6 +60,22 @@ export const userColumns = [
     headerName: "Email",
     flex: 1,
   },
+  {
+    field: "isActive",
+    headerName: "Estado cuenta",
+    width: 120,
+    renderCell: (params: any) => {
+      return (
+        <div className="flex items-center gap-2">
+          {params.row.status === "Active" ? (
+            <p className="text-green-600">Activa</p>
+          ) : (
+            <p className="text-red-600">Pendiente</p>
+          )}
+        </div>
+      );
+    },
+  },
 ];
 
 export const tripColumns = [
