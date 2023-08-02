@@ -7,9 +7,9 @@ import { useLocation } from "react-router-dom";
 interface Column {
   field: string;
   headerName: string;
-  flex?: number;
-  width?: number;
-  renderCell?: (params: any) => JSX.Element;
+  flex?: number | undefined;
+  width?: number | undefined;
+  renderCell?: (params: any) => any;
 }
 
 type ListProps = {

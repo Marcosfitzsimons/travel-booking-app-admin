@@ -8,9 +8,9 @@ import NewPassengerDatatable from "../components/NewPassengerDatatable";
 interface Column {
   field: string;
   headerName: string;
+  width?: number;
   flex?: number;
-  width: number;
-  renderCell?: (params: any) => JSX.Element;
+  renderCell?: (params: any) => any;
 }
 
 type NewPassengerProps = {

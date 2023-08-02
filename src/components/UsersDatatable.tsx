@@ -44,8 +44,9 @@ type User = {
 interface Column {
   field: string;
   headerName: string;
-  width: number;
-  renderCell?: (params: any) => JSX.Element;
+  width?: number;
+  flex?: number;
+  renderCell?: (params: any) => any;
 }
 
 type DataTableProps = {
