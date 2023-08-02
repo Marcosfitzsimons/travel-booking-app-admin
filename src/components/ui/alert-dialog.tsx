@@ -44,8 +44,8 @@ const AlertDialogContent = React.forwardRef<
     <AlertDialogPrimitive.Content
       ref={ref}
       className={cn(
-        "animate-in fade-in-90 slide-in-from-bottom-10 sm:zoom-in-90 sm:slide-in-from-bottom-0 fixed z-50 grid w-full max-w-[35rem] scale-100 gap-4 bg-white p-6 opacity-100 sm:rounded-lg md:max-w-lg",
-        "dark:bg-[#010e11] lg:border lg:border-border-color lg:dark:border-zinc-500",
+        "animate-in fade-in-90 slide-in-from-bottom-10 sm:zoom-in-90 sm:slide-in-from-bottom-0 fixed z-50 grid w-full max-w-[35rem] scale-100 gap-4 bg-zinc-50 p-6 opacity-100 sm:rounded-lg md:max-w-lg dark:bg-background",
+        "md:border",
         className
       )}
       {...props}
@@ -115,14 +115,16 @@ const AlertDialogAction = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Action>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action>
 >(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Action
-    ref={ref}
-    className={cn(
-      "inline-flex h-10 w-full items-center justify-center rounded-md py-2 px-4 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-black/80 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 border border-blue-lagoon-200 bg-white hover:border-blue-lagoon-600/50 dark:border-blue-lagoon-300/60 dark:text-blue-lagoon-100 dark:bg-black dark:hover:border-blue-lagoon-300/80 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900",
-      className
-    )}
-    {...props}
-  />
+  <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-300/50 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-600 dark:focus-within:after:shadow-slate-100">
+    <AlertDialogPrimitive.Action
+      ref={ref}
+      className={cn(
+        "h-auto w-auto py-1 px-3 z-20 rounded-lg bg-white dark:bg-black/80 dark:text-slate-100 dark:hover:text-white",
+        className
+      )}
+      {...props}
+    />
+  </div>
 ));
 AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName;
 

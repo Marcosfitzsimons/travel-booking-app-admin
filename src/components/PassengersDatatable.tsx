@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Check, CheckCircle, Trash2, X } from "lucide-react";
+import { Check, CheckCircle, Edit, Trash2, X } from "lucide-react";
 import axios from "axios";
 import {
   AlertDialog,
@@ -165,9 +165,9 @@ const PassengersDatable = ({
       width: 150,
       renderCell: (params: any) => {
         return (
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-start w-32">
             {params.row.isPaid ? (
-              <span className="flex items-center gap-[3px]">
+              <span className="flex items-center gap-[3px] font-medium">
                 PAGO{" "}
                 <Check className="w-4 h-4 relative bottom-[1px] text-green-600 lg:w-5 lg:h-5" />
               </span>
@@ -178,44 +178,70 @@ const PassengersDatable = ({
               </span>
             )}
             <AlertDialog>
-              <AlertDialogTrigger
-                asChild
-                className="w-full flex justify-center items-center "
-              >
-                <Button className="h-auto w-auto mx-auto bg-transparent text-base py-0 px-0 dark:bg-transparent dark:text-accent">
+              <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-300/50 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-600 dark:focus-within:after:shadow-slate-100">
+                <AlertDialogTrigger className="text-sm h-auto w-auto pl-[33px] py-1 px-3 z-20 rounded-lg bg-white dark:bg-black/80 dark:text-slate-100 dark:hover:text-white">
+                  <Edit className="absolute cursor-pointer left-3.5 top-[5px] h-[15px] w-[15px]" />
                   Editar
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
+                </AlertDialogTrigger>
+              </div>
+              <AlertDialogContent className="relative w-full pt-8 pb-12 flex flex-col items-center gap-6">
+                <div className="absolute top-[0.75rem] left-2.5 sm:left-4 flex flex-col gap-[3px]">
+                  <span className="w-8 h-[4px] bg-red-700 rounded-full " />
+                  <span className="w-4 h-[4px] bg-red-700 rounded-full " />
+                  <span className="w-2 h-[4px] bg-red-700 rounded-full " />
+                </div>
+                <div className="absolute bottom-[0.75rem] right-2.5 sm:right-4 flex flex-col rotate-180 gap-[3px]">
+                  <span className="w-8 h-[4px] bg-red-700 rounded-full " />
+                  <span className="w-4 h-[4px] bg-red-700 rounded-full " />
+                  <span className="w-2 h-[4px] bg-red-700 rounded-full " />
+                </div>
+                <AlertDialogHeader className="lg:text-center">
                   <AlertDialogTitle>Cambiar estado del pago</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Seleccioná una opción
+                  </AlertDialogDescription>
                 </AlertDialogHeader>
                 <div className="grid w-full max-w-sm items-center self-center gap-2">
                   <ToggleGroup.Root
                     orientation="horizontal"
-                    className="flex flex-col gap-3 my-2 md:flex-row md:items-center md:justify-between md:gap-0"
+                    className="flex flex-col gap-2 mx-auto"
                     type="single"
                     value={optionSelected}
                     onValueChange={handleValueChange}
                   >
                     <ToggleGroup.Item
                       value="paid"
-                      className="border border-neutral-600 flex items-start gap-3 p-3 h-24 rounded-md aspect-square data-[state=on]:border-[#77f6aa] data-[state=on]:bg-neutral-900 focus:border-[#77f6aa] outline-none hover:border-[#77f6aa] md:h-44 md:w-[30%] md:flex-col md:justify-between md:gap-0"
+                      className={`${
+                        optionSelected === "paid"
+                          ? "before:absolute before:left-2 before:w-3.5 before:aspect-square before:bg-slate-500 before:rounded-full dark:before:bg-slate-300"
+                          : ""
+                      }
+                          relative flex items-center justify-center gap-[3px] w-48 border px-3 rounded-lg data-[state=on]:border-slate-400 data-[state=on]:bg-white focus:border-slate-300 outline-none hover:border-slate-300 dark:data-[state=on]:opacity-100 dark:hover:border-slate-200 dark:bg-card/80 dark:focus:border-slate-200 dark:data-[state=on]:bg-black dark:data-[state=on]:border-slate-300
+                          `}
                     >
-                      Pago
+                      PAGO{" "}
+                      <Check className="w-4 h-4 relative bottom-[1px] text-green-600 lg:w-5 lg:h-5" />
                     </ToggleGroup.Item>
-                    <ToggleGroup.Item
-                      value="unpaid"
-                      className="border border-neutral-600 flex items-start gap-3 p-3 h-24 rounded-md aspect-square data-[state=on]:border-[#77f6aa] data-[state=on]:bg-neutral-900 focus:border-[#77f6aa] outline-none hover:border-[#77f6aa] md:h-44 md:w-[30%] md:flex-col md:justify-between md:gap-0"
-                    >
-                      No pago
-                    </ToggleGroup.Item>
+                    <div className="flex items-center">
+                      <ToggleGroup.Item
+                        value="unpaid"
+                        className={`${
+                          optionSelected === "unpaid"
+                            ? "before:absolute before:left-2 before:w-3.5 before:aspect-square before:bg-slate-500 before:rounded-full dark:before:bg-slate-300"
+                            : ""
+                        }
+                            relative flex items-center justify-center gap-[3px] w-48 border px-3 rounded-lg data-[state=on]:border-slate-400 data-[state=on]:bg-white focus:border-slate-300 outline-none hover:border-slate-300 dark:data-[state=on]:opacity-100 dark:hover:border-slate-200 dark:bg-card/80 dark:focus:border-slate-200 dark:data-[state=on]:bg-black dark:data-[state=on]:border-slate-300
+                            `}
+                      >
+                        NO PAGO{" "}
+                        <X className="w-4 h-4 relative bottom-[1px] text-red-600 lg:w-5 lg:h-5" />
+                      </ToggleGroup.Item>
+                    </div>
                   </ToggleGroup.Root>
                 </div>
-                <AlertDialogFooter className="lg:gap-3">
+                <AlertDialogFooter className="lg:gap-3 lg:self-end">
                   <AlertDialogCancel>Cancelar</AlertDialogCancel>
                   <AlertDialogAction
-                    className="md:w-auto"
                     onClick={() => handleIsPaid(params.row._id)}
                   >
                     Guardar cambios

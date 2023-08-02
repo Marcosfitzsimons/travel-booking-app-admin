@@ -247,14 +247,14 @@ export const passengerColumns = [
         <div className="flex items-center gap-2">
           {isPassenger ? (
             <>
-              <Avatar className="w-8 h-8">
+              <Avatar className="w-10 h-10">
                 <AvatarImage
                   className="origin-center hover:origin-bottom hover:scale-105 transition-all duration-200 z-90 align-middle"
                   src={params.row.createdBy?.image || ""}
                   alt="avatar"
                 />
                 <AvatarFallback>
-                  <User className="w-12 h-12 dark:text-blue-lagoon-100" />
+                  <User className="w-10 h-10" />
                 </AvatarFallback>
               </Avatar>
               <span>{params.row.createdBy.fullName}</span>
