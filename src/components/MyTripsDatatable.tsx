@@ -13,9 +13,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { toast } from "../hooks/ui/use-toast";
+import { useToast } from "../hooks/ui/use-toast";
 import { Link } from "react-router-dom";
 import { Eye } from "lucide-react";
+import { getRowHeight } from "@/lib/utils/getRowHeight";
+import ActionButtonDatatable from "./ActionButtonDatatable";
+import TrashButtonDatatable from "./TrashButtonDatatable";
 
 type TripProps = {
   id: string;
@@ -67,6 +70,8 @@ const MyTripsDatatable = ({ columns, userTrips, userData }: DataTableProps) => {
   const [list, setList] = useState(userTrips);
   const userId = userData._id;
 
+  const { toast } = useToast();
+
   const token = localStorage.getItem("token");
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -101,28 +106,30 @@ const MyTripsDatatable = ({ columns, userTrips, userData }: DataTableProps) => {
     {
       field: "action",
       headerName: "Acción",
-      width: 180,
+      width: 170,
       renderCell: (params: any) => {
         return (
           <div className="flex items-center gap-2">
             <div className="relative flex items-center">
-              <Link
-                to={`/trips/${params.row.id}`}
-                className="px-[12px] pl-[29px] py-[2px] z-20 rounded-md border border-teal-800 bg-teal-800/60 text-white transition-colors hover:border-black font-semibold dark:border-teal-600 dark:bg-teal-700/60 dark:hover:text-inherit dark:hover:border-teal-500"
-              >
-                <Eye className="absolute left-3 top-[4px] h-4 w-4" />
-                Ver
-              </Link>
+              <ActionButtonDatatable
+                text="Ver"
+                icon={
+                  <Eye className="absolute left-[13px] top-[5.5px] h-4 w-4 md:h-[18px] md:w-[18px] md:top-[4.5px] md:left-[11.4px]" />
+                }
+                linkTo={`/trips/${params.row.id}`}
+              />
             </div>
             <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <div className="relative flex items-center">
-                  <button className="px-[12px] pl-[29px] py-[2px] rounded-md border border-neutral-600 bg-[#b4343a] text-white font-semibold transition-colors hover:border-black dark:bg-[#b4343a] dark:border-blue-lagoon-400/80 dark:hover:border-blue-lagoon-300">
-                    <Trash2 className="absolute text-white left-3 top-[4px] h-4 w-4" />
-                    Borrar
-                  </button>
-                </div>
-              </AlertDialogTrigger>
+              <div className="relative flex items-center">
+                <AlertDialogTrigger>
+                  <TrashButtonDatatable
+                    icon={
+                      <Trash2 className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />
+                    }
+                    text="Borrar"
+                  />
+                </AlertDialogTrigger>
+              </div>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
@@ -151,10 +158,23 @@ const MyTripsDatatable = ({ columns, userTrips, userData }: DataTableProps) => {
   ];
 
   return (
-    <div className="h-[400px] w-full">
+    <div className="h-[500px] w-full max-w-[1400px]">
       <DataGrid
         rows={list}
         columns={actionColumn.concat(columns)}
+        slots={{
+          noRowsOverlay: () => (
+            <div className="h-full flex justify-center items-center">
+              Cargando viajes...
+            </div>
+          ),
+          noResultsOverlay: () => (
+            <div className="h-full flex justify-center items-center">
+              No se encontraron viajes
+            </div>
+          ),
+        }}
+        getRowHeight={getRowHeight}
         checkboxSelection
         hideFooterSelectedRowCount
         initialState={{
@@ -167,7 +187,6 @@ const MyTripsDatatable = ({ columns, userTrips, userData }: DataTableProps) => {
         pageSizeOptions={[9]}
         getRowId={(row) => row.id}
         sx={{
-          borderColor: "#007F9633",
           borderRadius: "7px",
           "&>.MuiDataGrid-main": {
             "&>.MuiDataGrid-columnHeaders": {
@@ -182,7 +201,7 @@ const MyTripsDatatable = ({ columns, userTrips, userData }: DataTableProps) => {
             borderTop: "none",
           },
         }}
-        className="w-[min(100%,1400px)] shadow-md border-border-color dark:border-border-color-dark dark:text-neutral-100"
+        className="max-w-[1400px]"
       />
     </div>
   );
