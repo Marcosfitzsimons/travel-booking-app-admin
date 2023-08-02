@@ -16,7 +16,6 @@ import { AuthContext } from "../context/AuthContext";
 import ActionButton from "@/components/ActionButton";
 import TripCard from "@/components/TripCard";
 import DialogAnonPassenger from "@/components/DialogAnonPassenger";
-import Logo from "@/components/Logo";
 
 type Trip = {
   _id: string;
@@ -85,7 +84,7 @@ const SingleTrip = () => {
   const [err, setErr] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [startDate, setStartDate] = useState<any>(null);
 
   const isMaxCapacity = passengers.length === data.maxCapacity;
   const passengersCount = `${passengers.length} / ${data.maxCapacity}`;
@@ -108,7 +107,7 @@ const SingleTrip = () => {
     defaultValues: {
       name: "",
       from: "",
-      date: null,
+      date: "",
       to: "",
       departureTime: "",
       arrivalTime: "",
@@ -152,25 +151,18 @@ const SingleTrip = () => {
     }
   };
 
-  const handleDelete = async (userId: string) => {
+  const handleDelete = async (passengerId: string) => {
     setIsLoading(true);
     try {
       await axios.delete(
-        `https://fabebus-api-example.onrender.com/api/passengers/${userId}/${id}`,
+        `https://fabebus-api-example.onrender.com/api/passengers/${passengerId}/${id}`,
         { headers }
       );
       toast({
         description: "Lugar cancelado con éxito.",
       });
       setIsLoading(false);
-      setPassengers(
-        passengers.filter((item) => {
-          return !(
-            (item.createdBy && item.createdBy._id === userId) ||
-            (!item.createdBy && item._id === userId)
-          );
-        })
-      );
+      setPassengers(passengers.filter((item) => item._id !== passengerId));
     } catch (err: any) {
       console.log(err);
       setLoading(false);
@@ -193,6 +185,12 @@ const SingleTrip = () => {
     return formatted_date;
   };
 
+  const datePickerFormat = (date: string) => {
+    const momentDate = moment.utc(date);
+    const selectedDate = momentDate.toDate();
+    return selectedDate;
+  };
+
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -207,21 +205,21 @@ const SingleTrip = () => {
         }
       );
       setPassengers(res.data.passengers);
-      formatDate(res.data.date);
-      setData({ ...res.data, date: formatDate(res.data.date) });
+      const formattedDate = formatDate(res.data.date);
+      setData({ ...res.data, date: formattedDate });
       const tripData = { ...res.data };
+      setDepartureTimeValue(tripData.departureTime);
+      setArrivalTimeValue(tripData.arrivalTime);
+      setStartDate(datePickerFormat(res.data.date));
       reset({
         name: tripData.name,
         from: tripData.from,
-        date: tripData.date,
         to: tripData.to,
         departureTime: tripData.departureTime,
         arrivalTime: tripData.arrivalTime,
         price: tripData.price,
         maxCapacity: tripData.maxCapacity,
       });
-      setDepartureTimeValue(tripData.departureTime);
-      setArrivalTimeValue(tripData.arrivalTime);
     } catch (err) {
       setError(err);
       console.log(err);
@@ -230,41 +228,6 @@ const SingleTrip = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const token = localStorage.getItem("token");
-        const headers = {
-          Authorization: `Bearer ${token}`,
-        };
-        const res = await axios.get(
-          `https://fabebus-api-example.onrender.com/api/trips/${user?._id}/${id}`,
-          {
-            headers,
-          }
-        );
-        setPassengers(res.data.passengers);
-        formatDate(res.data.date);
-        setData({ ...res.data, date: formatDate(res.data.date) });
-        const tripData = { ...res.data };
-        reset({
-          name: tripData.name,
-          from: tripData.from,
-          date: tripData.date,
-          to: tripData.to,
-          departureTime: tripData.departureTime,
-          arrivalTime: tripData.arrivalTime,
-          price: tripData.price,
-          maxCapacity: tripData.maxCapacity,
-        });
-        setDepartureTimeValue(tripData.departureTime);
-        setArrivalTimeValue(tripData.arrivalTime);
-      } catch (err) {
-        setError(err);
-        console.log(err);
-      }
-      setLoading(false);
-    };
     fetchData();
   }, []);
 
@@ -357,8 +320,8 @@ const SingleTrip = () => {
                 tripPassengers={passengers}
                 columns={passengerColumns}
                 tripId={id}
-                isLoading={isLoading}
                 handleDelete={handleDelete}
+                fetchData={fetchData}
               />
             ) : (
               <div className="mx-auto flex flex-col items-center gap-3">

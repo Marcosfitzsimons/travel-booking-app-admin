@@ -93,9 +93,7 @@ const TripCard = ({
   };
 
   return (
-    <article
-      className={`w-full flex justify-center items-center relative mx-auto rounded-md border shadow-input pb-4 max-w-[400px] bg-card border dark:shadow-none`}
-    >
+    <article className="w-full flex justify-center items-center relative mx-auto rounded-md border shadow-input pb-4 max-w-[400px] bg-card dark:shadow-none">
       <div className="w-full px-2 pt-9 sm:px-4">
         <div className="flex flex-col gap-2">
           <div className="absolute top-[0.75rem] left-2.5 sm:left-4 flex flex-col gap-[3px] transition-transform ">

@@ -150,9 +150,14 @@ export const tripColumns = [
     headerName: "Pasajeros",
     width: 120,
     renderCell: (params: any) => {
-      return <div className="">{params.row.passengers.length}</div>;
+      return params.row.passengers ? (
+        <div className="">{params.row.passengers.length}</div>
+      ) : (
+        "-"
+      );
     },
   },
+
   {
     field: "maxCapacity",
     headerName: "Cap. máxima",
@@ -232,28 +237,6 @@ export const specialTripColumns = [
 ];
 
 export const passengerColumns = [
-  {
-    field: "isPaid",
-    headerName: "Estado pago",
-    width: 110,
-    renderCell: (params: any) => {
-      return (
-        <div className="">
-          {params.row.isPaid ? (
-            <span className="flex items-center gap-[3px]">
-              PAGO{" "}
-              <Check className="w-4 h-4 relative bottom-[1px] text-green-600 lg:w-5 lg:h-5" />
-            </span>
-          ) : (
-            <span className="flex items-center gap-[3px]">
-              NO PAGO{" "}
-              <X className="w-4 h-4 relative bottom-[1px] text-red-600 lg:w-5 lg:h-5" />
-            </span>
-          )}
-        </div>
-      );
-    },
-  },
   {
     field: "user",
     headerName: "Nombre completo",
@@ -353,6 +336,19 @@ export const passengerColumns = [
       return (
         <p className="">
           {isPassenger ? <span>{params.row.createdBy.phone}</span> : "-"}
+        </p>
+      );
+    },
+  },
+  {
+    field: "dni",
+    headerName: "DNI",
+    width: 150,
+    renderCell: (params: any) => {
+      const isPassenger = params.row.createdBy;
+      return (
+        <p className="">
+          {isPassenger ? <span>{params.row.createdBy.dni}</span> : "-"}
         </p>
       );
     },

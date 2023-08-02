@@ -25,7 +25,6 @@ import SingleTrip from "./pages/SingleTrip";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
-import SinglePassenger from "./pages/SinglePassenger";
 import NewPassenger from "./pages/NewPassenger";
 import SinglePublication from "./pages/SinglePublication";
 import NewPublication from "./pages/NewPublication";
@@ -207,14 +206,6 @@ function App() {
                 />
               </Route>
               <Route path="passengers">
-                <Route
-                  path=":userId/:tripId"
-                  element={
-                    <ProtectedRoute>
-                      <SinglePassenger />
-                    </ProtectedRoute>
-                  }
-                />
                 <Route
                   path="newPassenger/:id"
                   element={

@@ -1,16 +1,4 @@
-import {
-  Contact,
-  ContactIcon,
-  Crop,
-  Fingerprint,
-  Mail,
-  MapPin,
-  Milestone,
-  Phone,
-  User,
-} from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import DefaultButton from "./DefaultButton";
+import { Crop, Fingerprint, Mail, Milestone, Phone, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Separator } from "./ui/separator";
 
@@ -30,6 +18,7 @@ type UserData = {
   phone: undefined | number;
   email: string;
   image?: string;
+  status: undefined | "Active" | "Pending";
 };
 
 interface UserInfoProps {
@@ -58,12 +47,22 @@ const UserInfo = ({ userData }: UserInfoProps) => {
         <h4 className="text-[#737373] dark:text-slate-500">
           @{userData?.username}
         </h4>
-        <Separator className="hidden w-8 self-center bg-border mt-7 lg:flex " />
+        <p className="mt-7">
+          {userData.status === "Active" ? (
+            <span className="rounded-md bg-green-600/30 border border-green-900 shadow-input px-2 py-0.5 dark:bg-green-200/40 dark:border-zinc-300/90 dark:shadow-none">
+              Cuenta activa
+            </span>
+          ) : (
+            <span className="rounded-md bg-orange-700/70 text-white border border-orange-900/80 shadow-input px-2 py-0.5 dark:bg-orange-500/70 dark:border-orange-900/60 dark:shadow-none">
+              Cuenta pendiente
+            </span>
+          )}
+        </p>
+        <Separator className="hidden w-4 self-center bg-border mt-7 lg:flex " />
       </div>
 
-      <div className="flex flex-col w-full overflow-hidden gap-2 max-w-sm items-start px-2 lg:px-0 lg:flex-row lg:pt-0 lg:justify-around lg:max-w-6xl">
+      <div className="relative flex flex-col w-full overflow-hidden gap-2 max-w-sm items-start px-2 lg:px-0 lg:flex-row lg:pt-0 lg:justify-around lg:max-w-6xl">
         <div className="w-full flex flex-col gap-1 lg:basis-1/3 lg:my-2">
-          <Separator className="w-8 self-center my-2 bg-border lg:hidden " />
           <h5 className="text-center w-full font-medium dark:text-white lg:mb-2 lg:text-xl">
             Datos personales
           </h5>
@@ -87,7 +86,6 @@ const UserInfo = ({ userData }: UserInfoProps) => {
         </div>
 
         <div className="w-full flex flex-col gap-1 lg:basis-[60%] lg:my-2">
-          <Separator className="w-8 self-center my-2 bg-border lg:hidden " />
           <h5 className="text-center w-full font-medium dark:text-white lg:mb-2 lg:text-xl">
             Domicilios
           </h5>

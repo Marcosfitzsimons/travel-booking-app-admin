@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useForm } from "react-hook-form";
@@ -6,7 +6,6 @@ import {
   Crop,
   Fingerprint,
   Mail,
-  MapPin,
   Milestone,
   Phone,
   Upload,
@@ -22,6 +21,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import SectionTitle from "../components/SectionTitle";
 import DefaultButton from "../components/DefaultButton";
 import { tripColumns } from "../datatablesource";
@@ -34,6 +42,8 @@ import Loading from "../components/Loading";
 import { Button } from "../components/ui/button";
 import { Separator } from "../components/ui/separator";
 import UserInfo from "../components/UserInfo";
+import AddressAutocomplete from "@/components/AddressAutocomplete";
+import { spawn } from "child_process";
 
 type addressCda = {
   street: string;
@@ -50,6 +60,7 @@ type UserData = {
   phone: undefined | number;
   email: string;
   image?: string;
+  status: undefined | "Active" | "Pending";
 };
 
 interface InputValidation {
@@ -95,6 +106,7 @@ const INITIAL_STATES = {
   dni: undefined,
   username: "",
   image: "",
+  status: undefined,
 };
 
 const SingleUser = () => {
@@ -103,9 +115,10 @@ const SingleUser = () => {
   const [image, setImage] = useState<File | string>("");
   const [err, setErr] = useState<any>(false);
   const [addressCapitalValue, setAddressCapitalValue] = useState("");
-
-  const addressCapitalRef = useRef(null);
-
+  const [statusValue, setStatusValue] = useState<"pending" | "active">(
+    "pending"
+  );
+  console.log(statusValue);
   const {
     register,
     handleSubmit,
@@ -125,8 +138,15 @@ const SingleUser = () => {
         crossStreets: "",
       },
       addressCapital: "",
+      status: undefined,
     },
   });
+
+  const capitalizeWord = (string: any) => {
+    const firstLetter = string.charAt(0).toUpperCase();
+    const restOfString = string.slice(1).toLowerCase();
+    return firstLetter + restOfString;
+  };
 
   const token = localStorage.getItem("token");
   const headers = {
@@ -146,16 +166,36 @@ const SingleUser = () => {
       if (!image) {
         const res = await axios.put(
           `https://fabebus-api-example.onrender.com/api/users/${id}`,
-          { userData: { ...data } },
+          {
+            userData: {
+              ...data,
+              addressCapital: addressCapitalValue,
+              status: capitalizeWord(statusValue),
+            },
+          },
           { headers }
         );
+        console.log(res);
         setLoading(false);
+        setData(res.data);
+        setStatusValue(res.data.status.toLowerCase());
+        setAddressCapitalValue(res.data.addressCapital);
+        const userData = res.data;
+        reset({
+          username: userData.username,
+          email: userData.email,
+          fullName: userData.fullName,
+          phone: userData.phone,
+          dni: userData.dni,
+          addressCda: {
+            street: userData.addressCda.street,
+            streetNumber: userData.addressCda.streetNumber,
+            crossStreets: userData.addressCda.crossStreets,
+          },
+        });
         toast({
           description: "Cambios guardados con exito.",
         });
-        setTimeout(() => {
-          location.reload();
-        }, 1000);
       } else {
         const uploadRes = await axios.post(
           "https://api.cloudinary.com/v1_1/dioqjddko/image/upload",
@@ -165,16 +205,37 @@ const SingleUser = () => {
 
         const res = await axios.put(
           `https://fabebus-api-example.onrender.com/api/users/${id}`,
-          { userData: { ...data, image: url } },
+          {
+            userData: {
+              ...data,
+              image: url,
+              addressCapital: addressCapitalValue,
+              status: capitalizeWord(statusValue),
+            },
+          },
           { headers }
         );
         setLoading(false);
+        setData(res.data);
+        setStatusValue(res.data.status.toLowerCase());
+        setAddressCapitalValue(res.data.addressCapital);
+        const userData = res.data;
+        reset({
+          username: userData.username,
+          email: userData.email,
+          fullName: userData.fullName,
+          phone: userData.phone,
+          dni: userData.dni,
+          addressCda: {
+            street: userData.addressCda.street,
+            streetNumber: userData.addressCda.streetNumber,
+            crossStreets: userData.addressCda.crossStreets,
+          },
+          image: userData.image ? userData.image : "",
+        });
         toast({
           description: "Cambios guardados con exito.",
         });
-        setTimeout(() => {
-          location.reload();
-        }, 1000);
       }
     } catch (err: any) {
       const errorMsg = err.response.data.msg;
@@ -184,9 +245,6 @@ const SingleUser = () => {
         variant: "destructive",
         description: "Error al guardar los cambios, intentar mas tarde.",
       });
-      setTimeout(() => {
-        location.reload();
-      }, 1000);
     }
   };
 
@@ -201,6 +259,8 @@ const SingleUser = () => {
           }
         );
         setData(res.data.user);
+        setStatusValue(res.data.user.status.toLowerCase());
+        setAddressCapitalValue(res.data.addressCapital);
         const userData = res.data.user;
         reset({
           username: userData.username,
@@ -213,7 +273,6 @@ const SingleUser = () => {
             streetNumber: userData.addressCda.streetNumber,
             crossStreets: userData.addressCda.crossStreets,
           },
-          addressCapital: userData.addressCapital,
           image: userData.image ? userData.image : "",
         });
       } catch (err) {
@@ -222,22 +281,6 @@ const SingleUser = () => {
       setLoading(false);
     };
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    const addressCapital = new window.google.maps.places.Autocomplete(
-      addressCapitalRef.current!,
-      {
-        componentRestrictions: { country: "AR" },
-        types: ["address"],
-        fields: ["address_components"],
-      }
-    );
-
-    addressCapital.addListener("place_changed", () => {
-      const place = addressCapital.getPlace();
-      console.log(place);
-    });
   }, []);
 
   const userAddressInputs = [
@@ -319,10 +362,11 @@ const SingleUser = () => {
 
   return (
     <section className="flex flex-col gap-3">
-      <SectionTitle>Información del usuario:</SectionTitle>
-      <div className="self-start mb-2">
+      <div className="self-start">
         <BackButton linkTo="/users" />
       </div>
+      <SectionTitle>Información del usuario:</SectionTitle>
+
       {loading ? (
         <Loading />
       ) : (
@@ -401,7 +445,33 @@ const SingleUser = () => {
                         </div>
                       </div>
 
-                      <div className="w-full flex flex-col items-center gap-3 lg:max-w-2xl">
+                      <div className="relative w-full flex flex-col items-center gap-3 lg:max-w-2xl">
+                        <div className="absolute left-0 -top-12 flex flex-col gap-1">
+                          <p className="text-sm">Estado de la cuenta:</p>
+                          <Select
+                            value={statusValue.toLowerCase()}
+                            onValueChange={(v: any) => setStatusValue(v)}
+                          >
+                            <div
+                              className="relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
+          after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"
+                            >
+                              <SelectTrigger className="w-[180px] z-50">
+                                <SelectValue
+                                  placeholder={
+                                    statusValue.toLowerCase() === "active"
+                                      ? "Activo"
+                                      : "Pendiente"
+                                  }
+                                />
+                              </SelectTrigger>
+                            </div>
+                            <SelectContent>
+                              <SelectItem value="active">Activa</SelectItem>
+                              <SelectItem value="pending">Pendiente</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                         <div className="w-full flex flex-col items-center">
                           <div className="my-3 w-full flex flex-col items-center">
                             <Separator className="w-8 my-2 bg-border-color dark:bg-border-color-dark" />
@@ -663,18 +733,10 @@ const SingleUser = () => {
                                 <Label htmlFor="addressCapital">
                                   Dirección
                                 </Label>
-                                <div className="relative flex items-center">
-                                  <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px] pb-[2px] " />
-                                  <Input
-                                    ref={addressCapitalRef}
-                                    type="text"
-                                    id="addressCapital"
-                                    className="pl-[32px]"
+                                <div className="w-full">
+                                  <AddressAutocomplete
                                     value={addressCapitalValue}
-                                    onChange={(e) =>
-                                      setAddressCapitalValue(e.target.value)
-                                    }
-                                    placeholder="Las Heras 2304"
+                                    setValue={setAddressCapitalValue}
                                   />
                                 </div>
                               </div>

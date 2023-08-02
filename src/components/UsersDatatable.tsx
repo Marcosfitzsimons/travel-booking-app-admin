@@ -158,7 +158,6 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
           {isError && <p className="text-red-500 order-2">{isError}</p>}
           {isLoading && <p className="text-red-500 order-2">is loading...</p>}
           <SearchUserInput list={list} setFilteredList={setFilteredList} />
-          <p className="text-yellow-500">Add isActive field</p>
         </div>
         <div className="relative w-full flex items-end justify-between sm:w-auto sm:gap-3">
           <div className="md:absolute md:right-0 md:top-[-100px]">
