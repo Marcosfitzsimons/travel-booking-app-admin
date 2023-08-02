@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { toast } from "../hooks/ui/use-toast";
+import { useToast } from "../hooks/ui/use-toast";
 import DatePickerContainer from "./DatePickerContainer";
 import { Button } from "./ui/button";
 import ActionButton from "./ActionButton";
@@ -63,6 +63,9 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
   const baseUrl = `https://fabebus-api-example.onrender.com/api/trips`;
 
   const { data, loading, error } = useFetch(baseUrl);
+
+  const { toast } = useToast();
+
   const token = localStorage.getItem("token");
   const headers = {
     Authorization: `Bearer ${token}`,
