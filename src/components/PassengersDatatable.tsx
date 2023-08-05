@@ -213,10 +213,10 @@ const PassengersDatable = ({
                       value="paid"
                       className={`${
                         optionSelected === "paid"
-                          ? "before:absolute before:left-2 before:w-3.5 before:aspect-square before:bg-slate-500 before:rounded-full dark:before:bg-slate-300"
+                          ? "before:transition-all before:absolute before:left-2 before:w-3.5 before:aspect-square before:bg-slate-500 before:rounded-full dark:before:bg-slate-300"
                           : ""
                       }
-                          relative flex items-center justify-center gap-[3px] w-48 border px-3 rounded-lg data-[state=on]:border-slate-400 data-[state=on]:bg-white focus:border-slate-300 outline-none hover:border-slate-300 dark:data-[state=on]:opacity-100 dark:hover:border-slate-200 dark:bg-card/80 dark:focus:border-slate-200 dark:data-[state=on]:bg-black dark:data-[state=on]:border-slate-300
+                      transition-all relative flex items-center justify-center gap-[3px] w-48 border px-3 rounded-lg data-[state=on]:border-slate-400 data-[state=on]:bg-white focus:border-slate-300 outline-none hover:border-slate-300 dark:data-[state=on]:opacity-100 dark:hover:border-slate-200 dark:bg-card/80 dark:focus:border-slate-200 dark:data-[state=on]:bg-black dark:data-[state=on]:border-slate-300
                           `}
                     >
                       PAGO{" "}
@@ -227,10 +227,10 @@ const PassengersDatable = ({
                         value="unpaid"
                         className={`${
                           optionSelected === "unpaid"
-                            ? "before:absolute before:left-2 before:w-3.5 before:aspect-square before:bg-slate-500 before:rounded-full dark:before:bg-slate-300"
+                            ? "before:transition-all before:absolute before:left-2 before:w-3.5 before:aspect-square before:bg-slate-500 before:rounded-full dark:before:bg-slate-300"
                             : ""
                         }
-                            relative flex items-center justify-center gap-[3px] w-48 border px-3 rounded-lg data-[state=on]:border-slate-400 data-[state=on]:bg-white focus:border-slate-300 outline-none hover:border-slate-300 dark:data-[state=on]:opacity-100 dark:hover:border-slate-200 dark:bg-card/80 dark:focus:border-slate-200 dark:data-[state=on]:bg-black dark:data-[state=on]:border-slate-300
+                        transition-all relative flex items-center justify-center gap-[3px] w-48 border px-3 rounded-lg data-[state=on]:border-slate-400 data-[state=on]:bg-white focus:border-slate-300 outline-none hover:border-slate-300 dark:data-[state=on]:opacity-100 dark:hover:border-slate-200 dark:bg-card/80 dark:focus:border-slate-200 dark:data-[state=on]:bg-black dark:data-[state=on]:border-slate-300
                             `}
                       >
                         NO PAGO{" "}
@@ -242,7 +242,19 @@ const PassengersDatable = ({
                 <AlertDialogFooter className="lg:gap-3 lg:self-end">
                   <AlertDialogCancel>Cancelar</AlertDialogCancel>
                   <AlertDialogAction
-                    onClick={() => handleIsPaid(params.row._id)}
+                    onClick={() => {
+                      if (
+                        (params.row.isPaid && optionSelected === "paid") ||
+                        (!params.row.isPaid && optionSelected === "unpaid")
+                      ) {
+                        return toast({
+                          variant: "destructive",
+                          description:
+                            "El estado del pago ya tiene ese valor. Debes cambiarlo para que se actualice.",
+                        });
+                      }
+                      handleIsPaid(params.row._id);
+                    }}
                   >
                     Guardar cambios
                   </AlertDialogAction>

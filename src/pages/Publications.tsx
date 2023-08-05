@@ -34,6 +34,7 @@ const PublicationsDatatable = () => {
         Publicaciones importantes
       </SectionTitle>
       <div className="">
+        <p>todo...</p>
         <div className="w-full my-3 flex flex-col items-center gap-3 md:flex-row md:items-end md:justify-between">
           {error && <p className="text-red-500 order-2">{error.message}</p>}
           <div className="w-full flex items-center gap-1 text-sm md:gap-2 md:text-base md:w-auto">

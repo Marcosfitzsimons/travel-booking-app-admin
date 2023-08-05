@@ -1,5 +1,5 @@
 import { Eye, Trash2 } from "lucide-react";
-import { toast, useToast } from "../hooks/ui/use-toast";
+import { useToast } from "../hooks/ui/use-toast";
 import {
   AlertDialog,
   AlertDialogAction,
