@@ -43,6 +43,7 @@ import { Button } from "../components/ui/button";
 import { Separator } from "../components/ui/separator";
 import UserInfo from "../components/UserInfo";
 import AddressAutocomplete from "@/components/AddressAutocomplete";
+import { capitalizeWord } from "@/lib/utils/capitalizeWord";
 
 type addressCda = {
   street: string;
@@ -141,12 +142,6 @@ const SingleUser = () => {
     },
   });
 
-  const capitalizeWord = (string: any) => {
-    const firstLetter = string.charAt(0).toUpperCase();
-    const restOfString = string.slice(1).toLowerCase();
-    return firstLetter + restOfString;
-  };
-
   const token = localStorage.getItem("token");
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -164,7 +159,7 @@ const SingleUser = () => {
     try {
       if (!image) {
         const res = await axios.put(
-          `https://fabebus-api-example.onrender.com/api/users/${id}`,
+          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/users/${id}`,
           {
             userData: {
               ...data,
@@ -203,7 +198,7 @@ const SingleUser = () => {
         const { url } = uploadRes.data;
 
         const res = await axios.put(
-          `https://fabebus-api-example.onrender.com/api/users/${id}`,
+          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/users/${id}`,
           {
             userData: {
               ...data,
@@ -252,7 +247,7 @@ const SingleUser = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://fabebus-api-example.onrender.com/api/users/${id}`,
+          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/users/${id}`,
           {
             headers,
           }

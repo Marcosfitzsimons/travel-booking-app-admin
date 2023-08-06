@@ -7,7 +7,7 @@ import { convertToSpanishMonth } from "@/lib/utils/convertToSpanishMonth";
 
 const Monthly = () => {
   const { data, loading }: any = useFetch(
-    "https://fabebus-api-example.onrender.com/api/sales"
+    `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/sales`
   );
   const [formattedData] = useMemo(() => {
     if (!data || !data.monthlyData) return [[], []]; // Add a check for data and monthlyData existence

@@ -63,7 +63,7 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
   const [filteredList, setFilteredList] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState<any>(false);
-  const baseUrl = `https://fabebus-api-example.onrender.com/api/users`;
+  const baseUrl = `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/users`;
 
   const { data, loading, error } = useFetch(baseUrl);
 

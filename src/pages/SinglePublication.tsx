@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import moment from "moment-timezone";
 import "moment/locale/es";
 import axios from "axios";
@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import logo from "../assets/fabebus-logo.jpg";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { convertToArgentineTimezone } from "@/lib/utils/convertToArgentineTimezone";
 
 type Publication = {
   _id?: string;
@@ -44,18 +45,6 @@ const SinglePublication = () => {
   const { title, subtitle, description, createdAt, image } = data;
   let { id } = useParams();
   const { toast } = useToast();
-
-  const convertToArgentineTimezone = (dateStr: string) => {
-    const utcDate = moment.utc(dateStr);
-
-    // Use moment.format to display the date in the desired format
-    const formattedDate = utcDate.format("ddd DD/MM - hh:mm A");
-
-    const datePart = formattedDate.slice(0, 10); // "Dom 16/07"
-    const timePart = formattedDate.slice(12); // "04:20 PM"
-
-    return { datePart, timePart };
-  };
 
   moment.locale("es", {
     weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
@@ -90,7 +79,9 @@ const SinglePublication = () => {
 
     try {
       const res = await axios.put(
-        `https://fabebus-api-example.onrender.com/api/publications/${id}`,
+        `${
+          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
+        }/publications/${id}`,
         { ...data },
         { headers }
       );
@@ -120,7 +111,9 @@ const SinglePublication = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://fabebus-api-example.onrender.com/api/publications/${id}`,
+          `${
+            import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
+          }/publications/${id}`,
           {
             headers,
           }

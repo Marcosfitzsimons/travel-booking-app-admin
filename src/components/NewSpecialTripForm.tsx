@@ -81,7 +81,7 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
   const handleOnSubmit = async (data: Trip) => {
     try {
       await axios.post(
-        "https://fabebus-api-example.onrender.com/api/special-trips",
+        `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/special-trips`,
         {
           ...data,
           date: startDate,

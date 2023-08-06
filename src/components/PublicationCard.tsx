@@ -15,6 +15,7 @@ import moment from "moment";
 import axios from "axios";
 import { useState } from "react";
 import ActionButtonDatatable from "./ActionButtonDatatable";
+import { convertToArgentineTimezone } from "@/lib/utils/convertToArgentineTimezone";
 
 type Publication = {
   _id: string;
@@ -69,27 +70,14 @@ const PublicationCard = ({ item, setList, list }: PublicationCardProps) => {
     }
   };
 
-  const convertToArgentineTimezone = (dateStr: string) => {
-    const utcDate = moment.utc(dateStr);
-
-    const buenosAiresDate = utcDate.utcOffset(-3);
-    // Use moment.format to display the date in the desired format
-    const formattedDate = buenosAiresDate.format("ddd DD/MM - hh:mm A");
-
-    const datePart = formattedDate.slice(0, 10); // "Dom 16/07"
-    const timePart = formattedDate.slice(12); // "04:20 PM"
-
-    return { datePart, timePart };
-  };
+  const { datePart, timePart } = convertToArgentineTimezone(createdAt);
 
   moment.locale("es", {
     weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
   });
 
-  const { datePart, timePart } = convertToArgentineTimezone(createdAt);
-
   return (
-    <article className="w-full flex flex-col gap-2 p-4 rounded-md h-[140px] border bg-card lg:flex-row lg:justify-between dark:border-border-color-dark dark:hover:border-zinc-400">
+    <article className="w-full flex flex-col gap-2 max-w-xl bg-card p-4 shadow-input rounded-md h-32 border lg:flex-row lg:justify-between lg:pt-[10px] dark:shadow-none">
       <div className="overflow-y-hidden relative w-full">
         <h3 className="font-bold dark:text-white text-xl shrink-0">{title}</h3>
         {subtitle && <h4>{subtitle}</h4>}
@@ -104,7 +92,7 @@ const PublicationCard = ({ item, setList, list }: PublicationCardProps) => {
         )}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="self-end flex items-center gap-2 lg:self-center">
         <ActionButtonDatatable
           linkTo={`/publications/${_id}`}
           text="Ver"

@@ -126,7 +126,9 @@ const SingleSpecialTrip = () => {
     setIsSubmitted(true);
     try {
       await axios.put(
-        `https://fabebus-api-example.onrender.com/api/special-trips/${id}`,
+        `${
+          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
+        }/special-trips/${id}`,
         {
           ...data,
           date: startDate,
@@ -154,7 +156,9 @@ const SingleSpecialTrip = () => {
     setIsSubmitted(true);
     try {
       await axios.post(
-        `https://fabebus-api-example.onrender.com/api/special-passengers/${id}`,
+        `${
+          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
+        }/special-passengers/${id}`,
         {
           ...data,
         },
@@ -189,7 +193,9 @@ const SingleSpecialTrip = () => {
     setIsSubmitted2(true);
     try {
       await axios.post(
-        `https://fabebus-api-example.onrender.com/api/special-passengers/${id}`,
+        `${
+          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
+        }/special-passengers/${id}`,
         {},
         { headers }
       );
@@ -218,7 +224,9 @@ const SingleSpecialTrip = () => {
           Authorization: `Bearer ${token}`,
         };
         const res = await axios.get(
-          `https://fabebus-api-example.onrender.com/api/special-trips/${id}`,
+          `${
+            import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
+          }/special-trips/${id}`,
           {
             headers,
           }

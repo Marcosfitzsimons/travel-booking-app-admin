@@ -120,7 +120,7 @@ const NewUserForm = ({ inputs }: NewUserFormProps) => {
     try {
       if (!image) {
         const datasent = await axios.post(
-          "https://fabebus-api-example.onrender.com/api/auth/register",
+          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/auth/register`,
           {
             ...data,
             addressCapital: addressCapitalValue,
@@ -140,7 +140,7 @@ const NewUserForm = ({ inputs }: NewUserFormProps) => {
         const { url } = uploadRes.data;
 
         const datasent = await axios.post(
-          "https://fabebus-api-example.onrender.com/api/auth/register",
+          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/auth/register`,
           {
             ...data,
             image: url,

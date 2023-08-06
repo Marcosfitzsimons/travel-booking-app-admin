@@ -76,7 +76,7 @@ const NewTripForm = ({ inputs }: NewPublicationFormProps) => {
   const handleOnSubmit = async (data: Publication) => {
     try {
       await axios.post(
-        "https://fabebus-api-example.onrender.com/api/publications",
+        `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/publications`,
         {
           ...data,
         },

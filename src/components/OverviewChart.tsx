@@ -9,7 +9,7 @@ type OverviewChartProps = {
 
 const OverviewChart = ({ isDashboard = false }: OverviewChartProps) => {
   const { data, loading }: any = useFetch(
-    "https://fabebus-api-example.onrender.com/api/sales"
+    `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/sales`
   );
   console.log("🚀 ~ file: OverviewChart.tsx:13 ~ OverviewChart ~ data:", data);
 

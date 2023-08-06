@@ -61,7 +61,7 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
   const [err, setErr] = useState<null | string>(null);
   const [list, setList] = useState<Trip[]>([]);
   const [filteredList, setFilteredList] = useState<Trip[]>([]);
-  const baseUrl = `https://fabebus-api-example.onrender.com/api/trips`;
+  const baseUrl = `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/trips`;
 
   const { data, loading, error } = useFetch(baseUrl);
 

@@ -125,7 +125,7 @@ const SingleTrip = () => {
     setIsSubmitted(true);
     try {
       const res = await axios.put(
-        `https://fabebus-api-example.onrender.com/api/trips/${id}`,
+        `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/trips/${id}`,
         {
           ...data,
           date: startDate,
@@ -155,7 +155,9 @@ const SingleTrip = () => {
     setIsLoading(true);
     try {
       await axios.delete(
-        `https://fabebus-api-example.onrender.com/api/passengers/${passengerId}/${id}`,
+        `${
+          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
+        }/passengers/${passengerId}/${id}`,
         { headers }
       );
       toast({
@@ -199,7 +201,9 @@ const SingleTrip = () => {
         Authorization: `Bearer ${token}`,
       };
       const res = await axios.get(
-        `https://fabebus-api-example.onrender.com/api/trips/${user?._id}/${id}`,
+        `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/trips/${
+          user?._id
+        }/${id}`,
         {
           headers,
         }

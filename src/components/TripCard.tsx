@@ -2,7 +2,6 @@ import {
   CalendarDays,
   Clock,
   DollarSign,
-  Heart,
   HelpingHand,
   MapPin,
   Milestone,
@@ -20,12 +19,10 @@ import {
 } from "../components/ui/dialog";
 import DatePickerContainer from "../components/DatePickerContainer";
 import TimePickerContainer from "../components/TimePickerContainer";
-import Logo from "../components/Logo";
 import { Separator } from "./ui/separator";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import moment from "moment";
-import DefaultButton from "./DefaultButton";
 import { Button } from "./ui/button";
 
 type Trip = {

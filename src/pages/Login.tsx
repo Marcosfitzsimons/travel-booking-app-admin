@@ -37,7 +37,7 @@ const Login = () => {
       dispatch({ type: "LOGIN_START" });
       try {
         const res = await axios.post(
-          "https://fabebus-api-example.onrender.com/api/auth/login",
+          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/auth/login`,
           data
         );
         if (res.data.isAdmin) {

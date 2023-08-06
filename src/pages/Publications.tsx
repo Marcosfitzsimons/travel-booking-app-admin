@@ -19,7 +19,9 @@ type Publication = {
 const PublicationsDatatable = () => {
   const [list, setList] = useState<Publication[]>([]);
 
-  const baseUrl = `https://fabebus-api-example.onrender.com/api/publications`;
+  const baseUrl = `${
+    import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
+  }/publications`;
 
   const { data, loading, error } = useFetch(baseUrl);
 
@@ -28,13 +30,12 @@ const PublicationsDatatable = () => {
   }, [data]);
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6">
       <SectionTitle>
         <Newspaper className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
         Publicaciones importantes
       </SectionTitle>
-      <div className="">
-        <p>todo...</p>
+      <div className="max-w-[1400px]">
         <div className="w-full my-3 flex flex-col items-center gap-3 md:flex-row md:items-end md:justify-between">
           {error && <p className="text-red-500 order-2">{error.message}</p>}
           <div className="w-full flex items-center gap-1 text-sm md:gap-2 md:text-base md:w-auto">
@@ -58,7 +59,7 @@ const PublicationsDatatable = () => {
             />
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col items-center gap-3 xl:flex-row xl:justify-center">
           {loading ? (
             <Loading />
           ) : (
