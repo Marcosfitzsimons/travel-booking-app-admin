@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -10,7 +10,6 @@ import {
   Fingerprint,
   Lock,
   Mail,
-  MapPin,
   Milestone,
   Phone,
   User,
@@ -18,36 +17,7 @@ import {
 import { useToast } from "../hooks/ui/use-toast";
 import DefaultButton from "./DefaultButton";
 import { Upload } from "lucide-react";
-import { userAddressInputs } from "../formSource";
-import { Separator } from "./ui/separator";
 import AddressAutocomplete from "./AddressAutocomplete";
-interface InputValidation {
-  required: {
-    value: boolean;
-    message: string;
-  };
-  minLength: {
-    value: number;
-    message: string;
-  };
-  maxLength: {
-    value: number;
-    message: string;
-  };
-  pattern?: {
-    value: RegExp;
-    message: string;
-  };
-}
-
-interface UserInput {
-  id: any;
-  label: string;
-  type: string;
-  placeholder?: string;
-  validation?: InputValidation;
-  icon?: any;
-}
 
 type addressCda = {
   street: string;
@@ -67,23 +37,11 @@ type User = {
   password: string;
 };
 
-type NewUserFormProps = {
-  inputs: UserInput[];
-};
-
-const NewUserForm = ({ inputs }: NewUserFormProps) => {
+const NewUserForm = () => {
   const [image, setImage] = useState<File | string>("");
   const [addressCapitalValue, setAddressCapitalValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState<null | string>(null);
-
-  let imageInput: UserInput = {
-    id: "imageInput",
-    label: "Subir",
-    type: "file",
-    icon: <Upload className="w-4 h-4" />,
-    // check validation
-  };
 
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -154,16 +112,34 @@ const NewUserForm = ({ inputs }: NewUserFormProps) => {
         });
         navigate("/users");
       }
-      navigate("/users");
     } catch (err: any) {
-      console.log(err);
-      const errorMsg = err.response.data.err.message;
-      console.log(errorMsg);
       setIsLoading(false);
-      setErr(errorMsg);
-      toast({
-        description: "Error al crear usuario. Intentar más tarde.",
-      });
+      if (err.response.data.err?.keyValue.username) {
+        setErr(
+          `Nombre de usuario ${err.response.data.err.keyValue.username} ya está en uso`
+        );
+        toast({
+          variant: "destructive",
+          title: "Error al crear cuenta",
+          description: "Nombre de usuario ya está en uso",
+        });
+      } else if (err.response.data.err?.keyValue.email) {
+        setErr(`Email ${err.response.data.err.keyValue.email} ya está en uso`);
+        toast({
+          variant: "destructive",
+          title: "Error al crear cuenta",
+          description: "Email ya está en uso",
+        });
+      } else {
+        setErr(err.response.data.msg);
+        toast({
+          variant: "destructive",
+          title: "Error al crear cuenta",
+          description: err.response.data.msg
+            ? err.response.data.msg
+            : "Error al crear cuenta, intente más tarde.",
+        });
+      }
     }
   };
 
@@ -289,9 +265,9 @@ const NewUserForm = ({ inputs }: NewUserFormProps) => {
                         message: "Nombre de usuario no puede ser tan largo.",
                       },
                       pattern: {
-                        value: /^[a-zA-Z0-9]*$/,
+                        value: /^(?=.*[0-9])[a-zA-Z0-9]{3,}$/,
                         message:
-                          "El nombre de usuario no debe tener espacios ni caracteres especiales.",
+                          "El nombre de usuario debe tener al menos 3 caracteres y contener al menos un número.",
                       },
                     })}
                   />
@@ -478,7 +454,8 @@ const NewUserForm = ({ inputs }: NewUserFormProps) => {
               <div className="w-full flex flex-col gap-2">
                 <div className="w-full flex flex-col gap-2">
                   <h6 className="font-serif text-accent ">Carmen de Areco</h6>
-
+                </div>
+                <div className="flex items-center gap-1">
                   <div className="grid w-full items-center gap-2">
                     <Label htmlFor="street">Calle</Label>
                     <div className="relative flex items-center">
@@ -505,49 +482,48 @@ const NewUserForm = ({ inputs }: NewUserFormProps) => {
                       />
                     </div>
                     {errors.addressCda?.street && (
-                      <p className="text-red-600 text-sm">
+                      <p className="text-red-600 text-xs sm:text-sm">
                         {errors.addressCda.street.message}
                       </p>
                     )}
                   </div>
-                </div>
-
-                <div className="grid w-full items-center gap-2">
-                  <Label htmlFor="streetNumber">Número</Label>
-                  <div className="relative flex items-center">
-                    <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] pb-[2px] " />
-                    <Input
-                      type="number"
-                      id="streetNumber"
-                      className="pl-[32px]"
-                      placeholder="522"
-                      {...register("addressCda.streetNumber", {
-                        required: {
-                          value: true,
-                          message: "Por favor, ingresar número de domicilio ",
-                        },
-                        minLength: {
-                          value: 1,
-                          message:
-                            "Número de domicilio no puede ser tan corto.",
-                        },
-                        maxLength: {
-                          value: 5,
-                          message:
-                            "Número de domicilio no puede ser tan largo.",
-                        },
-                        pattern: {
-                          value: /^[0-9]+$/,
-                          message: "Debe incluir solo números.",
-                        },
-                      })}
-                    />
+                  <div className="grid w-full items-center gap-2">
+                    <Label htmlFor="streetNumber">Número</Label>
+                    <div className="relative flex items-center">
+                      <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] pb-[2px] " />
+                      <Input
+                        type="number"
+                        id="streetNumber"
+                        className="pl-[32px]"
+                        placeholder="522"
+                        {...register("addressCda.streetNumber", {
+                          required: {
+                            value: true,
+                            message: "Por favor, ingresar número de domicilio ",
+                          },
+                          minLength: {
+                            value: 1,
+                            message:
+                              "Número de domicilio no puede ser tan corto.",
+                          },
+                          maxLength: {
+                            value: 5,
+                            message:
+                              "Número de domicilio no puede ser tan largo.",
+                          },
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Debe incluir solo números.",
+                          },
+                        })}
+                      />
+                    </div>
+                    {errors.addressCda?.streetNumber && (
+                      <p className="text-red-600 text-xs sm:text-sm">
+                        {errors.addressCda.streetNumber.message}
+                      </p>
+                    )}
                   </div>
-                  {errors.addressCda?.streetNumber && (
-                    <p className="text-red-600 text-sm">
-                      {errors.addressCda.streetNumber.message}
-                    </p>
-                  )}
                 </div>
 
                 <div className="grid w-full items-center gap-2">
@@ -577,7 +553,7 @@ const NewUserForm = ({ inputs }: NewUserFormProps) => {
                     />
                   </div>
                   {errors.addressCda?.crossStreets && (
-                    <p className="text-red-600 text-sm">
+                    <p className="text-red-600 text-xs sm:text-sm">
                       {errors.addressCda.crossStreets.message}
                     </p>
                   )}

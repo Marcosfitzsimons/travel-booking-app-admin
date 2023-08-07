@@ -81,7 +81,9 @@ const PassengersDatable = ({
     setIsLoading(true);
     try {
       const res = await axios.put(
-        `https://fabebus-api-example.onrender.com/api/passengers/${passengerId}/${tripId}`,
+        `${
+          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
+        }/passengers/${passengerId}/${tripId}`,
         { isPaid: optionSelected === "paid" },
         { headers }
       );

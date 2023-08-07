@@ -125,10 +125,7 @@ function App() {
                   path="new"
                   element={
                     <ProtectedRoute>
-                      <NewUser
-                        inputs={userInputs}
-                        title="Crear usuario nuevo"
-                      />
+                      <NewUser title="Crear usuario nuevo" />
                     </ProtectedRoute>
                   }
                 />

@@ -146,28 +146,27 @@ const SinglePublication = () => {
       </div>
       <div className="flex flex-col gap-3 mb-4">
         <SectionTitle>Vista previa de la publicación</SectionTitle>
-        <p className="text-center lg:text-start">Así se verá en la página...</p>
       </div>
       {loading ? (
         <Loading />
       ) : (
         <div className="pb-6">
           <article className="w-full flex justify-center items-center relative mx-auto shadow-md max-w-[600px] bg-card shadow-input rounded-md border px-2 py-3 dark:shadow-none">
-            <div className="py-12 flex flex-col gap-4 sm:max-w-[425px]">
+            <div className="py-12 px-2 flex flex-col gap-6 sm:max-w-[600px] sm:px-4">
               <div className="absolute top-[0.75rem] left-2.5 sm:left-4 flex flex-col gap-[3px] transition-transform ">
                 <span className="w-8 h-[4px] bg-red-700 rounded-full " />
                 <span className="w-4 h-[4px] bg-red-700 rounded-full " />
                 <span className="w-2 h-[4px] bg-red-700 rounded-full " />
               </div>
-              <div className="absolute bottom-[0.75rem] right-2.5 sm:left-4 flex flex-col rotate-180 gap-[3px] transition-transform ">
+              <div className="absolute bottom-[0.75rem] right-2.5 sm:right-4 flex flex-col rotate-180 gap-[3px]">
                 <span className="w-8 h-[4px] bg-red-700 rounded-full " />
                 <span className="w-4 h-[4px] bg-red-700 rounded-full " />
                 <span className="w-2 h-[4px] bg-red-700 rounded-full " />
               </div>
               <div className="relative">
-                <p className="absolute right-0 top-0 text-sm lg:right-4">
+                <p className="absolute right-0 top-0 text-sm">
                   {datePart}
-                  <span className="text-[#737373] text-xs font-extralight dark:text-slate-500 ">
+                  <span className="text-[#737373] text-xs font-extralight dark:text-slate-500">
                     {timePart}
                   </span>
                 </p>
@@ -185,10 +184,15 @@ const SinglePublication = () => {
                   </p>
                 </div>
 
-                <h3>{title}</h3>
-                {subtitle && <h4 className="">{subtitle}</h4>}
+                <h3 className="text-lg font-semibold leading-none tracking-tight">
+                  {title}
+                </h3>
+                {subtitle && (
+                  <h4 className="text-muted-foreground">{subtitle}</h4>
+                )}
               </div>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <p className="text-card-foreground">{description}</p>
                 {image && (
                   <div className="relative flex flex-col">
                     <img src={image} alt="imagen adjunta" />
@@ -203,7 +207,6 @@ const SinglePublication = () => {
                     </div>
                   </div>
                 )}
-                <p className="text-card-foreground">{description}</p>
               </div>
             </div>
           </article>

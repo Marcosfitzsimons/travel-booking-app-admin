@@ -133,7 +133,9 @@ const DialogAnonPassenger = ({
     setIsSubmitted2(true);
     try {
       await axios.post(
-        `https://fabebus-api-example.onrender.com/api/passengers/${user?._id}/${id}`,
+        `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/passengers/${
+          user?._id
+        }/${id}`,
         {
           ...data,
           addressCapital: addressCapitalValue,
@@ -160,7 +162,9 @@ const DialogAnonPassenger = ({
     setIsSubmitted2(true);
     try {
       await axios.post(
-        `https://fabebus-api-example.onrender.com/api/passengers/${user?._id}/${id}`,
+        `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/passengers/${
+          user?._id
+        }/${id}`,
         {},
         { headers }
       );

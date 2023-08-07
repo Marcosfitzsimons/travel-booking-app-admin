@@ -4,7 +4,6 @@ import {
   Crop,
   Fingerprint,
   Mail,
-  MapPin,
   Milestone,
   Phone,
   Plus,
@@ -16,7 +15,6 @@ import axios from "axios";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -25,7 +23,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import DefaultButton from "./DefaultButton";
 import { toast } from "../hooks/ui/use-toast";
 import SearchUserInput from "./SearchUserInput";
-import { ContactIcon } from "lucide-react";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { getRowHeight } from "@/lib/utils/getRowHeight";
@@ -47,7 +44,7 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
 
   const navigate = useNavigate();
 
-  const baseUrl = `https://fabebus-api-example.onrender.com/api/users`;
+  const baseUrl = `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/users`;
 
   const { data, error } = useFetch(baseUrl);
 
@@ -60,7 +57,9 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
     setLoading(true);
     try {
       await axios.post(
-        `https://fabebus-api-example.onrender.com/api/passengers/${userId}/${tripId}`,
+        `${
+          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
+        }/passengers/${userId}/${tripId}`,
         { userId: userId },
         { headers }
       );

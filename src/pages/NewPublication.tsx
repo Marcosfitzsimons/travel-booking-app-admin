@@ -37,11 +37,22 @@ type NewPublicationProps = {
 const NewPublication = ({ inputs, title }: NewPublicationProps) => {
   return (
     <section className="flex flex-col gap-5">
-      <SectionTitle>{title}</SectionTitle>
-      <div className="self-start mb-2">
-        <BackButton linkTo="/trips" />
+      <div className="self-start">
+        <BackButton linkTo="/publications" />
       </div>
-      <div className="p-5 rounded-md bg-white/40 w-full max-w-md self-center border border-border-color dark:border-border-color-dark dark:hover:border-blue-lagoon-300 dark:bg-black/40 lg:max-w-3xl lg:self-start">
+
+      <SectionTitle>{title}</SectionTitle>
+      <div className="relative px-2 py-10 rounded-lg bg-card w-full max-w-md self-center border lg:max-w-3xl lg:self-start lg:px-4">
+        <div className="absolute top-[0.75rem] left-2.5 sm:left-4 flex flex-col gap-[3px]">
+          <span className="w-8 h-[4px] bg-red-700 rounded-full " />
+          <span className="w-4 h-[4px] bg-red-700 rounded-full " />
+          <span className="w-2 h-[4px] bg-red-700 rounded-full " />
+        </div>
+        <div className="absolute bottom-[0.75rem] right-2.5 sm:right-4 flex flex-col rotate-180 gap-[3px]">
+          <span className="w-8 h-[4px] bg-red-700 rounded-full " />
+          <span className="w-4 h-[4px] bg-red-700 rounded-full " />
+          <span className="w-2 h-[4px] bg-red-700 rounded-full " />
+        </div>
         <NewPublicationForm inputs={inputs} />
       </div>
     </section>

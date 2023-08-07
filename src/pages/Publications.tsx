@@ -5,6 +5,7 @@ import PublicationCard from "../components/PublicationCard";
 import SectionTitle from "../components/SectionTitle";
 import Loading from "../components/Loading";
 import ActionButton from "@/components/ActionButton";
+import TotalCountCard from "@/components/TotalCountCard";
 
 type Publication = {
   _id: string;
@@ -35,31 +36,29 @@ const PublicationsDatatable = () => {
         <Newspaper className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
         Publicaciones importantes
       </SectionTitle>
-      <div className="max-w-[1400px]">
-        <div className="w-full my-3 flex flex-col items-center gap-3 md:flex-row md:items-end md:justify-between">
+      <div className="w-full max-w-[1400px]">
+        <div className="">
           {error && <p className="text-red-500 order-2">{error.message}</p>}
-          <div className="w-full flex items-center gap-1 text-sm md:gap-2 md:text-base md:w-auto">
-            <p className="font-medium">Total de publicaciones:</p>
-            <p className="font-light flex items-center gap-1">
-              <span
-                className={`animate-pulse w-3 h-3 rounded-full ${
-                  list.length > 0 ? "bg-green-500" : "bg-red-600"
-                }`}
+          <div className="relative w-full flex flex-col items-center gap-2 md:pt-5">
+            <div className="md:absolute md:right-0 md:top-[-80px]">
+              <TotalCountCard
+                icon={<Newspaper className="text-accent h-8 w-8" />}
+                title="Publicaciones"
+                value={loading ? "0" : list.length}
               />
-              {loading ? "" : list.length}
-            </p>
-          </div>
-          <div className="w-full md:w-auto md:shrink-0">
-            <ActionButton
-              text="Agregar publicación"
-              linkTo="/publications/new"
-              icon={
-                <Plus className="absolute cursor-pointer left-[13px] top-[7.3px] h-[18px] w-[18px]" />
-              }
-            />
+            </div>
+            <div className="md:self-end">
+              <ActionButton
+                text="Agregar publicación"
+                linkTo="/publications/new"
+                icon={
+                  <Plus className="absolute cursor-pointer left-[13px] top-[7.3px] h-[18px] w-[18px] md:top-[4px] md:left-[8px] md:h-6 md:w-6" />
+                }
+              />
+            </div>
           </div>
         </div>
-        <div className="flex flex-col items-center gap-3 xl:flex-row xl:justify-center">
+        <div className="flex flex-col items-center my-5 gap-3 xl:flex-row xl:justify-center">
           {loading ? (
             <Loading />
           ) : (

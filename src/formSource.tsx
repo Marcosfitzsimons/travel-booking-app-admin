@@ -453,24 +453,4 @@ export const publicationInputs = [
       },
     },
   },
-  {
-    id: "description",
-    name: "description",
-    label: "Descripción",
-    type: "text",
-    validation: {
-      required: {
-        value: true,
-        message: "Por favor, ingresar descripción.",
-      },
-      minLength: {
-        value: 3,
-        message: "Descripción no puede ser tan corto.",
-      },
-      maxLength: {
-        value: 400,
-        message: "Descripción no puede ser tan largo.",
-      },
-    },
-  },
 ];
