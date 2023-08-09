@@ -261,6 +261,14 @@ export const tripInputs = [
         value: true,
         message: "Por favor, ingresar precio/persona del viaje.",
       },
+      min: {
+        value: 0,
+        message: "Precio no puede ser menor a 0",
+      },
+      max: {
+        value: 10000,
+        message: "Precio no puede ser mayor a 10000",
+      },
     },
   },
   {
@@ -276,6 +284,14 @@ export const tripInputs = [
       required: {
         value: true,
         message: "Por favor, ingresar capacidad máxima de personas del viaje.",
+      },
+      min: {
+        value: 3,
+        message: "Capacidad máxima no puede ser menor a 3",
+      },
+      max: {
+        value: 25,
+        message: "Capacidad máxima no puede ser mayor a 25",
       },
     },
   },
@@ -368,6 +384,14 @@ export const specialTripInputs = [
         value: true,
         message: "Por favor, ingresar precio/persona del viaje.",
       },
+      min: {
+        value: 0,
+        message: "Precio no puede ser menor a 0",
+      },
+      max: {
+        value: 10000,
+        message: "Precio no puede ser mayor a 10000",
+      },
     },
   },
   {
@@ -383,6 +407,14 @@ export const specialTripInputs = [
       required: {
         value: true,
         message: "Por favor, ingresar capacidad máxima de personas del viaje.",
+      },
+      min: {
+        value: 3,
+        message: "Capacidad máxima no puede ser menor a 3",
+      },
+      max: {
+        value: 25,
+        message: "Capacidad máxima no puede ser mayor a 25",
       },
     },
   },
