@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Eye, Fingerprint, Trash2, User } from "lucide-react";
-import axios from "axios";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,8 +12,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { toast } from "../hooks/ui/use-toast";
-import { Link } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -22,6 +19,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import { getRowHeight } from "@/lib/utils/getRowHeight";
+import TrashButtonDatatable from "./TrashButtonDatatable";
 
 type Passenger = {
   _id: string;
@@ -33,51 +32,17 @@ type DataTableProps = {
   columns: any;
   tripPassengers: Passenger[];
   tripId: string | undefined;
+  handleDelete: any;
 };
 
 const SpecialPassengersDatable = ({
   columns,
   tripPassengers,
   tripId,
+  handleDelete,
 }: DataTableProps) => {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<null | string>(null);
-  const [list, setList] = useState(tripPassengers);
-
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-
-  const handleDelete = async (passengerId: string) => {
-    setLoading(true);
-    try {
-      await axios.delete(
-        `https://fabebus-api-example.onrender.com/api/special-passengers/${passengerId}/${tripId}`,
-        { headers }
-      );
-      toast({
-        description: "Lugar cancelado con éxito.",
-      });
-      setLoading(false);
-      setList(list.filter((item) => item._id !== passengerId));
-      setTimeout(() => {
-        location.reload();
-      }, 1000);
-    } catch (err: any) {
-      console.log(err);
-      setLoading(false);
-      setErr(err.message);
-      toast({
-        variant: "destructive",
-        description: `Error al cancelar lugar, intente más tarde. ${
-          err ? `"${err}"` : ""
-        }`,
-      });
-    }
-  };
-
-  const handleIsPassengerInfo = (passengerId: string) => {};
 
   const actionColumn = [
     {
@@ -89,9 +54,9 @@ const SpecialPassengersDatable = ({
           <div className="flex items-center gap-2">
             <div className="relative flex items-center">
               <Dialog>
-                <div className="lg:flex lg:items-center lg:justify-end">
-                  <DialogTrigger className="px-[12px] pl-[29px] py-[2px] z-20 rounded-md border border-teal-800 bg-teal-800/60 text-white transition-colors hover:border-black font-semibold dark:border-teal-600 dark:bg-teal-700/60 dark:hover:text-inherit dark:hover:border-teal-500">
-                    <Eye className="absolute left-3 top-[4px] h-4 w-4" />
+                <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
+                  <DialogTrigger className="h-[28px] px-[13px] rounded-lg pl-[32px] relative bg-teal-800/60 text-white shadow-input md:text-[15px] hover:text-white dark:text-slate-100 dark:bg-teal-700/60 dark:hover:text-white dark:shadow-none">
+                    <Eye className="absolute left-[13px] top-[5.5px] h-4 w-4" />
                     Ver
                   </DialogTrigger>
                 </div>
@@ -124,14 +89,16 @@ const SpecialPassengersDatable = ({
               </Dialog>
             </div>
             <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <div className="relative flex items-center">
-                  <button className="pl-[21px] rounded-md text-[#b4343a] font-semibold transition-colors hover:text-red-300">
-                    <Trash2 className="absolute left-1 top-[.6px] h-4 w-4" />
-                    Borrar
-                  </button>
-                </div>
-              </AlertDialogTrigger>
+              <div className="relative flex items-center">
+                <AlertDialogTrigger className="z-50">
+                  <TrashButtonDatatable
+                    icon={
+                      <Trash2 className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />
+                    }
+                    text="Borrar"
+                  />
+                </AlertDialogTrigger>
+              </div>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
@@ -160,12 +127,17 @@ const SpecialPassengersDatable = ({
   ];
 
   return (
-    <div className={`${list.length > 0 ? "h-[600px]" : ""} w-full`}>
-      {list.length > 0 ? (
+    <div
+      className={`${
+        tripPassengers.length > 0 ? "h-[650px] max-w-[1400px]" : ""
+      } w-full`}
+    >
+      {tripPassengers.length > 0 ? (
         <DataGrid
-          rows={list}
+          rows={tripPassengers}
           columns={actionColumn.concat(columns)}
           checkboxSelection
+          getRowHeight={getRowHeight}
           hideFooterSelectedRowCount
           initialState={{
             pagination: {
@@ -177,7 +149,6 @@ const SpecialPassengersDatable = ({
           pageSizeOptions={[9]}
           getRowId={(row) => row._id}
           sx={{
-            borderColor: "#007F9633",
             borderRadius: "7px",
             "&>.MuiDataGrid-main": {
               "&>.MuiDataGrid-columnHeaders": {
@@ -192,7 +163,7 @@ const SpecialPassengersDatable = ({
               borderTop: "none",
             },
           }}
-          className="w-[min(100%,1400px)] shadow-md border dark:text-neutral-100"
+          className="max-w-[1400px]"
         />
       ) : (
         <div className="mx-auto flex flex-col items-center gap-3">
