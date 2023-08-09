@@ -41,7 +41,7 @@ import Logo from "../components/Logo";
 import TimePickerContainer from "../components/TimePickerContainer";
 import { Separator } from "../components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { convertToDatePickerFormat } from "@/lib/utils/convertToDatepickerFormat";
+import { convertToDatePickerFormat } from "@/lib/utils/convertToDatePickerFormat";
 
 type SpecialTrip = {
   name: string;

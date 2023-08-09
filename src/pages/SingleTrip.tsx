@@ -16,7 +16,7 @@ import { AuthContext } from "../context/AuthContext";
 import ActionButton from "@/components/ActionButton";
 import TripCard from "@/components/TripCard";
 import DialogAnonPassenger from "@/components/DialogAnonPassenger";
-import { convertToDatePickerFormat } from "@/lib/utils/convertToDatepickerFormat";
+import { convertToDatePickerFormat } from "@/lib/utils/convertToDatePickerFormat";
 
 type Trip = {
   _id: string;
