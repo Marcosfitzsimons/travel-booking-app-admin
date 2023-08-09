@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import moment from "moment-timezone";
 import "moment/locale/es";
@@ -6,7 +6,7 @@ import axios from "axios";
 import { passengerColumns } from "../datatablesource";
 import BackButton from "../components/BackButton";
 import PassengersDatatable from "../components/PassengersDatatable";
-import { Crop, Heart, Milestone, UserPlus, Users } from "lucide-react";
+import { UserPlus, Users } from "lucide-react";
 import SectionTitle from "../components/SectionTitle";
 import Loading from "../components/Loading";
 import { useForm } from "react-hook-form";
@@ -16,6 +16,7 @@ import { AuthContext } from "../context/AuthContext";
 import ActionButton from "@/components/ActionButton";
 import TripCard from "@/components/TripCard";
 import DialogAnonPassenger from "@/components/DialogAnonPassenger";
+import { convertToDatePickerFormat } from "@/lib/utils/convertToDatepickerFormat";
 
 type Trip = {
   _id: string;
@@ -187,19 +188,9 @@ const SingleTrip = () => {
     return formatted_date;
   };
 
-  const datePickerFormat = (date: string) => {
-    const momentDate = moment.utc(date);
-    const selectedDate = momentDate.toDate();
-    return selectedDate;
-  };
-
   const fetchData = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
       const res = await axios.get(
         `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/trips/${
           user?._id
@@ -214,7 +205,7 @@ const SingleTrip = () => {
       const tripData = { ...res.data };
       setDepartureTimeValue(tripData.departureTime);
       setArrivalTimeValue(tripData.arrivalTime);
-      setStartDate(datePickerFormat(res.data.date));
+      setStartDate(convertToDatePickerFormat(res.data.date));
       reset({
         name: tripData.name,
         from: tripData.from,
