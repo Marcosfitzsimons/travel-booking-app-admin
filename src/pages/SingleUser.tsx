@@ -8,6 +8,7 @@ import {
   Mail,
   Milestone,
   Phone,
+  RefreshCw,
   Upload,
   User,
 } from "lucide-react";
@@ -40,10 +41,11 @@ import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import Loading from "../components/Loading";
 import { Button } from "../components/ui/button";
-import { Separator } from "../components/ui/separator";
 import UserInfo from "../components/UserInfo";
 import AddressAutocomplete from "@/components/AddressAutocomplete";
 import { capitalizeWord } from "@/lib/utils/capitalizeWord";
+import { InputValidation } from "@/types/types";
+import { createAuthHeaders } from "@/lib/utils/createAuthHeaders";
 
 type addressCda = {
   street: string;
@@ -62,25 +64,6 @@ type UserData = {
   image?: string;
   status: undefined | "Active" | "Pending";
 };
-
-interface InputValidation {
-  required: {
-    value: boolean;
-    message: string;
-  };
-  minLength: {
-    value: number;
-    message: string;
-  };
-  maxLength: {
-    value: number;
-    message: string;
-  };
-  pattern?: {
-    value: RegExp;
-    message: string;
-  };
-}
 
 interface UserInput {
   id: any;
@@ -114,6 +97,8 @@ const SingleUser = () => {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState<File | string>("");
   const [err, setErr] = useState<any>(false);
+  const [isEditStatus, setIsEditStatus] = useState(false);
+  const [loading1, setLoading1] = useState(false);
   const [addressCapitalValue, setAddressCapitalValue] = useState("");
   const [statusValue, setStatusValue] = useState<"pending" | "active">(
     "pending"
@@ -142,12 +127,41 @@ const SingleUser = () => {
     },
   });
 
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+  const headers = createAuthHeaders();
 
   let { id } = useParams();
+
+  const handleIsActiveSubmit = async () => {
+    setLoading1(true);
+    try {
+      const res = await axios.put(
+        `${
+          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
+        }/users/${id}/status`,
+        {
+          userData: {
+            status: capitalizeWord(statusValue),
+          },
+        },
+        { headers }
+      );
+      setStatusValue(res.data.userStatus.toLowerCase());
+      setLoading1(false);
+      setIsEditStatus(false);
+      toast({
+        description: "Estado de la cuenta actualizado con éxito.",
+      });
+    } catch (err: any) {
+      const errorMsg = err.response.data.msg;
+      console.log(errorMsg);
+      toast({
+        variant: "destructive",
+        description: "Error al guardar los cambios, intentar mas tarde.",
+      });
+      setIsEditStatus(false);
+      setLoading1(false);
+    }
+  };
 
   const handleOnSubmit = async (data: UserData) => {
     setLoading(true);
@@ -172,7 +186,6 @@ const SingleUser = () => {
         console.log(res);
         setLoading(false);
         setData(res.data);
-        setStatusValue(res.data.status.toLowerCase());
         setAddressCapitalValue(res.data.addressCapital);
         const userData = res.data;
         reset({
@@ -359,14 +372,76 @@ const SingleUser = () => {
       <div className="self-start">
         <BackButton linkTo="/users" />
       </div>
-      <SectionTitle>Información del usuario:</SectionTitle>
+      <SectionTitle>Información del usuario</SectionTitle>
 
       {loading ? (
         <Loading />
       ) : (
         <div className="flex flex-col gap-10">
           <div className="flex flex-col items-center gap-3">
-            <UserInfo userData={data} />
+            <div className="relative w-full flex flex-col items-center gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row sm:gap-4 lg:absolute lg:left-0 lg:z-50">
+                <div className="flex items-center gap-3 p-4 rounded-lg border bg-card">
+                  <div className="flex flex-col items-center gap-1">
+                    <p className="text-sm">Estado de la cuenta</p>
+                    {statusValue === "active" ? (
+                      <span className="rounded-md bg-green-600/30 border border-green-900 shadow-input px-4 dark:bg-green-200/40 dark:border-green-900/60 dark:shadow-none">
+                        Activa
+                      </span>
+                    ) : (
+                      <span className="rounded-md bg-orange-700/70 text-white border border-orange-900/80 shadow-input px-4 dark:bg-orange-500/70 dark:border-orange-900/60 dark:shadow-none">
+                        Pendiente
+                      </span>
+                    )}
+                  </div>
+                  <div className="">
+                    <div className="flex items-center relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 after:transition focus-within:after:shadow-slate-400 dark:after:shadow-highlight dark:after:shadow-zinc-500/50 dark:focus-within:after:shadow-slate-100 dark:hover:text-white">
+                      <Button
+                        onClick={() => setIsEditStatus((prev) => !prev)}
+                        className="h-[30px] p-2 outline-none inline-flex items-center justify-center text-sm font-medium transition-colors rounded-lg shadow-input bg-card border border-slate-800/20 hover:bg-white dark:text-neutral-200 dark:border-slate-800 dark:hover:bg-black dark:shadow-none dark:hover:text-white"
+                      >
+                        Editar
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                {isEditStatus && (
+                  <div className="flex flex-col gap-3 py-2 px-4 rounded-lg animate-in bg-card border lg:flex-row lg:items-center">
+                    <Select
+                      value={statusValue}
+                      onValueChange={(v: any) => setStatusValue(v)}
+                    >
+                      <div
+                        className="relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
+          after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"
+                      >
+                        <SelectTrigger className="px-2">
+                          <SelectValue
+                            placeholder={
+                              statusValue === "active" ? "Activo" : "Pendiente"
+                            }
+                          />
+                        </SelectTrigger>
+                      </div>
+                      <SelectContent>
+                        <SelectItem value="active">Activa</SelectItem>
+                        <SelectItem value="pending">Pendiente</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <div className="self-end flex items-center relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 after:transition focus-within:after:shadow-slate-400 dark:after:shadow-highlight dark:after:shadow-zinc-500/50 dark:focus-within:after:shadow-slate-100 dark:hover:text-white">
+                      <Button
+                        onClick={handleIsActiveSubmit}
+                        disabled={loading1}
+                        className="h-[30px] p-2 outline-none inline-flex items-center justify-center text-sm font-medium transition-colors rounded-lg shadow-input bg-card border border-slate-800/20 hover:bg-white dark:text-neutral-200 dark:border-slate-800 dark:hover:bg-black dark:shadow-none dark:hover:text-white"
+                      >
+                        Guardar cambios
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <UserInfo userData={data} />
+            </div>
 
             <Dialog>
               <div className="relative w-full max-w-sm mx-auto after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-white/20 dark:after:shadow-highlight dark:after:shadow-blue-lagoon-100/20 after:transition focus-within:after:shadow-blue-lagoon-200 dark:focus-within:after:shadow-blue-lagoon-200 lg:h-8 lg:w-[9rem]">
@@ -440,35 +515,8 @@ const SingleUser = () => {
                       </div>
 
                       <div className="relative w-full flex flex-col items-center gap-3 lg:max-w-2xl">
-                        <div className="absolute left-0 -top-12 flex flex-col gap-1">
-                          <p className="text-sm">Estado de la cuenta:</p>
-                          <Select
-                            value={statusValue.toLowerCase()}
-                            onValueChange={(v: any) => setStatusValue(v)}
-                          >
-                            <div
-                              className="relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
-          after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"
-                            >
-                              <SelectTrigger className="w-[180px] z-50">
-                                <SelectValue
-                                  placeholder={
-                                    statusValue.toLowerCase() === "active"
-                                      ? "Activo"
-                                      : "Pendiente"
-                                  }
-                                />
-                              </SelectTrigger>
-                            </div>
-                            <SelectContent>
-                              <SelectItem value="active">Activa</SelectItem>
-                              <SelectItem value="pending">Pendiente</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
                         <div className="w-full flex flex-col items-center">
                           <div className="my-3 w-full flex flex-col items-center">
-                            <Separator className="w-8 my-2 bg-border-color dark:bg-border-color-dark" />
                             <h5 className="text-center w-full font-medium dark:text-white lg:text-start lg:text-xl">
                               Datos personales
                             </h5>
@@ -667,7 +715,6 @@ const SingleUser = () => {
 
                         <div className="w-full flex flex-col items-center gap-3">
                           <div className="w-full flex flex-col items-center">
-                            <Separator className="w-8 my-2 bg-border-color dark:bg-border-color-dark" />
                             <h5 className="text-center w-full font-medium dark:text-white lg:text-start lg:text-xl">
                               Domicilios
                             </h5>
@@ -717,7 +764,6 @@ const SingleUser = () => {
                                 );
                               })}
                             </div>
-                            <Separator className="w-8 my-2 bg-border-color md:hidden dark:bg-border-color-dark" />
 
                             <div className="w-full flex flex-col gap-2">
                               <h6 className="font-serif text-accent ">

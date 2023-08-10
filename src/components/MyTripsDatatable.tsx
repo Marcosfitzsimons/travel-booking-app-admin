@@ -14,7 +14,6 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { useToast } from "../hooks/ui/use-toast";
-import { Link } from "react-router-dom";
 import { Eye } from "lucide-react";
 import { getRowHeight } from "@/lib/utils/getRowHeight";
 import ActionButtonDatatable from "./ActionButtonDatatable";
@@ -51,13 +50,6 @@ type UserData = {
   image?: string;
 };
 
-interface Column {
-  field: string;
-  headerName: string;
-  width: number;
-  renderCell?: any;
-}
-
 type DataTableProps = {
   columns: any;
   userTrips: TripProps[];
@@ -81,7 +73,9 @@ const MyTripsDatatable = ({ columns, userTrips, userData }: DataTableProps) => {
     setLoading(true);
     try {
       await axios.delete(
-        `https://fabebus-api-example.onrender.com/api/passengers/${userId}/${tripId}`,
+        `${
+          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
+        }/passengers/${userId}/${tripId}`,
         { headers }
       );
       toast({

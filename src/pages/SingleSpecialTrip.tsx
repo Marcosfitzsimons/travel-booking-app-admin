@@ -42,6 +42,7 @@ import TimePickerContainer from "../components/TimePickerContainer";
 import { Separator } from "../components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { convertToDatePickerFormat } from "@/lib/utils/convertToDatePickerFormat";
+import { createAuthHeaders } from "@/lib/utils/createAuthHeaders";
 
 type SpecialTrip = {
   name: string;
@@ -120,10 +121,7 @@ const SingleSpecialTrip = () => {
     },
   });
 
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+  const headers = createAuthHeaders();
 
   const formatDate = (date: string) => {
     const momentDate = moment.utc(date);

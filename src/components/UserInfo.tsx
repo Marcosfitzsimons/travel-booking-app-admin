@@ -40,24 +40,14 @@ const UserInfo = ({ userData }: UserInfoProps) => {
         </AvatarFallback>
       </Avatar>
 
-      <div className="flex flex-col items-center">
+      <div className="relative flex flex-col items-center">
         <h3 className="font-medium text-xl dark:text-white ">
           {userData?.fullName}
         </h3>
         <h4 className="text-[#737373] dark:text-slate-500">
           @{userData?.username}
         </h4>
-        <p className="mt-7">
-          {userData.status === "Active" ? (
-            <span className="rounded-md bg-green-600/30 border border-green-900 shadow-input px-2 py-0.5 dark:bg-green-200/40 dark:border-zinc-300/90 dark:shadow-none">
-              Cuenta activa
-            </span>
-          ) : (
-            <span className="rounded-md bg-orange-700/70 text-white border border-orange-900/80 shadow-input px-2 py-0.5 dark:bg-orange-500/70 dark:border-orange-900/60 dark:shadow-none">
-              Cuenta pendiente
-            </span>
-          )}
-        </p>
+
         <Separator className="hidden w-4 self-center bg-border mt-7 lg:flex " />
       </div>
 

@@ -13,42 +13,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { toast } from "../hooks/ui/use-toast";
-
+import { useToast } from "../hooks/ui/use-toast";
 import TrashButtonDatatable from "./TrashButtonDatatable";
 import { getRowHeight } from "@/lib/utils/getRowHeight";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
-import { Button } from "./ui/button";
-
-type Trip = {
-  name: string;
-  date: Date | null | undefined;
-  from: string;
-  departureTime: string;
-  to: string;
-  arrivalTime: string;
-  maxCapacity: string;
-  price: string;
-};
-
-type addressCda = {
-  street: string;
-  streetNumber: number | undefined;
-  crossStreets: string;
-};
-
-type UserData = {
-  _id: string;
-  username: string;
-  fullName: string;
-  addressCda: addressCda;
-  addressCapital: string;
-  email: string;
-  phone: number | undefined;
-  dni: number | undefined;
-  image?: string;
-  myTrips: Trip[];
-};
+import { createAuthHeaders } from "@/lib/utils/createAuthHeaders";
 
 type DataTableProps = {
   columns: any;
@@ -72,10 +41,10 @@ const PassengersDatable = ({
   const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState<null | string>(null);
 
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+  const { toast } = useToast();
+
+  const headers = createAuthHeaders();
+
   console.log(tripPassengers);
   const handleIsPaid = async (passengerId: string) => {
     setIsLoading(true);
