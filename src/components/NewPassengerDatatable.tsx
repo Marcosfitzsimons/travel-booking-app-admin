@@ -26,6 +26,7 @@ import SearchUserInput from "./SearchUserInput";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { getRowHeight } from "@/lib/utils/getRowHeight";
+import { createAuthHeaders } from "@/lib/utils/createAuthHeaders";
 
 type UserDataTableProps = {
   columns: any;
@@ -48,10 +49,7 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
 
   const { data, error } = useFetch(baseUrl);
 
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+  const headers = createAuthHeaders();
 
   const handleAddPassenger = async (userId: string) => {
     setLoading(true);
@@ -256,6 +254,18 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
             },
           }}
           getRowHeight={getRowHeight}
+          slots={{
+            noRowsOverlay: () => (
+              <div className="h-full flex justify-center items-center">
+                Cargando usuarios...
+              </div>
+            ),
+            noResultsOverlay: () => (
+              <div className="h-full flex justify-center items-center">
+                No se encontraron usuarios
+              </div>
+            ),
+          }}
           className="max-w-[1400px]"
         />
       ) : (
@@ -288,8 +298,20 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
               borderTop: "none",
             },
           }}
-          className="max-w-[1400px]"
+          slots={{
+            noRowsOverlay: () => (
+              <div className="h-full flex justify-center items-center">
+                Cargando usuarios...
+              </div>
+            ),
+            noResultsOverlay: () => (
+              <div className="h-full flex justify-center items-center">
+                No se encontraron usuarios
+              </div>
+            ),
+          }}
           getRowHeight={getRowHeight}
+          className="max-w-[1400px]"
         />
       )}
     </div>
