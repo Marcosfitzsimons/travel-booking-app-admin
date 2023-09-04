@@ -2,10 +2,7 @@ import { UserPlus } from "lucide-react";
 import BackButton from "../components/BackButton";
 import NewUserForm from "../components/NewUserForm";
 import SectionTitle from "../components/SectionTitle";
-
-type NewUserProps = {
-  title: string;
-};
+import { NewUserProps } from "@/types/props";
 
 const NewUser = ({ title }: NewUserProps) => {
   return (

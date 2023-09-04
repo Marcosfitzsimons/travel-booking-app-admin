@@ -1,9 +1,7 @@
 import { DataGrid } from "@mui/x-data-grid";
-import { Link } from "react-router-dom";
-import { Eye, Trash2, User, UserPlus, UserPlusIcon, Users } from "lucide-react";
+import { Eye, Trash2, UserPlusIcon, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import useFetch from "../hooks/useFetch";
-import axios from "axios";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,74 +20,50 @@ import ActionButtonDatatable from "./ActionButtonDatatable";
 import TrashButtonDatatable from "./TrashButtonDatatable";
 import { getRowHeight } from "@/lib/utils/getRowHeight";
 import TotalCountCard from "./TotalCountCard";
-
-type addressCda = {
-  street: string;
-  streetNumber: number | null;
-  crossStreets: string;
-};
-
-type User = {
-  _id: string | undefined;
-  username: string | undefined;
-  fullName: string | undefined;
-  email: string | undefined;
-  dni: number | undefined;
-  addressCda: addressCda | undefined;
-  addressCapital: string | undefined;
-  phone: number | undefined;
-  image?: string | undefined;
-};
-
-interface Column {
-  field: string;
-  headerName: string;
-  width?: number;
-  flex?: number;
-  renderCell?: (params: any) => any;
-}
-
-type DataTableProps = {
-  columns: Column[];
-  linkText: string;
-};
-
-type ExtendedColumn = Column & {
-  renderCell?: (params: any) => JSX.Element;
-};
+import { User } from "@/types/types";
+import { DataTableProps } from "@/types/props";
+import { useNavigate } from "react-router-dom";
+import { ExtendedColumn } from "@/types/types";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import useAuth from "@/hooks/useAuth";
 
 const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
   const [list, setList] = useState<User[]>([]);
   const [filteredList, setFilteredList] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState<any>(false);
-  const baseUrl = `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/users`;
+  const [isError, setIsError] = useState(false);
+  const baseUrl = `/users`;
 
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
+
+  const { setAuth } = useAuth();
   const { data, loading, error } = useFetch(baseUrl);
-
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
 
   const handleDelete = async (id: string) => {
     setIsLoading(true);
     try {
-      await axios.delete(`${baseUrl}/${id}`, {
-        headers,
-      });
+      await axiosPrivate.delete(`${baseUrl}/${id}`);
       setList(list.filter((item) => item._id !== id));
       setIsLoading(false);
       toast({
         description: "Usuario eliminado con éxito.",
       });
     } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       const errorMsg = err.response.data.msg;
       setIsLoading(false);
-      setIsError(errorMsg);
+      setIsError(true);
       toast({
         variant: "destructive",
-        description: "Error al eliminar usuario, intentar más tarde.",
+        description: errorMsg
+          ? errorMsg
+          : "Error al eliminar usuario, intentar más tarde.",
       });
     }
   };
@@ -155,8 +129,16 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
     <div className="h-[650px] w-full max-w-[1400px]">
       <div className="w-full my-3 flex flex-col items-center gap-3 md:flex-row md:items-end md:justify-between">
         <div className="flex flex-col gap-1">
-          {error && <p className="text-red-500 order-2">{error.message}</p>}
-          {isError && <p className="text-red-500 order-2">{isError}</p>}
+          {error && (
+            <p className="text-red-500 order-2">
+              Ha ocurrido un error. Intentar más tarde
+            </p>
+          )}
+          {isError && (
+            <p className="text-red-500 order-2">
+              Ha ocurrido un error. Intentar más tarde
+            </p>
+          )}
           {isLoading && <p className="text-red-500 order-2">is loading...</p>}
           <SearchUserInput list={list} setFilteredList={setFilteredList} />
         </div>
@@ -169,7 +151,7 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
             />
           </div>
           <ActionButton
-            text="Crear usuario"
+            text={linkText}
             icon={
               <UserPlusIcon className="absolute left-[13px] top-[6px] h-5 w-5" />
             }

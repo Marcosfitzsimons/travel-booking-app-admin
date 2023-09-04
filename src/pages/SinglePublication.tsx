@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment-timezone";
 import "moment/locale/es";
-import axios from "axios";
 import { useForm } from "react-hook-form";
 import Loading from "../components/Loading";
 import { useToast } from "../hooks/ui/use-toast";
@@ -14,16 +13,9 @@ import logo from "../assets/fabebus-logo.jpg";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { convertToArgentineTimezone } from "@/lib/utils/convertToArgentineTimezone";
-
-type Publication = {
-  _id?: string;
-  title: string;
-  subtitle?: string;
-  description: string;
-  image?: string;
-  createdAt: string;
-  updatedAt?: string;
-};
+import { Publication } from "@/types/types";
+import useAuth from "@/hooks/useAuth";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 const INITIAL_STATES = {
   _id: "",
@@ -35,20 +27,23 @@ const INITIAL_STATES = {
   image: "",
 };
 
+// Add edit publication functionality
+
 const SinglePublication = () => {
   const [data, setData] = useState(INITIAL_STATES);
   const [loading, setLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [error, setError] = useState<unknown | boolean>(false);
-  const [err, setErr] = useState<null | string>(null);
+  const [error, setError] = useState(false);
+  const [err, setErr] = useState(false);
 
   const { title, subtitle, description, createdAt, image } = data;
-  let { id } = useParams();
-  const { toast } = useToast();
 
-  moment.locale("es", {
-    weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
-  });
+  let { id } = useParams();
+
+  const { toast } = useToast();
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
+  const { setAuth } = useAuth();
 
   const { datePart, timePart } = convertToArgentineTimezone(createdAt);
 
@@ -67,59 +62,44 @@ const SinglePublication = () => {
     },
   });
 
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-
   const handleOnSubmit = async (data: Publication) => {
     setLoading(true);
 
     // do the image upload stuff
 
     try {
-      const res = await axios.put(
-        `${
-          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
-        }/publications/${id}`,
-        { ...data },
-        { headers }
-      );
+      await axiosPrivate.put(`/publications/${id}`, { ...data });
       setLoading(false);
       toast({
         description: "Cambios guardados con exito.",
       });
-      setTimeout(() => {
-        location.reload();
-      }, 1000);
     } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       const errorMsg = err.response.data.msg;
       setLoading(false);
       setErr(errorMsg);
       toast({
         variant: "destructive",
-        description: "Error al guardar los cambios, intentar mas tarde.",
+        description: errorMsg
+          ? errorMsg
+          : "Error al guardar cambios, intente más tarde.",
       });
-      setTimeout(() => {
-        location.reload();
-      }, 1000);
     }
   };
 
   useEffect(() => {
-    setLoading(true);
     const fetchData = async () => {
+      setLoading(true);
       try {
-        const res = await axios.get(
-          `${
-            import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
-          }/publications/${id}`,
-          {
-            headers,
-          }
-        );
+        const res = await axiosPrivate.get(`/publications/${id}`);
         setData(res.data);
         const publicationData = res.data;
+        setLoading(false);
         reset({
           title: publicationData.title,
           subtitle: publicationData.subtitle ? publicationData.subtitle : "",
@@ -128,9 +108,22 @@ const SinglePublication = () => {
           createdAt: publicationData.createdAt,
         });
       } catch (err: any) {
-        setErr(err);
+        if (err.response?.status === 403) {
+          setAuth({ user: null });
+          setTimeout(() => {
+            navigate("/login");
+          }, 100);
+        }
+        const errorMsg = err.response?.data.msg;
+        setLoading(false);
+        setErr(true);
+        toast({
+          variant: "destructive",
+          description: errorMsg
+            ? errorMsg
+            : "Error al obtener información acerca de la publicación, intente más tarde.",
+        });
       }
-      setLoading(false);
     };
     fetchData();
   }, []);
@@ -138,6 +131,10 @@ const SinglePublication = () => {
   const downloadImage = () => {
     saveAs(image, "fabebus-img.jpg");
   };
+
+  moment.locale("es", {
+    weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+  });
 
   return (
     <section className="flex flex-col gap-3">
@@ -175,7 +172,7 @@ const SinglePublication = () => {
                     <AvatarImage
                       src={logo}
                       alt="fabebus"
-                      className="border border-border-color rounded-full"
+                      className="border rounded-full"
                     />
                     <AvatarFallback>Fabebus</AvatarFallback>
                   </Avatar>

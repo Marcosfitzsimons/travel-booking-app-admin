@@ -1,17 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import {
-  Crop,
-  Fingerprint,
-  Mail,
-  Milestone,
-  Phone,
-  RefreshCw,
-  Upload,
-  User,
-} from "lucide-react";
+import { Fingerprint, Mail, Phone, Upload, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import {
   Dialog,
@@ -25,9 +16,7 @@ import {
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -44,35 +33,10 @@ import { Button } from "../components/ui/button";
 import UserInfo from "../components/UserInfo";
 import AddressAutocomplete from "@/components/AddressAutocomplete";
 import { capitalizeWord } from "@/lib/utils/capitalizeWord";
-import { InputValidation } from "@/types/types";
-import { createAuthHeaders } from "@/lib/utils/createAuthHeaders";
-
-type addressCda = {
-  street: string;
-  streetNumber: number | undefined;
-  crossStreets: string;
-};
-
-type UserData = {
-  fullName: string;
-  username: string;
-  addressCda: addressCda;
-  addressCapital: string;
-  dni: number | undefined;
-  phone: undefined | number;
-  email: string;
-  image?: string;
-  status: undefined | "Active" | "Pending";
-};
-
-interface UserInput {
-  id: any;
-  label: string;
-  type: string;
-  placeholder?: string;
-  validation?: InputValidation;
-  icon?: any;
-}
+import { UserInput, UserProfileData } from "@/types/types";
+import { userAddressInputs } from "@/formSource";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import useAuth from "@/hooks/useAuth";
 
 const INITIAL_STATES = {
   _id: "",
@@ -96,14 +60,14 @@ const SingleUser = () => {
   const [data, setData] = useState(INITIAL_STATES);
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState<File | string>("");
-  const [err, setErr] = useState<any>(false);
+  const [err, setErr] = useState(false);
   const [isEditStatus, setIsEditStatus] = useState(false);
   const [loading1, setLoading1] = useState(false);
   const [addressCapitalValue, setAddressCapitalValue] = useState("");
   const [statusValue, setStatusValue] = useState<"pending" | "active">(
     "pending"
   );
-  console.log(statusValue);
+
   const {
     register,
     handleSubmit,
@@ -127,24 +91,19 @@ const SingleUser = () => {
     },
   });
 
-  const headers = createAuthHeaders();
-
   let { id } = useParams();
+  const { setAuth } = useAuth();
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
 
   const handleIsActiveSubmit = async () => {
     setLoading1(true);
     try {
-      const res = await axios.put(
-        `${
-          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
-        }/users/${id}/status`,
-        {
-          userData: {
-            status: capitalizeWord(statusValue),
-          },
+      const res = await axiosPrivate.put(`/users/${id}/status`, {
+        userData: {
+          status: capitalizeWord(statusValue),
         },
-        { headers }
-      );
+      });
       setStatusValue(res.data.userStatus.toLowerCase());
       setLoading1(false);
       setIsEditStatus(false);
@@ -152,8 +111,13 @@ const SingleUser = () => {
         description: "Estado de la cuenta actualizado con éxito.",
       });
     } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       const errorMsg = err.response.data.msg;
-      console.log(errorMsg);
       toast({
         variant: "destructive",
         description: "Error al guardar los cambios, intentar mas tarde.",
@@ -163,7 +127,7 @@ const SingleUser = () => {
     }
   };
 
-  const handleOnSubmit = async (data: UserData) => {
+  const handleOnSubmit = async (data: UserProfileData) => {
     setLoading(true);
 
     const imgData = new FormData();
@@ -172,18 +136,13 @@ const SingleUser = () => {
 
     try {
       if (!image) {
-        const res = await axios.put(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/users/${id}`,
-          {
-            userData: {
-              ...data,
-              addressCapital: addressCapitalValue,
-              status: capitalizeWord(statusValue),
-            },
+        const res = await axiosPrivate.put(`/users/${id}`, {
+          userData: {
+            ...data,
+            addressCapital: addressCapitalValue,
+            status: capitalizeWord(statusValue),
           },
-          { headers }
-        );
-        console.log(res);
+        });
         setLoading(false);
         setData(res.data);
         setAddressCapitalValue(res.data.addressCapital);
@@ -204,24 +163,20 @@ const SingleUser = () => {
           description: "Cambios guardados con exito.",
         });
       } else {
-        const uploadRes = await axios.post(
+        const uploadRes = await axiosPrivate.post(
           "https://api.cloudinary.com/v1_1/dioqjddko/image/upload",
           imgData
         );
         const { url } = uploadRes.data;
 
-        const res = await axios.put(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/users/${id}`,
-          {
-            userData: {
-              ...data,
-              image: url,
-              addressCapital: addressCapitalValue,
-              status: capitalizeWord(statusValue),
-            },
+        const res = await axiosPrivate.put(`/users/${id}`, {
+          userData: {
+            ...data,
+            image: url,
+            addressCapital: addressCapitalValue,
+            status: capitalizeWord(statusValue),
           },
-          { headers }
-        );
+        });
         setLoading(false);
         setData(res.data);
         setStatusValue(res.data.status.toLowerCase());
@@ -245,6 +200,12 @@ const SingleUser = () => {
         });
       }
     } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       const errorMsg = err.response.data.msg;
       setLoading(false);
       setErr(errorMsg);
@@ -259,12 +220,7 @@ const SingleUser = () => {
     setLoading(true);
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/users/${id}`,
-          {
-            headers,
-          }
-        );
+        const res = await axiosPrivate.get(`/users/${id}`);
         setData(res.data.user);
         setStatusValue(res.data.user.status.toLowerCase());
         setAddressCapitalValue(res.data.addressCapital);
@@ -283,89 +239,17 @@ const SingleUser = () => {
           image: userData.image ? userData.image : "",
         });
       } catch (err) {
-        setErr(err);
+        setErr(true);
+        toast({
+          variant: "destructive",
+          description:
+            "Error al obtener información del usuario, intentar mas tarde.",
+        });
       }
       setLoading(false);
     };
     fetchData();
   }, []);
-
-  const userAddressInputs = [
-    {
-      id: "street",
-      icon: (
-        <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] pb-[2px] " />
-      ),
-      label: "Calle",
-      type: "text",
-      placeholder: "Matheu",
-      validation: {
-        required: {
-          value: true,
-          message: "Por favor, ingresar domicilio.",
-        },
-        minLength: {
-          value: 3,
-          message: "Domicilio no puede ser tan corto.",
-        },
-        maxLength: {
-          value: 25,
-          message: "Domicilio no puede ser tan largo.",
-        },
-      },
-    },
-    {
-      id: "streetNumber",
-      icon: (
-        <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] pb-[2px] " />
-      ),
-      label: "Número",
-      type: "text",
-      placeholder: "354",
-      validation: {
-        required: {
-          value: true,
-          message: "Por favor, ingresar número de domicilio ",
-        },
-        minLength: {
-          value: 1,
-          message: "Número de domicilio no puede ser tan corto.",
-        },
-        maxLength: {
-          value: 5,
-          message: "Número de domicilio no puede ser tan largo.",
-        },
-        pattern: {
-          value: /^[0-9]+$/,
-          message: "Debe incluir solo números.",
-        },
-      },
-    },
-    {
-      id: "crossStreets",
-      icon: (
-        <Crop className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] pb-[2px] " />
-      ),
-      label: "Calles que cruzan",
-      type: "text",
-      placeholder: "Matheu y D. Romero",
-      validation: {
-        required: {
-          value: true,
-          message:
-            "Por favor, ingresar las calles que cruzan cerca de ese domicilio.",
-        },
-        minLength: {
-          value: 3,
-          message: "No puede ser tan corto.",
-        },
-        maxLength: {
-          value: 40,
-          message: "No puede ser tan largo.",
-        },
-      },
-    },
-  ];
 
   return (
     <section className="flex flex-col gap-3">
@@ -785,7 +669,9 @@ const SingleUser = () => {
                         </div>
 
                         {err && (
-                          <p className="text-red-600 self-start">{err}</p>
+                          <p className="text-red-600 self-start">
+                            Ha ocurrido un error. Intentar más tarde
+                          </p>
                         )}
                       </div>
                       <DialogFooter>
@@ -806,7 +692,6 @@ const SingleUser = () => {
             {data.myTrips && data.myTrips.length > 0 ? (
               <MyTripsDatatable
                 userTrips={data.myTrips}
-                userData={data}
                 columns={tripColumns}
               />
             ) : (

@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import useFetch from "../hooks/useFetch";
-import axios from "axios";
 import {
   Dialog,
   DialogContent,
@@ -21,17 +20,14 @@ import {
 } from "./ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import DefaultButton from "./DefaultButton";
-import { toast } from "../hooks/ui/use-toast";
+import { useToast } from "../hooks/ui/use-toast";
 import SearchUserInput from "./SearchUserInput";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { getRowHeight } from "@/lib/utils/getRowHeight";
-import { createAuthHeaders } from "@/lib/utils/createAuthHeaders";
-
-type UserDataTableProps = {
-  columns: any;
-  tripId: string | undefined;
-};
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import useAuth from "@/hooks/useAuth";
+import { UserDataTableProps } from "@/types/props";
 
 type MyRowType = {
   _id: string;
@@ -39,42 +35,52 @@ type MyRowType = {
 
 const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
   const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState<unknown | boolean>(false);
+  const [err, setErr] = useState(false);
   const [list, setList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
 
+  const axiosPrivate = useAxiosPrivate();
+
+  const { toast } = useToast();
+
   const navigate = useNavigate();
 
-  const baseUrl = `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/users`;
+  const { setAuth } = useAuth();
+
+  const baseUrl = `/users`;
 
   const { data, error } = useFetch(baseUrl);
 
-  const headers = createAuthHeaders();
-
   const handleAddPassenger = async (userId: string) => {
     setLoading(true);
+    setErr(false);
     try {
-      await axios.post(
-        `${
-          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
-        }/passengers/${userId}/${tripId}`,
-        { userId: userId },
-        { headers }
-      );
+      await axiosPrivate.post(`/passengers/${userId}/${tripId}`, {
+        userId: userId,
+      });
       setLoading(false);
+      setErr(false);
       toast({
         description: "Pasajero agregado con éxito.",
       });
       setTimeout(() => {
         navigate(`/trips/${tripId}`);
-      }, 1000);
+      }, 100);
     } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       const errorMsg = err.response.data.msg;
       setLoading(false);
-      setErr(errorMsg);
+      setErr(true);
       toast({
         variant: "destructive",
-        description: `Error al agregar pasajero, intentar más tarde. ${errorMsg}`,
+        description: errorMsg
+          ? errorMsg
+          : "Error al agregar pasajero, intente más tarde.",
       });
     }
   };
@@ -222,7 +228,16 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
       <div className="my-3">
         <SearchUserInput list={list} setFilteredList={setFilteredList} />
       </div>
-
+      {error && (
+        <p className="text-red-600">
+          Error al cargar usuarios. Intentar más tarde
+        </p>
+      )}
+      {err && (
+        <p className="text-red-600">
+          Error al agregar pasajero. Intentar más tarde
+        </p>
+      )}
       {filteredList.length > 0 ? (
         <DataGrid<MyRowType>
           rows={filteredList}

@@ -1,8 +1,7 @@
-import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment-timezone";
 import "moment/locale/es";
-import axios from "axios";
 import { passengerColumns } from "../datatablesource";
 import BackButton from "../components/BackButton";
 import PassengersDatatable from "../components/PassengersDatatable";
@@ -12,53 +11,13 @@ import Loading from "../components/Loading";
 import { useForm } from "react-hook-form";
 import { useToast } from "../hooks/ui/use-toast";
 import { Separator } from "../components/ui/separator";
-import { AuthContext } from "../context/AuthContext";
 import ActionButton from "@/components/ActionButton";
 import TripCard from "@/components/TripCard";
 import DialogAnonPassenger from "@/components/DialogAnonPassenger";
 import { convertToDatePickerFormat } from "@/lib/utils/convertToDatePickerFormat";
-
-type Trip = {
-  _id: string;
-  name: string;
-  date: null | undefined | string;
-  from: string;
-  departureTime: string;
-  to: string;
-  arrivalTime: string;
-  maxCapacity: number | undefined;
-  price: number | undefined;
-  passengers: Passenger[];
-};
-
-type addressCda = {
-  street: string;
-  streetNumber: number | undefined;
-  crossStreets: string;
-};
-
-type UserData = {
-  _id: string;
-  username: string;
-  fullName: string;
-  addressCda: addressCda;
-  addressCapital: string;
-  email: string;
-  phone: number | undefined;
-  dni: number | undefined;
-  image?: string;
-  myTrips: Trip[];
-};
-
-type Passenger = {
-  _id: string;
-  createdBy?: UserData;
-  addressCda?: addressCda;
-  addressCapital?: string;
-  fullName?: string;
-  isPaid: boolean;
-  dni?: string;
-};
+import { Passenger, Trip } from "@/types/types";
+import useAuth from "@/hooks/useAuth";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 const INITIAL_STATES = {
   _id: "",
@@ -81,8 +40,7 @@ const SingleTrip = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [departureTimeValue, setDepartureTimeValue] = useState("");
   const [arrivalTimeValue, setArrivalTimeValue] = useState("");
-  const [error, setError] = useState<unknown | boolean>(false);
-  const [err, setErr] = useState<null | string>(null);
+  const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const [startDate, setStartDate] = useState<any>(null);
@@ -90,11 +48,11 @@ const SingleTrip = () => {
   const isMaxCapacity = passengers.length === data.maxCapacity;
   const passengersCount = `${passengers.length} / ${data.maxCapacity}`;
 
-  moment.locale("es", {
-    weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
-  });
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
 
-  const { user } = useContext(AuthContext);
+  const { auth, setAuth } = useAuth();
+  const user = auth?.user;
 
   let { id } = useParams();
   const { toast } = useToast();
@@ -117,24 +75,16 @@ const SingleTrip = () => {
     },
   });
 
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-
   const handleOnSubmitEdit = async (data: Trip) => {
     setIsSubmitted(true);
+    setError(false);
     try {
-      const res = await axios.put(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/trips/${id}`,
-        {
-          ...data,
-          date: startDate,
-          departureTime: departureTimeValue,
-          arrivalTime: arrivalTimeValue,
-        },
-        { headers }
-      );
+      const res = await axiosPrivate.put(`/trips/${id}`, {
+        ...data,
+        date: startDate,
+        departureTime: departureTimeValue,
+        arrivalTime: arrivalTimeValue,
+      });
       setIsSubmitted(false);
       formatDate(res.data.date);
       setData({ ...res.data, date: formatDate(res.data.date) });
@@ -142,12 +92,22 @@ const SingleTrip = () => {
         description: "Viaje ha sido editado con éxito.",
       });
     } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       console.log(err);
       const errorMsg = err.response.data.err.message;
-      setErr(errorMsg);
+      setError(true);
       setIsSubmitted(false);
       toast({
-        description: "Error al editar viaje. Intentar más tarde.",
+        variant: "destructive",
+        title: "Error al cancelar su lugar",
+        description: errorMsg
+          ? errorMsg
+          : "Error al editar viaje, intente más tarde.",
       });
     }
   };
@@ -155,25 +115,25 @@ const SingleTrip = () => {
   const handleDelete = async (passengerId: string) => {
     setIsLoading(true);
     try {
-      await axios.delete(
-        `${
-          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
-        }/passengers/${passengerId}/${id}`,
-        { headers }
-      );
+      await axiosPrivate.delete(`/passengers/${passengerId}/${id}`);
       toast({
         description: "Lugar cancelado con éxito.",
       });
       setIsLoading(false);
       setPassengers(passengers.filter((item) => item._id !== passengerId));
     } catch (err: any) {
-      console.log(err);
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       setLoading(false);
-      setErr(err.message);
+      setError(true);
       toast({
         variant: "destructive",
         description: `Error al cancelar lugar, intente más tarde. ${
-          err ? `"${err}"` : ""
+          err.response.data.msg ? err.response.data.msg : ""
         }`,
       });
     }
@@ -191,14 +151,7 @@ const SingleTrip = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/trips/${
-          user?._id
-        }/${id}`,
-        {
-          headers,
-        }
-      );
+      const res = await axiosPrivate.get(`/trips/${user?._id}/${id}`, {});
       setPassengers(res.data.passengers);
       const formattedDate = formatDate(res.data.date);
       setData({ ...res.data, date: formattedDate });
@@ -216,8 +169,12 @@ const SingleTrip = () => {
         maxCapacity: tripData.maxCapacity,
       });
     } catch (err) {
-      setError(err);
-      console.log(err);
+      setError(true);
+      toast({
+        variant: "destructive",
+        description:
+          "Error al cargar información acerca del viaje, intente más tarde.",
+      });
     }
     setLoading(false);
   };
@@ -232,13 +189,16 @@ const SingleTrip = () => {
         <BackButton linkTo="/trips" />
       </div>
       <SectionTitle>Información acerca del viaje</SectionTitle>
+      {error && (
+        <p className="text-red-600">Ha ocurrido un error. Intentar más tarde</p>
+      )}
       {loading ? (
         <Loading />
       ) : (
         <>
           <TripCard
             data={data}
-            err={err}
+            err={error}
             handleOnSubmitEdit={handleOnSubmitEdit}
             register={register}
             departureTimeValue={departureTimeValue}
@@ -285,9 +245,9 @@ const SingleTrip = () => {
                     ) : (
                       <div className="flex flex-col gap-2 md:flex-row md:items-center ">
                         <DialogAnonPassenger
-                          setErr={setErr}
+                          setErr={setError}
                           id={id}
-                          err={err}
+                          err={error}
                           fetchData={fetchData}
                         />
 

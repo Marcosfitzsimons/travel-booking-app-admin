@@ -6,7 +6,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
-import { AuthContextProvider } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 moment.locale("es", {
   weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
 });
@@ -14,10 +14,10 @@ inject();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <AuthContextProvider>
+    <AuthProvider>
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </AuthContextProvider>
+    </AuthProvider>
   </React.StrictMode>
 );

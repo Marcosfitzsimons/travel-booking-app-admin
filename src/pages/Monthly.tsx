@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Box } from "@mui/material";
 import SectionTitle from "@/components/SectionTitle";
 import useFetch from "@/hooks/useFetch";
@@ -6,9 +6,7 @@ import { ResponsiveLine } from "@nivo/line";
 import { convertToSpanishMonth } from "@/lib/utils/convertToSpanishMonth";
 
 const Monthly = () => {
-  const { data, loading }: any = useFetch(
-    `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/sales`
-  );
+  const { data, loading }: any = useFetch(`/sales`);
   const [formattedData] = useMemo(() => {
     if (!data || !data.monthlyData) return [[], []]; // Add a check for data and monthlyData existence
 

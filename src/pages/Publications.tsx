@@ -1,4 +1,4 @@
-import { History, Newspaper, Plus } from "lucide-react";
+import { Newspaper, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import useFetch from "../hooks/useFetch";
 import PublicationCard from "../components/PublicationCard";
@@ -6,23 +6,12 @@ import SectionTitle from "../components/SectionTitle";
 import Loading from "../components/Loading";
 import ActionButton from "@/components/ActionButton";
 import TotalCountCard from "@/components/TotalCountCard";
-
-type Publication = {
-  _id: string;
-  title: string;
-  subtitle?: string;
-  description: string;
-  image?: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { Publication } from "@/types/types";
 
 const PublicationsDatatable = () => {
   const [list, setList] = useState<Publication[]>([]);
 
-  const baseUrl = `${
-    import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
-  }/publications`;
+  const baseUrl = `/publications`;
 
   const { data, loading, error } = useFetch(baseUrl);
 
@@ -34,11 +23,15 @@ const PublicationsDatatable = () => {
     <div className="flex flex-col gap-6">
       <SectionTitle>
         <Newspaper className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
-        Publicaciones importantes
+        Publicaciones destacadas
       </SectionTitle>
       <div className="w-full max-w-[1400px]">
         <div className="">
-          {error && <p className="text-red-500 order-2">{error.message}</p>}
+          {error && (
+            <p className="text-red-600 order-2">
+              Error al cargar publicaciones, intentar más tarde
+            </p>
+          )}
           <div className="relative w-full flex flex-col items-center gap-2 md:pt-5">
             <div className="md:absolute md:right-0 md:top-[-80px]">
               <TotalCountCard

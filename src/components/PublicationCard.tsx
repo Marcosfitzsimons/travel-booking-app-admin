@@ -12,60 +12,50 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import moment from "moment";
-import axios from "axios";
 import { useState } from "react";
 import ActionButtonDatatable from "./ActionButtonDatatable";
 import { convertToArgentineTimezone } from "@/lib/utils/convertToArgentineTimezone";
-
-type Publication = {
-  _id: string;
-  title: string;
-  subtitle?: string;
-  description: string;
-  image?: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-interface PublicationCardProps {
-  item: Publication;
-  setList: (value: any) => void;
-  list: Publication[];
-}
+import { PublicationCardProps } from "@/types/props";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import { useNavigate } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
 
 const PublicationCard = ({ item, setList, list }: PublicationCardProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState<any>(false);
+  const [isError, setIsError] = useState(false);
   const { _id, title, subtitle, image, description, createdAt } = item;
 
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
   const { toast } = useToast();
+  const { setAuth } = useAuth();
 
   const handleDelete = async (id: string) => {
     setIsLoading(true);
+    setIsError(false);
     try {
-      await axios.delete(
-        `https://fabebus-api-example.onrender.com/api/publications/${_id}`,
-        {
-          headers,
-        }
-      );
+      await axiosPrivate.delete(`/publications/${_id}`);
       setList(list.filter((item) => item._id !== id));
       setIsLoading(false);
+      setIsError(false);
       toast({
         description: "Usuario eliminado con éxito.",
       });
     } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       const errorMsg = err.response.data.msg;
       setIsLoading(false);
-      setIsError(errorMsg);
+      setIsError(true);
       toast({
         variant: "destructive",
-        description: "Error al eliminar usuario, intentar más tarde.",
+        description: errorMsg
+          ? errorMsg
+          : "Error al eliminar usuario, intente más tarde.",
       });
     }
   };

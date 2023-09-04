@@ -252,7 +252,7 @@ const TripCard = ({
                         </div>
                         {err && (
                           <p className="text-red-600 text-sm self-start">
-                            {err}
+                            Ha ocurrido un error. Intentar más tarde
                           </p>
                         )}{" "}
                       </div>

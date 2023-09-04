@@ -1,23 +1,23 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import useAxiosPrivate from "./useAxiosPrivate";
 
 const useFetch = (url: string) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<any>(false);
+  const [error, setError] = useState(false);
+
+  const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
+    setLoading(true);
+    setError(false);
     const fetchData = async () => {
-      setLoading(true);
       try {
-        const token = localStorage.getItem("token");
-        const headers = {
-          Authorization: `Bearer ${token}`,
-        };
-        const res = await axios.get(url, { headers });
+        const res = await axiosPrivate.get(url);
         setData(res.data);
       } catch (err) {
-        setError(err);
+        console.log(err);
+        setError(true);
       }
       setLoading(false);
     };
@@ -26,11 +26,13 @@ const useFetch = (url: string) => {
 
   const reFetch = async () => {
     setLoading(true);
+    setError(false);
     try {
-      const res = await axios.get(url);
+      const res = await axiosPrivate.get(url);
       setData(res.data);
     } catch (err) {
-      setError(err);
+      console.log(err);
+      setError(true);
     }
     setLoading(false);
   };

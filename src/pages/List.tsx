@@ -3,21 +3,7 @@ import UsersDatatable from "../components/UsersDatatable";
 import TripsDatatable from "../components/TripsDatatable";
 import SpecialTripsDatatable from "../components/SpecialTripsDatatable";
 import { useLocation } from "react-router-dom";
-
-interface Column {
-  field: string;
-  headerName: string;
-  flex?: number | undefined;
-  width?: number | undefined;
-  renderCell?: (params: any) => any;
-}
-
-type ListProps = {
-  title: string;
-  columns: Column[];
-  linkText: string;
-  icon: any;
-};
+import { ListProps } from "@/types/props";
 
 const List = ({ icon, title, columns, linkText }: ListProps) => {
   const location = useLocation();

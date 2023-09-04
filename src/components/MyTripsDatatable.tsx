@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Trash2 } from "lucide-react";
-import axios from "axios";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +17,9 @@ import { Eye } from "lucide-react";
 import { getRowHeight } from "@/lib/utils/getRowHeight";
 import ActionButtonDatatable from "./ActionButtonDatatable";
 import TrashButtonDatatable from "./TrashButtonDatatable";
+import useAuth from "@/hooks/useAuth";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import { useNavigate } from "react-router-dom";
 
 type TripProps = {
   id: string;
@@ -32,66 +34,49 @@ type TripProps = {
   available: boolean;
 };
 
-type addressCda = {
-  street: string;
-  streetNumber: number | undefined;
-  crossStreets: string;
-};
-
-type UserData = {
-  _id: string;
-  fullName: string;
-  username: string;
-  addressCda: addressCda;
-  addressCapital: string;
-  dni: number | undefined;
-  phone: undefined | number;
-  email: string;
-  image?: string;
-};
-
-type DataTableProps = {
+type MyTripsDataTableProps = {
   columns: any;
   userTrips: TripProps[];
-  userData: UserData;
 };
 
-const MyTripsDatatable = ({ columns, userTrips, userData }: DataTableProps) => {
+const MyTripsDatatable = ({ columns, userTrips }: MyTripsDataTableProps) => {
   const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState<null | string>(null);
+  const [err, setErr] = useState(false);
   const [list, setList] = useState(userTrips);
-  const userId = userData._id;
+
+  const { auth, setAuth } = useAuth();
+  const userId = auth?.user?._id;
+
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
 
   const { toast } = useToast();
 
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-
   const handleDelete = async (tripId: string) => {
     setLoading(true);
+    setErr(false);
     try {
-      await axios.delete(
-        `${
-          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
-        }/passengers/${userId}/${tripId}`,
-        { headers }
-      );
+      await axiosPrivate.delete(`/passengers/${userId}/${tripId}`);
       toast({
         description: "Lugar cancelado con éxito.",
       });
       setLoading(false);
       setList(list.filter((item) => item.id !== tripId));
     } catch (err: any) {
-      console.log(err);
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       setLoading(false);
-      setErr(err.message);
+      setErr(true);
       toast({
         variant: "destructive",
-        description: `Error al cancelar lugar, intente más tarde. ${
-          err ? `"${err}"` : ""
-        }`,
+        title: "Error al cancelar lugar",
+        description: err.response.data.msg
+          ? err.response.data.msg
+          : "Error al cancelar lugar, intente más tarde.",
       });
     }
   };

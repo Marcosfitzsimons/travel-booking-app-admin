@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -18,24 +17,9 @@ import { useToast } from "../hooks/ui/use-toast";
 import DefaultButton from "./DefaultButton";
 import { Upload } from "lucide-react";
 import AddressAutocomplete from "./AddressAutocomplete";
-
-type addressCda = {
-  street: string;
-  streetNumber: number | null;
-  crossStreets: string;
-};
-
-type User = {
-  username: string;
-  fullName: string;
-  email: string;
-  phone: number | null;
-  dni: number | null;
-  image?: string;
-  addressCda: addressCda;
-  addressCapital: string;
-  password: string;
-};
+import { UserFormData } from "@/types/types";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import useAuth from "@/hooks/useAuth";
 
 const NewUserForm = () => {
   const [image, setImage] = useState<File | string>("");
@@ -43,8 +27,12 @@ const NewUserForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState<null | string>(null);
 
+  const axiosPrivate = useAxiosPrivate();
+
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const { setAuth } = useAuth();
 
   const {
     register,
@@ -57,8 +45,8 @@ const NewUserForm = () => {
       password: "",
       cpassword: "",
       email: "",
-      phone: null,
-      dni: null,
+      phone: undefined,
+      dni: undefined,
       image: "",
       addressCda: {
         street: "",
@@ -70,20 +58,17 @@ const NewUserForm = () => {
     },
   });
 
-  const handleOnSubmit = async (data: User) => {
+  const handleOnSubmit = async (data: UserFormData) => {
     setIsLoading(true);
     const imgData = new FormData();
     imgData.append("file", image);
     imgData.append("upload_preset", "upload");
     try {
       if (!image) {
-        const datasent = await axios.post(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/auth/register`,
-          {
-            ...data,
-            addressCapital: addressCapitalValue,
-          }
-        );
+        const datasent = await axiosPrivate.post(`/auth/register`, {
+          ...data,
+          addressCapital: addressCapitalValue,
+        });
         console.log(datasent);
         setIsLoading(false);
         toast({
@@ -91,20 +76,17 @@ const NewUserForm = () => {
         });
         navigate("/users");
       } else {
-        const uploadRes = await axios.post(
+        const uploadRes = await axiosPrivate.post(
           "https://api.cloudinary.com/v1_1/dioqjddko/image/upload",
           imgData
         );
         const { url } = uploadRes.data;
 
-        const datasent = await axios.post(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/auth/register`,
-          {
-            ...data,
-            image: url,
-            addressCapital: addressCapitalValue,
-          }
-        );
+        const datasent = await axiosPrivate.post(`/auth/register`, {
+          ...data,
+          image: url,
+          addressCapital: addressCapitalValue,
+        });
         console.log(datasent);
         setIsLoading(false);
         toast({
@@ -114,6 +96,12 @@ const NewUserForm = () => {
       }
     } catch (err: any) {
       setIsLoading(false);
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       if (err.response.data.err?.keyValue.username) {
         setErr(
           `Nombre de usuario ${err.response.data.err.keyValue.username} ya está en uso`

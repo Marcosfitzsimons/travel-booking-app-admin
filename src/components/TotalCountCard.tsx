@@ -1,8 +1,4 @@
-type TotalCountCardProps = {
-  icon: any;
-  title: string;
-  value: any;
-};
+import { TotalCountCardProps } from "@/types/props";
 
 const TotalCountCard = ({ icon, title, value }: TotalCountCardProps) => {
   return (

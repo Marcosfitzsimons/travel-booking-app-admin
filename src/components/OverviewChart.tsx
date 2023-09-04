@@ -1,16 +1,11 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import useFetch from "@/hooks/useFetch";
 import { ResponsiveLine } from "@nivo/line";
 import { convertToSpanishMonth } from "@/lib/utils/convertToSpanishMonth";
-
-type OverviewChartProps = {
-  isDashboard?: boolean;
-};
+import { OverviewChartProps } from "@/types/props";
 
 const OverviewChart = ({ isDashboard = false }: OverviewChartProps) => {
-  const { data, loading }: any = useFetch(
-    `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/sales`
-  );
+  const { data, loading }: any = useFetch(`/sales`);
   console.log("🚀 ~ file: OverviewChart.tsx:13 ~ OverviewChart ~ data:", data);
 
   const [totalSalesLine] = useMemo(() => {

@@ -1,4 +1,4 @@
-import { useContext, ReactElement } from "react";
+import { ReactElement } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "./components/ui/toaster";
 import Login from "./pages/Login";
@@ -9,13 +9,7 @@ import NewTrip from "./pages/NewTrip";
 import NewUser from "./pages/NewUser";
 import SingleUser from "./pages/SingleUser";
 import List from "./pages/List";
-import { AuthContext } from "./context/AuthContext";
-import {
-  publicationInputs,
-  tripInputs,
-  userInputs,
-  specialTripInputs,
-} from "./formSource";
+import { publicationInputs, tripInputs, specialTripInputs } from "./formSource";
 import {
   tripColumns,
   userColumns,
@@ -33,13 +27,16 @@ import NewSpecialTrip from "./pages/NewSpecialTrip";
 import { Map, Users } from "lucide-react";
 import Overview from "./pages/Overview";
 import Monthly from "./pages/Monthly";
+import useAuth from "./hooks/useAuth";
+import PersistLogin from "./components/PersistLogin";
 
 type Props = {
   children: ReactElement;
 };
 
 function App() {
-  const { user } = useContext(AuthContext);
+  const { auth } = useAuth();
+  const user = auth?.user;
 
   const ProtectedRoute = ({ children }: Props) => {
     if (!user) {
@@ -62,75 +59,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
             <Route path="/">
               <Route path="login" element={<Login />} />
-              <Route
-                index
-                element={
-                  <ProtectedRoute>
-                    <List
-                      icon={
-                        <Map className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
-                      }
-                      columns={tripColumns}
-                      title="Viajes semanales"
-                      linkText="Agregar viaje"
-                    />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="overview">
-                <Route
-                  index
-                  element={
-                    <ProtectedRoute>
-                      <Overview />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route>
-              <Route path="monthly">
-                <Route
-                  index
-                  element={
-                    <ProtectedRoute>
-                      <Monthly />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route>
-              <Route path="users">
-                <Route
-                  index
-                  element={
-                    <ProtectedRoute>
-                      <List
-                        icon={
-                          <Users className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
-                        }
-                        columns={userColumns}
-                        title="Usuarios"
-                        linkText="Agregar usuario"
-                      />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path=":id"
-                  element={
-                    <ProtectedRoute>
-                      <SingleUser />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="new"
-                  element={
-                    <ProtectedRoute>
-                      <NewUser title="Crear usuario nuevo" />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route>
-              <Route path="trips">
+              <Route element={<PersistLogin />}>
                 <Route
                   index
                   element={
@@ -146,120 +75,190 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+                <Route path="overview">
+                  <Route
+                    index
+                    element={
+                      <ProtectedRoute>
+                        <Overview />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
+                <Route path="monthly">
+                  <Route
+                    index
+                    element={
+                      <ProtectedRoute>
+                        <Monthly />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
+                <Route path="users">
+                  <Route
+                    index
+                    element={
+                      <ProtectedRoute>
+                        <List
+                          icon={
+                            <Users className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
+                          }
+                          columns={userColumns}
+                          title="Usuarios"
+                          linkText="Agregar usuario"
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path=":id"
+                    element={
+                      <ProtectedRoute>
+                        <SingleUser />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="new"
+                    element={
+                      <ProtectedRoute>
+                        <NewUser title="Crear usuario nuevo" />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
+                <Route path="trips">
+                  <Route
+                    index
+                    element={
+                      <ProtectedRoute>
+                        <List
+                          icon={
+                            <Map className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
+                          }
+                          columns={tripColumns}
+                          title="Viajes semanales"
+                          linkText="Agregar viaje"
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path=":id"
+                    element={
+                      <ProtectedRoute>
+                        <SingleTrip />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="new"
+                    element={
+                      <ProtectedRoute>
+                        <NewTrip
+                          inputs={tripInputs}
+                          title="Crear viaje semanal nuevo"
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
+                <Route path="special-trips">
+                  <Route
+                    index
+                    element={
+                      <ProtectedRoute>
+                        <List
+                          icon={
+                            <Map className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
+                          }
+                          columns={specialTripColumns}
+                          title="Viajes particulares"
+                          linkText="Agregar viaje particular"
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path=":id"
+                    element={
+                      <ProtectedRoute>
+                        <SingleSpecialTrip />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="new"
+                    element={
+                      <ProtectedRoute>
+                        <NewSpecialTrip
+                          inputs={specialTripInputs}
+                          title="Crear viaje particular nuevo"
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
+                <Route path="passengers">
+                  <Route
+                    path="newPassenger/:id"
+                    element={
+                      <ProtectedRoute>
+                        <NewPassenger
+                          title="Agregar pasajero"
+                          columns={userColumns}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
+                <Route path="publications">
+                  <Route
+                    index
+                    element={
+                      <ProtectedRoute>
+                        <Publications />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path=":id"
+                    element={
+                      <ProtectedRoute>
+                        <SinglePublication />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="new"
+                    element={
+                      <ProtectedRoute>
+                        <NewPublication
+                          inputs={publicationInputs}
+                          title="Crear publicación"
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
                 <Route
-                  path=":id"
+                  path="/mi-perfil"
                   element={
                     <ProtectedRoute>
-                      <SingleTrip />
+                      <Profile />
                     </ProtectedRoute>
                   }
                 />
                 <Route
-                  path="new"
+                  path="/mi-perfil/editar-perfil"
                   element={
                     <ProtectedRoute>
-                      <NewTrip
-                        inputs={tripInputs}
-                        title="Crear viaje semanal nuevo"
-                      />
+                      <EditProfile />
                     </ProtectedRoute>
                   }
                 />
               </Route>
-              <Route path="special-trips">
-                <Route
-                  index
-                  element={
-                    <ProtectedRoute>
-                      <List
-                        icon={
-                          <Map className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
-                        }
-                        columns={specialTripColumns}
-                        title="Viajes particulares"
-                        linkText="Agregar viaje"
-                      />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path=":id"
-                  element={
-                    <ProtectedRoute>
-                      <SingleSpecialTrip />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="new"
-                  element={
-                    <ProtectedRoute>
-                      <NewSpecialTrip
-                        inputs={specialTripInputs}
-                        title="Crear viaje particular nuevo"
-                      />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route>
-              <Route path="passengers">
-                <Route
-                  path="newPassenger/:id"
-                  element={
-                    <ProtectedRoute>
-                      <NewPassenger
-                        title="Agregar pasajero"
-                        columns={userColumns}
-                      />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route>
-              <Route path="publications">
-                <Route
-                  index
-                  element={
-                    <ProtectedRoute>
-                      <Publications />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path=":id"
-                  element={
-                    <ProtectedRoute>
-                      <SinglePublication />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="new"
-                  element={
-                    <ProtectedRoute>
-                      <NewPublication
-                        inputs={publicationInputs}
-                        title="Crear publicación"
-                      />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route>
-              <Route
-                path="/mi-perfil"
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/mi-perfil/editar-perfil"
-                element={
-                  <ProtectedRoute>
-                    <EditProfile />
-                  </ProtectedRoute>
-                }
-              />
             </Route>
           </Routes>
         </main>

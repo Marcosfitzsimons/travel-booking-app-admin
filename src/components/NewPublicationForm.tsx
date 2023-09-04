@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useToast } from "../hooks/ui/use-toast";
@@ -9,55 +8,23 @@ import DefaultButton from "./DefaultButton";
 import { Image, Upload } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-
-type Publication = {
-  _id?: string;
-  title: string;
-  subtitle?: string;
-  description: string;
-  image?: string;
-  createdAt: string;
-  updatedAt?: string;
-};
-
-interface InputValidation {
-  required: {
-    value: boolean;
-    message: string;
-  };
-  minLength?: {
-    value: number;
-    message: string;
-  };
-  maxLength?: {
-    value: number;
-    message: string;
-  };
-  pattern?: {
-    value: RegExp;
-    message: string;
-  };
-}
-
-interface PublicationInput {
-  id: any;
-  label: string;
-  type: string;
-  name: any;
-  placeholder?: string;
-  validation?: InputValidation;
-}
-
-type NewPublicationFormProps = {
-  inputs: PublicationInput[];
-};
+import { PublicationFormData } from "@/types/types";
+import { NewPublicationFormProps } from "@/types/props";
+import useAuth from "@/hooks/useAuth";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 const NewTripForm = ({ inputs }: NewPublicationFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState<File | string>("");
-  const [err, setErr] = useState<null | string>(null);
+  const [err, setErr] = useState(false);
+
+  const axiosPrivate = useAxiosPrivate();
+
   const { toast } = useToast();
+
   const navigate = useNavigate();
+
+  const { setAuth } = useAuth();
 
   const {
     register,
@@ -73,48 +40,36 @@ const NewTripForm = ({ inputs }: NewPublicationFormProps) => {
     },
   });
 
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-
-  const handleOnSubmit = async (data: Publication) => {
+  const handleOnSubmit = async (data: PublicationFormData) => {
     setIsLoading(true);
+    setErr(false);
     const imgData = new FormData();
     imgData.append("file", image);
     imgData.append("upload_preset", "upload");
     try {
       if (!image) {
-        const datasent = await axios.post(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/publications`,
-          {
-            ...data,
-          },
-          { headers }
-        );
-        console.log(datasent);
+        await axiosPrivate.post(`/publications`, {
+          ...data,
+        });
         setIsLoading(false);
+        setErr(false);
         toast({
           description: "Publicación creada con éxito.",
         });
         navigate("/publications");
       } else {
-        const uploadRes = await axios.post(
+        const uploadRes = await axiosPrivate.post(
           "https://api.cloudinary.com/v1_1/dioqjddko/image/upload",
           imgData
         );
         const { url } = uploadRes.data;
 
-        const datasent = await axios.post(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/publications`,
-          {
-            ...data,
-            image: url,
-          },
-          { headers }
-        );
-        console.log(datasent);
+        await axiosPrivate.post(`/publications`, {
+          ...data,
+          image: url,
+        });
         setIsLoading(false);
+        setErr(false);
         toast({
           description: "Publicación creada con éxito.",
         });
@@ -122,13 +77,20 @@ const NewTripForm = ({ inputs }: NewPublicationFormProps) => {
       }
       navigate("/users");
     } catch (err: any) {
-      console.log(err);
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       const errorMsg = err.response.data.err.message;
-      console.log(errorMsg);
       setIsLoading(false);
-      setErr(errorMsg);
+      setErr(true);
       toast({
-        description: "Error al crear publicación. Intentar más tarde.",
+        variant: "destructive",
+        description: errorMsg
+          ? errorMsg
+          : "Error al cancelar lugar, intente más tarde.",
       });
     }
   };
@@ -138,6 +100,9 @@ const NewTripForm = ({ inputs }: NewPublicationFormProps) => {
       onSubmit={handleSubmit(handleOnSubmit)}
       className="relative w-full flex flex-col gap-3 py-6"
     >
+      {err && (
+        <p className="text-red-600">Ha ocurrido un error. Intentar más tarde</p>
+      )}
       <div className="w-full flex flex-col gap-2 items-center">
         {inputs.map((input) => (
           <div key={input.id} className="grid w-full items-center gap-2">
@@ -220,8 +185,10 @@ const NewTripForm = ({ inputs }: NewPublicationFormProps) => {
           </div>
         </div>
 
-        <div className="w-full mt-2 lg:w-[10rem] ">
-          <DefaultButton>Crear publicación</DefaultButton>
+        <div className="w-full mt-2 lg:w-[10rem]">
+          <DefaultButton loading={isLoading}>
+            {isLoading ? "Creando..." : "Crear publicación"}
+          </DefaultButton>
         </div>
       </div>
     </form>

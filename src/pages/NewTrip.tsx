@@ -1,38 +1,7 @@
 import BackButton from "../components/BackButton";
 import NewTripForm from "../components/NewTripForm";
 import SectionTitle from "../components/SectionTitle";
-
-interface InputValidation {
-  required: {
-    value: boolean;
-    message: string;
-  };
-  minLength?: {
-    value: number;
-    message: string;
-  };
-  maxLength?: {
-    value: number;
-    message: string;
-  };
-  pattern?: {
-    value: RegExp;
-    message: string;
-  };
-}
-interface TripInput {
-  id: any;
-  label: string;
-  type: string;
-  name: any;
-  placeholder?: string;
-  validation?: InputValidation;
-}
-
-type NewTripProps = {
-  inputs: TripInput[];
-  title: string;
-};
+import { NewTripProps } from "@/types/props";
 
 const NewTrip = ({ inputs, title }: NewTripProps) => {
   return (

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Check, CheckCircle, Edit, Trash2, X } from "lucide-react";
-import axios from "axios";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,7 +16,9 @@ import { useToast } from "../hooks/ui/use-toast";
 import TrashButtonDatatable from "./TrashButtonDatatable";
 import { getRowHeight } from "@/lib/utils/getRowHeight";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
-import { createAuthHeaders } from "@/lib/utils/createAuthHeaders";
+import { useNavigate } from "react-router-dom";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import useAuth from "@/hooks/useAuth";
 
 type DataTableProps = {
   columns: any;
@@ -39,24 +40,21 @@ const PassengersDatable = ({
   );
   console.log(optionSelected);
   const [isLoading, setIsLoading] = useState(false);
-  const [err, setErr] = useState<null | string>(null);
+  const [err, setErr] = useState(false);
 
   const { toast } = useToast();
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
 
-  const headers = createAuthHeaders();
+  const { setAuth } = useAuth();
 
-  console.log(tripPassengers);
   const handleIsPaid = async (passengerId: string) => {
     setIsLoading(true);
     try {
-      const res = await axios.put(
-        `${
-          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
-        }/passengers/${passengerId}/${tripId}`,
-        { isPaid: optionSelected === "paid" },
-        { headers }
+      const res = await axiosPrivate.put(
+        `/passengers/${passengerId}/${tripId}`,
+        { isPaid: optionSelected === "paid" }
       );
-      console.log(res.data);
       fetchData();
       toast({
         description: (
@@ -68,8 +66,14 @@ const PassengersDatable = ({
       });
       setIsLoading(false);
     } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       setIsLoading(false);
-      setErr(err.response.data.msg);
+      setErr(true);
       toast({
         variant: "destructive",
         description: err.response.data.msg
@@ -237,6 +241,7 @@ const PassengersDatable = ({
       },
     },
   ];
+
   return (
     <div
       className={`${

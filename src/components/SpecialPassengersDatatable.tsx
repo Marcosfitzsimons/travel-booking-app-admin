@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Eye, Fingerprint, Trash2, User } from "lucide-react";
 import {
@@ -21,29 +20,19 @@ import {
 } from "./ui/dialog";
 import { getRowHeight } from "@/lib/utils/getRowHeight";
 import TrashButtonDatatable from "./TrashButtonDatatable";
-
-type Passenger = {
-  _id: string;
-  fullName?: string;
-  dni?: number;
-};
+import { SpecialPassenger } from "@/types/types";
 
 type DataTableProps = {
   columns: any;
-  tripPassengers: Passenger[];
-  tripId: string | undefined;
+  tripPassengers: SpecialPassenger[];
   handleDelete: any;
 };
 
 const SpecialPassengersDatable = ({
   columns,
   tripPassengers,
-  tripId,
   handleDelete,
 }: DataTableProps) => {
-  const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState<null | string>(null);
-
   const actionColumn = [
     {
       field: "action",
@@ -147,7 +136,7 @@ const SpecialPassengersDatable = ({
             },
           }}
           pageSizeOptions={[9]}
-          getRowId={(row) => row._id}
+          getRowId={(row) => row._id || ""}
           sx={{
             borderRadius: "7px",
             "&>.MuiDataGrid-main": {

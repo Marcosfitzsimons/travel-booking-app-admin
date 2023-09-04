@@ -1,13 +1,14 @@
 import { useForm } from "react-hook-form";
-import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import axios from "../api/axios";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Separator } from "../components/ui/separator";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { AuthContext } from "../context/AuthContext";
 import Logo from "../components/Logo";
 import DefaultButton from "../components/DefaultButton";
+import useAuth from "@/hooks/useAuth";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type User = {
   emailOrUsername: String;
@@ -15,6 +16,12 @@ type User = {
 };
 
 const Login = () => {
+  const [err, setErr] = useState<null | string>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { auth, setAuth, persist, setPersist } = useAuth();
+  const user = auth?.user;
+
   const {
     register,
     handleSubmit,
@@ -26,48 +33,49 @@ const Login = () => {
     },
   });
 
-  const [err, setErr] = useState<null | string>(null);
-
-  const { loading, dispatch, error, user } = useContext(AuthContext);
-
   const navigate = useNavigate();
 
   const handleOnSubmit = async (data: User) => {
-    if (dispatch) {
-      dispatch({ type: "LOGIN_START" });
-      try {
-        const res = await axios.post(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/auth/login`,
-          data
+    setIsLoading(true);
+
+    try {
+      const {
+        data: { token, details },
+      } = await axios.post(`/auth/login`, data, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+      if (details.isAdmin) {
+        setAuth({ user: details, token });
+        setIsLoading(false);
+        navigate("/");
+      } else {
+        const errorMsg = "No estás autorizado";
+        setIsLoading(false);
+        setErr(errorMsg);
+      }
+    } catch (err: any) {
+      if (!err?.response) {
+        setErr(
+          "Ha ocurrido un error en el servidor. Intentar de nuevo más tarde"
         );
-        if (res.data.isAdmin) {
-          dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
-          const token = res.data.token;
-          localStorage.setItem("token", token);
-          navigate("/");
-        } else {
-          const errorMsg = "No estás autorizado.";
-          setErr(errorMsg);
-          dispatch({
-            type: "LOGIN_FAILURE",
-            payload: "No estás autorizado.",
-          });
-        }
-      } catch (err: any) {
-        dispatch({
-          type: "LOGIN_FAILURE",
-          payload: err.response?.data,
-        });
+      } else {
         const errorMsg = err.response.data.msg;
         setErr(errorMsg);
+        setIsLoading(false);
       }
     }
   };
+
   useEffect(() => {
     if (user) {
       navigate("/");
     }
   }, [user]);
+
+  useEffect(() => {
+    localStorage.setItem("persist", persist.toString());
+  }, [persist]);
 
   return (
     <section className="">
@@ -135,9 +143,22 @@ const Login = () => {
                 <p className="text-red-600">{errors.password.message}</p>
               )}
             </div>
+            <div className="w-full relative flex items-center space-x-1">
+              <Checkbox
+                id="confirmAddress"
+                checked={persist}
+                onCheckedChange={() => setPersist((prev) => !prev)}
+              />
+              <label
+                htmlFor="confirmAddress"
+                className="text-sm font-medium flex items-center gap-[2px] leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Permanecer conectado
+              </label>
+            </div>
             {err && <p className="text-red-600 self-start">{err}</p>}
-            <DefaultButton loading={loading}>
-              {loading ? "Entrando..." : "Entrar"}
+            <DefaultButton loading={isLoading}>
+              {isLoading ? "Entrando..." : "Entrar"}
             </DefaultButton>
           </form>
         </div>

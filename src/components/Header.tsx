@@ -10,23 +10,23 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Link, useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 import { Separator } from "./ui/separator";
+import useAuth from "@/hooks/useAuth";
+import useLogout from "@/hooks/useLogOut";
 
 const Header = () => {
-  const { dispatch, user } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { auth } = useAuth();
+  const user = auth?.user;
 
-  const handleLogOut = () => {
-    if (dispatch) {
-      dispatch({
-        type: "LOGOUT",
-      });
-      localStorage.removeItem("token");
+  const logout = useLogout();
+
+  const handleLogOut = async () => {
+    try {
+      await logout();
+    } catch (err) {
+      console.log(err);
     }
-    navigate("/login");
   };
 
   return (
@@ -111,13 +111,12 @@ const Header = () => {
               <DropdownMenuItem className="cursor-pointer p-0">
                 <LogOut className="absolute left-2 h-4 w-4 text-blue-lagoon-900/60 dark:text-blue-lagoon-300" />
 
-                <Link
-                  to="/login"
+                <button
                   onClick={handleLogOut}
                   className="rounded-lg py-1.5 z-20 pl-7 px-2 flex items-center gap-1 w-full text-start bg-transparent text-blue-lagoon-900 hover:bg-blue-lagoon-100/20 dark:text-blue-lagoon-50 dark:hover:text-white dark:hover:bg-zinc-700/20"
                 >
                   Salir
-                </Link>
+                </button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

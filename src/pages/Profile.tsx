@@ -1,13 +1,14 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useEffect, useState } from "react";
 import SectionTitle from "../components/SectionTitle";
 import BackButton from "../components/BackButton";
 import Loading from "../components/Loading";
-import axios from "axios";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import { Mail, MapPin, Phone, User, UserCog } from "lucide-react";
+import { Mail, Phone, User } from "lucide-react";
 import DefaultButton from "../components/DefaultButton";
 import { useNavigate } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
+import { useToast } from "@/hooks/ui/use-toast";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 const INITIAL_STATES = {
   _id: "",
@@ -22,9 +23,15 @@ const INITIAL_STATES = {
 const Profile = () => {
   const [data, setData] = useState(INITIAL_STATES);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<unknown | boolean>(false);
+  const [error, setError] = useState(false);
 
-  const { user } = useContext(AuthContext);
+  const axiosPrivate = useAxiosPrivate();
+
+  const { toast } = useToast();
+
+  const { auth, setAuth } = useAuth();
+  const user = auth?.user;
+
   const navigate = useNavigate();
 
   const goToEditProfile = () => {
@@ -33,23 +40,29 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setError(false);
       setLoading(true);
       try {
-        const token = localStorage.getItem("token");
-        const headers = {
-          Authorization: `Bearer ${token}`,
-        };
-        const res = await axios.get(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/users/${
-            user?._id
-          }`,
-          { headers }
-        );
+        setLoading(false);
+        setError(false);
+        const res = await axiosPrivate.get(`/users/${user?._id}`);
         setData(res.data.user);
-      } catch (err) {
-        setError(err);
+      } catch (err: any) {
+        if (err.response?.status === 403) {
+          setAuth({ user: null });
+          setTimeout(() => {
+            navigate("/login");
+          }, 100);
+        }
+        setLoading(false);
+        setError(true);
+        toast({
+          variant: "destructive",
+          description: err.response.data.msg
+            ? err.response.data.msg
+            : "Error al obtener información, intente más tarde.",
+        });
       }
-      setLoading(false);
     };
     fetchData();
   }, []);
@@ -68,7 +81,11 @@ const Profile = () => {
             <div className="self-start my-4 mb-6">
               <BackButton linkTo="/" />
             </div>
-
+            {error && (
+              <p className="text-red-600">
+                Error al obtener información, intente más tarde.
+              </p>
+            )}
             <div className="w-full relative flex flex-col items-center gap-3 md:w-7/12 md:mx-auto">
               <Avatar className="w-32 h-32">
                 <AvatarImage

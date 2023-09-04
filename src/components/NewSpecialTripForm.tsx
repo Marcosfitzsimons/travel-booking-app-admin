@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useToast } from "../hooks/ui/use-toast";
@@ -11,26 +10,25 @@ import TimePickerContainer from "./TimePickerContainer";
 import { NewTripFormProps } from "../types/props";
 import { Checkbox } from "./ui/checkbox";
 import { Users } from "lucide-react";
-
-type Trip = {
-  name: string;
-  date: Date | null;
-  from: string;
-  departureTime: string; // or number
-  maxCapacity: number;
-  price: string;
-  defaultPassengerCount: number;
-};
+import { NewSpecialTrip } from "@/types/types";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import useAuth from "@/hooks/useAuth";
 
 const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [departureTimeValue, setDepartureTimeValue] = useState("10:00");
   const [isAddPassengers, setIsAddPassengers] = useState(false);
   const [defaultPassengerCount, setDefaultPassengerCount] = useState(1);
-  const [err, setErr] = useState<null | string>(null);
+  const [err, setErr] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const axiosPrivate = useAxiosPrivate();
 
   const { toast } = useToast();
+
   const navigate = useNavigate();
+
+  const { setAuth } = useAuth();
 
   const {
     register,
@@ -49,36 +47,39 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
     },
   });
 
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-
-  const handleOnSubmit = async (data: Trip) => {
+  const handleOnSubmit = async (data: NewSpecialTrip) => {
     const { defaultPassengerCount } = data;
+    setErr(false);
+    setLoading(true);
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/special-trips`,
-        {
-          ...data,
-          date: startDate,
-          departureTime: departureTimeValue,
-          add_passengers: isAddPassengers,
-          default_passenger_count: defaultPassengerCount,
-        },
-        { headers }
-      );
-      console.log(res);
+      await axiosPrivate.post(`/special-trips`, {
+        ...data,
+        date: startDate,
+        departureTime: departureTimeValue,
+        add_passengers: isAddPassengers,
+        default_passenger_count: defaultPassengerCount,
+      });
+      setLoading(false);
+      setErr(false);
       toast({
         description: "Viaje creado con éxito.",
       });
       navigate("/special-trips");
     } catch (err: any) {
-      console.log(err);
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       const errorMsg = err.response.data.err.message;
-      setErr(errorMsg);
+      setLoading(false);
+      setErr(true);
       toast({
-        description: "Error al crear viaje. Intentar más tarde.",
+        variant: "destructive",
+        description: errorMsg
+          ? errorMsg
+          : "Error al crear viaje, intente más tarde.",
       });
     }
   };
@@ -197,7 +198,11 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
             ""
           )}
         </div>
-
+        {err && (
+          <p className="text-red-600">
+            Error al crear viaje, intentar más tarde
+          </p>
+        )}
         <div className="w-full mt-2 lg:w-[9rem] lg:col-start-1 lg:col-end-3 lg:justify-self-center lg:self-center">
           <DefaultButton>Crear viaje</DefaultButton>
         </div>

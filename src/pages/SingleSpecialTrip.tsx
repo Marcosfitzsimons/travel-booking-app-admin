@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment-timezone";
 import "moment/locale/es";
-import axios from "axios";
 import { specialPassengerColumns } from "../datatablesource";
 import BackButton from "../components/BackButton";
 import SpecialPassengersDatatable from "../components/SpecialPassengersDatatable";
@@ -42,22 +41,9 @@ import TimePickerContainer from "../components/TimePickerContainer";
 import { Separator } from "../components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { convertToDatePickerFormat } from "@/lib/utils/convertToDatePickerFormat";
-import { createAuthHeaders } from "@/lib/utils/createAuthHeaders";
-
-type SpecialTrip = {
-  name: string;
-  date: Date | null | undefined;
-  from: string;
-  departureTime: string;
-  to: string;
-  maxCapacity: string;
-  price: string;
-};
-
-type SpecialPassenger = {
-  fullName?: string;
-  dni?: number | undefined;
-};
+import { SpecialTrip, SpecialPassenger } from "@/types/types";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import useAuth from "@/hooks/useAuth";
 
 const INITIAL_STATES = {
   _id: "",
@@ -79,7 +65,7 @@ const SingleSpecialTrip = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitted2, setIsSubmitted2] = useState(false);
   const [departureTimeValue, setDepartureTimeValue] = useState("10:00");
-  const [error, setError] = useState<unknown | boolean>(false);
+  const [error, setError] = useState(false);
   const [err, setErr] = useState<null | string>(null);
 
   const isMaxCapacity = data.passengers.length === data.maxCapacity;
@@ -90,7 +76,12 @@ const SingleSpecialTrip = () => {
   moment.locale("es", {
     weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
   });
+
+  const { setAuth } = useAuth();
   let { id } = useParams();
+
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   const {
@@ -121,8 +112,6 @@ const SingleSpecialTrip = () => {
     },
   });
 
-  const headers = createAuthHeaders();
-
   const formatDate = (date: string) => {
     const momentDate = moment.utc(date);
     const timezone = "America/Argentina/Buenos_Aires";
@@ -134,18 +123,13 @@ const SingleSpecialTrip = () => {
 
   const handleOnSubmit = async (data: SpecialTrip) => {
     setIsSubmitted(true);
+    setErr("");
     try {
-      const res = await axios.put(
-        `${
-          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
-        }/special-trips/${id}`,
-        {
-          ...data,
-          date: startDate,
-          departureTime: departureTimeValue,
-        },
-        { headers }
-      );
+      const res = await axiosPrivate.put(`/special-trips/${id}`, {
+        ...data,
+        date: startDate,
+        departureTime: departureTimeValue,
+      });
       setIsSubmitted(false);
       formatDate(res.data.date);
       setData({ ...res.data, date: formatDate(res.data.date) });
@@ -153,67 +137,81 @@ const SingleSpecialTrip = () => {
         description: "Viaje ha sido editado con éxito.",
       });
     } catch (err: any) {
-      console.log(err);
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       const errorMsg = err.response.data.err.message;
-      setErr(errorMsg);
+      setErr("Error al editar viaje, intente más tarde.");
       setIsSubmitted(false);
       toast({
-        description: "Error al editar viaje. Intentar más tarde.",
+        variant: "destructive",
+        description: errorMsg
+          ? errorMsg
+          : "Error al editar viaje, intente más tarde.",
       });
     }
   };
 
   const handleOnSubmitPassenger = async (data: SpecialPassenger) => {
     setIsSubmitted2(true);
+    setErr("");
     try {
-      await axios.post(
-        `${
-          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
-        }/special-passengers/${id}`,
-        {
-          ...data,
-        },
-        { headers }
-      );
+      await axiosPrivate.post(`/special-passengers/${id}`, {
+        ...data,
+      });
       toast({
         description: "Pasajero ha sido creado con éxito.",
       });
       fetchData();
       setIsSubmitted2(false);
     } catch (err: any) {
-      console.log(err);
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       const errorMsg = err.response.data.err.message;
-      setErr(errorMsg);
+      setErr("Error al crear pasajero, intente más tarde.");
       setIsSubmitted2(false);
-
       toast({
-        description: "Error al crear pasajero. Intentar más tarde.",
+        variant: "destructive",
+        description: errorMsg
+          ? errorMsg
+          : "Error al crear pasajero, intente más tarde.",
       });
     }
   };
 
   const handleOnSubmitAnonymousPassenger = async () => {
     setIsSubmitted2(true);
+    setErr("");
     try {
-      await axios.post(
-        `${
-          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
-        }/special-passengers/${id}`,
-        {},
-        { headers }
-      );
+      await axiosPrivate.post(`/special-passengers/${id}`, {});
       toast({
         description: "Pasajero anónimo ha sido creado con éxito.",
       });
       fetchData();
       setIsSubmitted2(false);
     } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       console.log(err);
       const errorMsg = err.response.data.err.message;
-      setErr(errorMsg);
+      setErr("Error al crear pasajero anónimo. Intentar más tarde.");
       setIsSubmitted2(false);
       toast({
-        description: "Error al crear pasajero anónimo. Intentar más tarde.",
+        variant: "destructive",
+        description: errorMsg
+          ? errorMsg
+          : "Error al crear pasajero anónimo. Intentar más tarde.",
       });
     }
   };
@@ -221,40 +219,35 @@ const SingleSpecialTrip = () => {
   const handleDelete = async (passengerId: string) => {
     setLoading(true);
     try {
-      await axios.delete(
-        `${
-          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
-        }/special-passengers/${passengerId}/${id}`,
-        { headers }
-      );
+      await axiosPrivate.delete(`/special-passengers/${passengerId}/${id}`, {});
       toast({
         description: "Lugar cancelado con éxito.",
       });
       setLoading(false);
       setPassengers(passengers.filter((item) => item._id !== passengerId));
     } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       setLoading(false);
-      setErr(err.message);
       toast({
         variant: "destructive",
-        description: `Error al cancelar lugar, intente más tarde. ${
-          err ? `"${err}"` : ""
-        }`,
+        title: "Error al cancelar su lugar",
+        description: err.response.data.msg
+          ? err.response.data.msg
+          : "Error al cancelar lugar, intente más tarde.",
       });
     }
   };
 
   const fetchData = async () => {
     setLoading(true);
+    setError(false);
     try {
-      const res = await axios.get(
-        `${
-          import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT
-        }/special-trips/${id}`,
-        {
-          headers,
-        }
-      );
+      const res = await axiosPrivate.get(`/special-trips/${id}`, {});
       formatDate(res.data.date);
       setPassengers(res.data.passengers);
       setData({ ...res.data, date: formatDate(res.data.date) });
@@ -270,9 +263,19 @@ const SingleSpecialTrip = () => {
       });
       setDepartureTimeValue(tripData.departureTime);
       setStartDate(convertToDatePickerFormat(res.data.date));
-    } catch (err) {
-      setError(err);
-      console.log(err);
+    } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
+      setError(true);
+      toast({
+        variant: "destructive",
+        description:
+          "Error al cargar información acerca del viaje, intente más tarde.",
+      });
     }
     setLoading(false);
   };
@@ -287,6 +290,11 @@ const SingleSpecialTrip = () => {
         <BackButton linkTo="/special-trips" />
       </div>
       <SectionTitle>Información acerca del viaje</SectionTitle>
+      {error && (
+        <p className="text-red-600">
+          Error al cargar información acerca del viaje, intentar más tarde
+        </p>
+      )}
       {loading ? (
         <Loading />
       ) : (
@@ -778,7 +786,6 @@ dark:text-slate-100 dark:bg-teal-700/60 md:text-base dark:hover:text-white dark:
               <SpecialPassengersDatatable
                 tripPassengers={passengers}
                 columns={specialPassengerColumns}
-                tripId={id}
                 handleDelete={handleDelete}
               />
             ) : (

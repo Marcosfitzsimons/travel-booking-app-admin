@@ -1,16 +1,18 @@
-import { useContext, useState } from "react";
+import { useEffect, useState } from "react";
 import { Upload, User, UserCog } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { AuthContext } from "../context/AuthContext";
 import SectionTitle from "../components/SectionTitle";
-import { toast } from "../hooks/ui/use-toast";
-import axios from "axios";
+import { useToast } from "../hooks/ui/use-toast";
 import DefaultButton from "../components/DefaultButton";
 import BackButton from "../components/BackButton";
 import { useForm } from "react-hook-form";
 import Loading from "../components/Loading";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import { useNavigate } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
+import useFetch from "@/hooks/useFetch";
 
 type UserData = {
   username: string | undefined;
@@ -20,82 +22,102 @@ type UserData = {
   image?: string | undefined;
 };
 
+const INITIAL_VALUES = {
+  username: "",
+  fullName: "",
+  email: "",
+  phone: undefined,
+  image: "",
+};
+
 const EditProfile = () => {
+  const [userData, setUserData] = useState<any>(INITIAL_VALUES);
   const [image, setImage] = useState<File | string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const [err, setErr] = useState<null | string>(null);
-  const { user } = useContext(AuthContext);
+  const [err, setErr] = useState(false);
+
+  const axiosPrivate = useAxiosPrivate();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const { auth, setAuth } = useAuth();
+  const user = auth?.user;
+
+  const { data, loading, error } = useFetch(`/users/${user?._id}`);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      username: user?.username,
-      fullName: user?.fullName,
-      email: user?.email,
-      phone: user?.phone,
-      image: user?.image,
+      username: userData.username,
+      fullName: userData.fullName,
+      email: userData.email,
+      phone: userData.phone,
+      image: userData.image,
     },
   });
 
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-
   const handleOnSubmit = async (data: UserData) => {
-    localStorage.removeItem("user");
     setIsLoading(true);
-
+    setErr(false);
     const imgData = new FormData();
     imgData.append("file", image);
     imgData.append("upload_preset", "upload");
 
     try {
       if (!image) {
-        const res = await axios.put(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/users/${
-            user?._id
-          }`,
-          { userData: { ...data } },
-          { headers }
-        );
-        localStorage.setItem("user", JSON.stringify(res.data));
+        await axiosPrivate.put(`/users/${user?._id}`, {
+          userData: { ...data },
+        });
         setIsLoading(false);
+        setErr(false);
         toast({
           description: "Cambios guardados con éxito.",
         });
+        setTimeout(() => {
+          navigate("/mi-perfil");
+        }, 100);
       } else {
-        const uploadRes = await axios.post(
+        const uploadRes = await axiosPrivate.post(
           "https://api.cloudinary.com/v1_1/dioqjddko/image/upload",
           imgData
         );
         const { url } = uploadRes.data;
 
-        const res = await axios.put(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/users/${
-            user?._id
-          }`,
-          { userData: { ...data, image: url } },
-          { headers }
-        );
-        localStorage.setItem("user", JSON.stringify(res.data));
+        await axiosPrivate.put(`/users/${user?._id}`, {
+          userData: { ...data, image: url },
+        });
         setIsLoading(false);
         toast({
           description: "Cambios guardados con éxito.",
         });
+        setTimeout(() => {
+          navigate("/mi-perfil");
+        }, 100);
       }
     } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       const errorMsg = err.response.data.msg;
       setIsLoading(false);
-      setErr(errorMsg);
+      setErr(true);
       toast({
         variant: "destructive",
-        description: "Error al guardar los cambios, intentar más tarde.",
+        description: errorMsg
+          ? errorMsg
+          : "Error al editar perfil, intente más tarde.",
       });
     }
   };
+
+  useEffect(() => {
+    setUserData(data);
+  }, [data]);
 
   return (
     <section className="">
@@ -103,7 +125,7 @@ const EditProfile = () => {
         <UserCog className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
         Editar perfil
       </SectionTitle>
-      {isLoading ? (
+      {loading ? (
         <Loading />
       ) : (
         <div className="">
@@ -111,6 +133,11 @@ const EditProfile = () => {
             <div className="self-start">
               <BackButton linkTo="/mi-perfil" />
             </div>
+            {error && (
+              <p className="text-red-600">
+                Error al obtener información, intentar más tarde.
+              </p>
+            )}
             <div className="w-full flex flex-col items-center gap-5 md:w-8/12">
               <div className="w-full flex flex-col items-center gap-5 md:max-w-sm">
                 <form
@@ -158,7 +185,9 @@ const EditProfile = () => {
                         })}
                       />
                       {errors.image && (
-                        <p className="text-red-600">{errors.image.message}</p>
+                        <p className="text-red-600">
+                          {errors.image.message?.toString()}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -183,7 +212,9 @@ const EditProfile = () => {
                       })}
                     />
                     {errors.username && (
-                      <p className="text-red-600">{errors.username.message}</p>
+                      <p className="text-red-600">
+                        {errors.username.message?.toString()}
+                      </p>
                     )}
                   </div>
                   <div className="grid w-full max-w-md items-center gap-2">
@@ -207,7 +238,9 @@ const EditProfile = () => {
                       })}
                     />
                     {errors.fullName && (
-                      <p className="text-red-600">{errors.fullName.message}</p>
+                      <p className="text-red-600">
+                        {errors.fullName.message?.toString()}
+                      </p>
                     )}
                   </div>
                   <div className="grid w-full max-w-md items-center gap-2">
@@ -235,7 +268,9 @@ const EditProfile = () => {
                       })}
                     />
                     {errors.phone && (
-                      <p className="text-red-600">{errors.phone.message}</p>
+                      <p className="text-red-600">
+                        {errors.phone.message?.toString()}
+                      </p>
                     )}
                   </div>
                   <div className="grid w-full max-w-md items-center gap-2">
@@ -259,12 +294,16 @@ const EditProfile = () => {
                       })}
                     />
                     {errors.email && (
-                      <p className="text-red-600">{errors.email.message}</p>
+                      <p className="text-red-600">
+                        {errors.email.message?.toString()}
+                      </p>
                     )}
                   </div>
                   {err && <p className="text-red-600 self-start">{err}</p>}
                   <div className="w-full flex justify-center my-1 lg:w-[10rem]">
-                    <DefaultButton>Guardar cambios</DefaultButton>
+                    <DefaultButton loading={isLoading}>
+                      Guardar cambios
+                    </DefaultButton>
                   </div>
                 </form>
               </div>

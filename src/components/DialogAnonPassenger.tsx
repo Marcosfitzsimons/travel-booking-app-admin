@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,88 +11,18 @@ import {
 } from "../components/ui/dialog";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
-import { Crop, Fingerprint, Milestone, User, UserPlus } from "lucide-react";
+import { Fingerprint, User, UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/ui/use-toast";
-import axios from "axios";
-import { AuthContext } from "@/context/AuthContext";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import AddressAutocomplete from "./AddressAutocomplete";
-
-type Trip = {
-  _id: string;
-  name: string;
-  date: null | undefined | string;
-  from: string;
-  departureTime: string;
-  to: string;
-  arrivalTime: string;
-  maxCapacity: number | undefined;
-  price: number | undefined;
-  passengers: any[];
-};
-
-interface InputValidation {
-  required: {
-    value: boolean;
-    message: string;
-  };
-  minLength: {
-    value: number;
-    message: string;
-  };
-  maxLength: {
-    value: number;
-    message: string;
-  };
-  pattern?: {
-    value: RegExp;
-    message: string;
-  };
-}
-
-interface UserInput {
-  id: any;
-  label: string;
-  type: string;
-  placeholder?: string;
-  validation?: InputValidation;
-  icon?: any;
-}
-
-type addressCda = {
-  street: string;
-  streetNumber: number | undefined;
-  crossStreets: string;
-};
-
-type UserData = {
-  _id: string;
-  username: string;
-  fullName: string;
-  addressCda: addressCda;
-  addressCapital: string;
-  email: string;
-  phone: number | undefined;
-  dni: number | undefined;
-  image?: string;
-  myTrips: Trip[];
-};
-
-type Passenger = {
-  createdBy?: UserData;
-  addressCda?: addressCda;
-  addressCapital?: string;
-  fullName?: string;
-  dni?: string;
-};
-
-type DialogAnonPassengerProps = {
-  setErr: any;
-  id: string | undefined;
-  err: any;
-  fetchData: () => any;
-};
+import { UserInput } from "@/types/types";
+import { Passenger } from "@/types/types";
+import { DialogAnonPassengerProps } from "@/types/props";
+import useAuth from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import { userAddressInputs } from "@/formSource";
 
 const DialogAnonPassenger = ({
   setErr,
@@ -103,8 +33,14 @@ const DialogAnonPassenger = ({
   const [isSubmitted2, setIsSubmitted2] = useState(false);
   const [addressCapitalValue, setAddressCapitalValue] = useState("");
 
-  const { user } = useContext(AuthContext);
-  console.log(addressCapitalValue);
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
+
+  const { auth, setAuth } = useAuth();
+  const user = auth?.user;
+
+  const { toast } = useToast();
+
   const {
     register: register2,
     handleSubmit: handleSubmit2,
@@ -122,38 +58,32 @@ const DialogAnonPassenger = ({
     },
   });
 
-  const { toast } = useToast();
-
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-
   const handleOnSubmitPassenger = async (data: Passenger) => {
     setIsSubmitted2(true);
     try {
-      await axios.post(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/passengers/${
-          user?._id
-        }/${id}`,
-        {
-          ...data,
-          addressCapital: addressCapitalValue,
-        },
-        { headers }
-      );
+      await axiosPrivate.post(`/passengers/${user?._id}/${id}`, {
+        ...data,
+        addressCapital: addressCapitalValue,
+      });
       toast({
         description: "Pasajero ha sido creado con éxito.",
       });
       fetchData();
       setIsSubmitted2(false);
     } catch (err: any) {
-      console.log(err);
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       const errorMsg = err.response.data.err.message;
-      setErr(errorMsg);
+      setErr(true);
       setIsSubmitted2(false);
       toast({
-        description: "Error al crear pasajero. Intentar más tarde.",
+        description: errorMsg
+          ? errorMsg
+          : "Error al crear pasajero, intente más tarde.",
       });
     }
   };
@@ -161,105 +91,29 @@ const DialogAnonPassenger = ({
   const handleOnSubmitAnonymousPassenger = async () => {
     setIsSubmitted2(true);
     try {
-      await axios.post(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/passengers/${
-          user?._id
-        }/${id}`,
-        {},
-        { headers }
-      );
+      await axiosPrivate.post(`/passengers/${user?._id}/${id}`, {});
       toast({
         description: "Pasajero anónimo ha sido creado con éxito.",
       });
       fetchData();
       setIsSubmitted2(false);
     } catch (err: any) {
-      console.log(err);
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
       const errorMsg = err.response.data.err.message;
-      setErr(errorMsg);
+      setErr(true);
       setIsSubmitted2(false);
       toast({
-        description: "Error al crear pasajero anónimo. Intentar más tarde.",
+        description: errorMsg
+          ? errorMsg
+          : "Error al crear pasajero anónimo, intente más tarde.",
       });
     }
   };
-
-  const userAddressInputs = [
-    {
-      id: "street",
-      icon: (
-        <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px]" />
-      ),
-      label: "Calle",
-      type: "text",
-      placeholder: "Matheu",
-      validation: {
-        required: {
-          value: true,
-          message: "Por favor, ingresar domicilio.",
-        },
-        minLength: {
-          value: 3,
-          message: "Domicilio no puede ser tan corto.",
-        },
-        maxLength: {
-          value: 25,
-          message: "Domicilio no puede ser tan largo.",
-        },
-      },
-    },
-    {
-      id: "streetNumber",
-      icon: (
-        <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px]  " />
-      ),
-      label: "Número",
-      type: "number",
-      placeholder: "354",
-      validation: {
-        required: {
-          value: true,
-          message: "Por favor, ingresar número de domicilio ",
-        },
-        minLength: {
-          value: 1,
-          message: "Número de domicilio no puede ser tan corto.",
-        },
-        maxLength: {
-          value: 5,
-          message: "Número de domicilio no puede ser tan largo.",
-        },
-        pattern: {
-          value: /^[0-9]+$/,
-          message: "Debe incluir solo números.",
-        },
-      },
-    },
-    {
-      id: "crossStreets",
-      icon: (
-        <Crop className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px]" />
-      ),
-      label: "Calles que cruzan",
-      type: "text",
-      placeholder: "Matheu y D. Romero",
-      validation: {
-        required: {
-          value: true,
-          message:
-            "Por favor, ingresar las calles que cruzan cerca de ese domicilio.",
-        },
-        minLength: {
-          value: 3,
-          message: "No puede ser tan corto.",
-        },
-        maxLength: {
-          value: 40,
-          message: "No puede ser tan largo.",
-        },
-      },
-    },
-  ];
 
   return (
     <Dialog>
@@ -407,7 +261,11 @@ const DialogAnonPassenger = ({
             </div>
           </div>
 
-          {err && <p className="text-red-600 text-sm self-start">{err}</p>}
+          {err && (
+            <p className="text-red-600 text-sm self-start">
+              Ha ocurrido un error. Intentar más tarde
+            </p>
+          )}
           <DialogFooter className="w-full mt-4 flex flex-col items-center gap-2 sm:flex-col sm:items-center">
             <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
               <Button

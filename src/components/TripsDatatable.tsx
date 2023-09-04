@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import moment from "moment";
 import "moment-timezone";
 import useFetch from "../hooks/useFetch";
-import axios from "axios";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,68 +24,54 @@ import ActionButtonDatatable from "./ActionButtonDatatable";
 import TotalCountCard from "./TotalCountCard";
 import TrashButtonDatatable from "./TrashButtonDatatable";
 import { getRowHeight } from "@/lib/utils/getRowHeight";
-
-type Trip = {
-  _id: string;
-  name: string;
-  date: string;
-  from: string;
-  departureTime: string;
-  to: string;
-  arrivalTime: string;
-  available: boolean;
-  maxCapacity: string;
-  price: string;
-};
-interface Column {
-  field: string;
-  headerName: string;
-  width?: number;
-  flex?: number;
-  renderCell?: (params: any) => any;
-}
-
-type DataTableProps = {
-  columns: Column[];
-  linkText: string;
-};
-
-type ExtendedColumn = Column & {
-  renderCell?: (params: any) => JSX.Element;
-};
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import { useNavigate } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
+import { Trip } from "@/types/types";
+import { ExtendedColumn } from "@/types/types";
+import { DataTableProps } from "@/types/props";
 
 const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [err, setErr] = useState<null | string>(null);
+  const [err, setErr] = useState(false);
   const [list, setList] = useState<Trip[]>([]);
   const [filteredList, setFilteredList] = useState<Trip[]>([]);
-  const baseUrl = `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/trips`;
+  const baseUrl = `/trips`;
 
   const { data, loading, error } = useFetch(baseUrl);
 
   const { toast } = useToast();
 
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+  const { setAuth } = useAuth();
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
 
   const handleDelete = async (id: string) => {
     setIsLoading(true);
+    setErr(false);
     try {
-      await axios.delete(`${baseUrl}/${id}`, { headers });
-      toast({
-        description: "Viaje eliminado con éxito.",
-      });
-      setIsLoading(false);
+      await axiosPrivate.delete(`${baseUrl}/${id}`);
       setList(list.filter((item) => item._id !== id));
-    } catch (err: any) {
       setIsLoading(false);
-      setErr(err.message);
+      toast({
+        description: "Usuario eliminado con éxito.",
+      });
+    } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
+      const errorMsg = err.response.data.msg;
+      setIsLoading(false);
+      setErr(true);
       toast({
         variant: "destructive",
-        description: `${err}. Intentar más tarde.`,
+        description: errorMsg
+          ? errorMsg
+          : "Error al eliminar viaje, intentar más tarde.",
       });
     }
   };
@@ -202,12 +187,20 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
                 </Button>
               </div>
             </div>
-            {err && <p>{err}</p>}
-            {error && <p>{error}</p>}
+            {err && (
+              <p className="text-red-500 order-2">
+                Ha ocurrido un error. Intentar más tarde
+              </p>
+            )}
+            {error && (
+              <p className="text-red-500 order-2">
+                Ha ocurrido un error. Intentar más tarde
+              </p>
+            )}
           </div>
           <div className="self-end">
             <ActionButton
-              text="Crear viaje nuevo"
+              text={linkText}
               icon={
                 <Plus className="absolute cursor-pointer left-[13px] top-[7.3px] h-[18px] w-[18px] md:top-[4px] md:left-[8px] md:h-6 md:w-6" />
               }
@@ -258,7 +251,7 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
             },
           }}
           pageSizeOptions={[9]}
-          getRowId={(row) => row._id}
+          getRowId={(row) => row._id || ""}
           className="max-w-[1400px]"
         />
       ) : (
@@ -288,7 +281,7 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
             },
           }}
           pageSizeOptions={[9]}
-          getRowId={(row) => row._id}
+          getRowId={(row) => row._id || ""}
           sx={{
             borderRadius: "7px",
             "&>.MuiDataGrid-main": {

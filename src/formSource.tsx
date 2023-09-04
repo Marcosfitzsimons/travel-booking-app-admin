@@ -1,4 +1,10 @@
-import { DollarSign, HelpingHand, Milestone, UserMinus2 } from "lucide-react";
+import {
+  Crop,
+  DollarSign,
+  HelpingHand,
+  Milestone,
+  UserMinus2,
+} from "lucide-react";
 
 export const userInputs = [
   {
@@ -133,6 +139,9 @@ export const userInputs = [
 export const userAddressInputs = [
   {
     id: "street",
+    icon: (
+      <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px]" />
+    ),
     label: "Calle",
     type: "text",
     placeholder: "Matheu",
@@ -153,8 +162,11 @@ export const userAddressInputs = [
   },
   {
     id: "streetNumber",
+    icon: (
+      <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px]  " />
+    ),
     label: "Número",
-    type: "text",
+    type: "number",
     placeholder: "354",
     validation: {
       required: {
@@ -177,6 +189,9 @@ export const userAddressInputs = [
   },
   {
     id: "crossStreets",
+    icon: (
+      <Crop className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px]" />
+    ),
     label: "Calles que cruzan",
     type: "text",
     placeholder: "Matheu y D. Romero",

@@ -6,25 +6,23 @@ import {
   GanttChartSquare,
   CalendarRange,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 import { Users } from "lucide-react";
+import useAuth from "../hooks/useAuth";
+import useLogout from "@/hooks/useLogOut";
 
 const SideBar = () => {
-  const { user, dispatch } = useContext(AuthContext);
+  const { auth } = useAuth();
+  const user = auth?.user;
 
-  const navigate = useNavigate();
+  const logout = useLogout();
 
-  const handleLogOut = () => {
-    if (dispatch) {
-      dispatch({
-        type: "LOGOUT",
-      });
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+  const handleLogOut = async () => {
+    try {
+      await logout();
+    } catch (err) {
+      console.log(err);
     }
-    navigate("/login");
   };
 
   return !user ? (
@@ -112,13 +110,12 @@ const SideBar = () => {
             </li>
             <li className="relative flex items-center gap-2">
               <LogOut className="absolute left-2 h-5 w-5 text-accent " />
-              <Link
-                to="/login"
+              <button
                 onClick={handleLogOut}
                 className="w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40  dark:hover:text-white "
               >
                 Salir
-              </Link>
+              </button>
             </li>
           </ul>
         </nav>

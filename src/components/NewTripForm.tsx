@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useToast } from "../hooks/ui/use-toast";
@@ -9,57 +8,23 @@ import DefaultButton from "./DefaultButton";
 import DatePickerContainer from "./DatePickerContainer";
 import TimePickerContainer from "./TimePickerContainer";
 import { Separator } from "./ui/separator";
-
-type Trip = {
-  name: string;
-  date: Date | null;
-  from: string;
-  departureTime: string; // or number
-  to: string;
-  arrivalTime: string; // or number
-  maxCapacity: string;
-  price: string;
-};
-
-interface InputValidation {
-  required: {
-    value: boolean;
-    message: string;
-  };
-  minLength?: {
-    value: number;
-    message: string;
-  };
-  maxLength?: {
-    value: number;
-    message: string;
-  };
-  pattern?: {
-    value: RegExp;
-    message: string;
-  };
-}
-interface TripInput {
-  id: any;
-  label: string;
-  type: string;
-  name: any;
-  icon?: any;
-  placeholder?: string;
-  validation?: InputValidation;
-}
-
-type NewTripFormProps = {
-  inputs: TripInput[];
-};
+import { NewTripFormProps } from "@/types/props";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import useAuth from "@/hooks/useAuth";
+import { Trip } from "@/types/types";
 
 const NewTripForm = ({ inputs }: NewTripFormProps) => {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [arrivalTimeValue, setArrivalTimeValue] = useState("10:00");
   const [departureTimeValue, setDepartureTimeValue] = useState("10:00");
-  const [err, setErr] = useState<null | string>(null);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState(false);
+
   const { toast } = useToast();
   const navigate = useNavigate();
+  const axiosPrivate = useAxiosPrivate();
+
+  const { setAuth } = useAuth();
 
   const {
     register,
@@ -68,43 +33,46 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
   } = useForm({
     defaultValues: {
       name: "",
-      date: null,
+      date: "",
       from: "",
       departureTime: "10:00",
       arrivalTime: "10:00",
       to: "",
-      price: "",
-      maxCapacity: "",
+      price: undefined,
+      maxCapacity: undefined,
     },
   });
 
-  const token = localStorage.getItem("token");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-
   const handleOnSubmit = async (data: Trip) => {
+    setLoading(true);
     try {
-      await axios.post(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_ENDPOINT}/trips`,
-        {
-          ...data,
-          date: startDate,
-          departureTime: departureTimeValue,
-          arrivalTime: arrivalTimeValue,
-        },
-        { headers }
-      );
+      await axiosPrivate.post(`/trips`, {
+        ...data,
+        date: startDate,
+        departureTime: departureTimeValue,
+        arrivalTime: arrivalTimeValue,
+      });
+      setLoading(false);
       toast({
         description: "Viaje creado con éxito.",
       });
       navigate("/trips");
     } catch (err: any) {
-      console.log(err);
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
+      setLoading(false);
+      setErr(true);
       const errorMsg = err.response.data.err.message;
-      setErr(errorMsg);
       toast({
-        description: "Error al crear viaje. Intentar más tarde.",
+        variant: "destructive",
+        title: "Error al crear viaje",
+        description: errorMsg
+          ? errorMsg
+          : "Error crear viaje, intente más tarde.",
       });
     }
   };
@@ -161,7 +129,7 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
           </div>
         ))}
         <div className="w-full mt-2 lg:w-[9rem] lg:justify-self-end lg:self-end">
-          <DefaultButton>Crear viaje</DefaultButton>
+          <DefaultButton loading={loading}>Crear viaje</DefaultButton>
         </div>
       </div>
     </form>
