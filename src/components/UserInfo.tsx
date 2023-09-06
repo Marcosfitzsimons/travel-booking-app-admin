@@ -1,29 +1,7 @@
 import { Crop, Fingerprint, Mail, Milestone, Phone, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Separator } from "./ui/separator";
-
-type addressCda = {
-  street: string;
-  streetNumber: number | undefined;
-  crossStreets: string;
-};
-
-type UserData = {
-  _id: string;
-  fullName: string;
-  username: string;
-  addressCda: addressCda;
-  addressCapital: string;
-  dni: number | undefined;
-  phone: undefined | number;
-  email: string;
-  image?: string;
-  status: undefined | "Active" | "Pending";
-};
-
-interface UserInfoProps {
-  userData: UserData;
-}
+import { UserInfoProps } from "@/types/props";
 
 const UserInfo = ({ userData }: UserInfoProps) => {
   console.log(userData);
@@ -85,7 +63,7 @@ const UserInfo = ({ userData }: UserInfoProps) => {
               <div className="flex items-center gap-1">
                 <Milestone className="w-4 h-4 text-accent " />
                 <span className="font-medium dark:text-white">Dirreción:</span>
-                <p>{`${userData?.addressCda.street} ${userData?.addressCda.streetNumber}`}</p>
+                <p>{`${userData?.addressCda?.street} ${userData?.addressCda?.streetNumber}`}</p>
               </div>
               <div className="flex flex-col gap-[2px] sm:flex-row sm:items-center sm:gap-1">
                 <div className="flex items-center gap-1">
@@ -94,7 +72,7 @@ const UserInfo = ({ userData }: UserInfoProps) => {
                     Calles que cruzan:
                   </span>
                 </div>
-                <span className="">{userData?.addressCda.crossStreets}</span>
+                <span className="">{userData?.addressCda?.crossStreets}</span>
               </div>
             </div>
 

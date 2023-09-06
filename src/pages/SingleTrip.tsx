@@ -60,7 +60,7 @@ const SingleTrip = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     reset,
   } = useForm({
     defaultValues: {
@@ -76,6 +76,12 @@ const SingleTrip = () => {
   });
 
   const handleOnSubmitEdit = async (data: Trip) => {
+    if (!isDirty) {
+      return toast({
+        variant: "destructive",
+        description: "Es necesario realizar cambios antes de enviar",
+      });
+    }
     setIsSubmitted(true);
     setError(false);
     try {

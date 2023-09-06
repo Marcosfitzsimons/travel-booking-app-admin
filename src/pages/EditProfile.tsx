@@ -47,7 +47,7 @@ const EditProfile = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({
     defaultValues: {
       username: userData.username,
@@ -59,6 +59,12 @@ const EditProfile = () => {
   });
 
   const handleOnSubmit = async (data: UserData) => {
+    if (!isDirty) {
+      return toast({
+        variant: "destructive",
+        description: "Es necesario realizar cambios antes de enviar",
+      });
+    }
     setIsLoading(true);
     setErr(false);
     const imgData = new FormData();

@@ -58,12 +58,45 @@ const DialogAnonPassenger = ({
     },
   });
 
-  const handleOnSubmitPassenger = async (data: Passenger) => {
+  const handleOnSubmitPassenger = async (data: any) => {
+    const filteredData: any = {};
+
+    for (const key in data) {
+      if (data[key] !== undefined && data[key] !== null) {
+        if (typeof data[key] === "string" && data[key].trim() === "") {
+          // Skip empty string fields
+          continue;
+        }
+
+        if (key === "addressCda") {
+          // Check if addressCda should be included
+          const { street, streetNumber, crossStreets } = data[key];
+
+          if (
+            (street || streetNumber || crossStreets) &&
+            (street !== "" || streetNumber !== null || crossStreets !== "")
+          ) {
+            filteredData[key] = {
+              street: street || "",
+              streetNumber: streetNumber || null,
+              crossStreets: crossStreets || "",
+            };
+          }
+        } else {
+          filteredData[key] = data[key];
+        }
+      }
+    }
+
+    // Check if addressCapitalValue is not empty before including it
+    if (addressCapitalValue.trim() !== "") {
+      filteredData.addressCapital = addressCapitalValue;
+    }
+
     setIsSubmitted2(true);
     try {
       await axiosPrivate.post(`/passengers/${user?._id}/${id}`, {
-        ...data,
-        addressCapital: addressCapitalValue,
+        ...filteredData,
       });
       toast({
         description: "Pasajero ha sido creado con éxito.",

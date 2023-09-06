@@ -97,12 +97,12 @@ export type UserProfileData = {
   fullName: string;
   username: string;
   addressCda: addressCda;
-  addressCapital: string;
+  addressCapital?: string;
   dni: number | undefined;
   phone: undefined | number;
   email: string;
   image?: string;
-  status: undefined | "Active" | "Pending";
+  status?: undefined | "Active" | "Pending";
 }
 
 export type Publication = {

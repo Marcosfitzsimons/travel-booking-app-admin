@@ -202,11 +202,11 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
                     </div>
                   </div>
 
-                  <div
-                    className="flex justify-center my-4 mx-auto"
-                    onClick={() => handleAddPassenger(params.row._id)}
-                  >
-                    <DefaultButton loading={loading}>
+                  <div className="flex justify-center my-4 mx-auto">
+                    <DefaultButton
+                      loading={loading}
+                      onClick={() => handleAddPassenger(params.row._id)}
+                    >
                       Agregar pasajero
                     </DefaultButton>
                   </div>

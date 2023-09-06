@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axios from "../api/axios";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -53,17 +54,18 @@ const INITIAL_STATES = {
   dni: undefined,
   username: "",
   image: "",
-  status: undefined,
 };
 
 const SingleUser = () => {
-  const [data, setData] = useState(INITIAL_STATES);
+  const [userData, setUserData] = useState(INITIAL_STATES);
   const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState<File | string>("");
+  const [image, setImage] = useState<File | string>(userData.image ?? "");
   const [err, setErr] = useState(false);
   const [isEditStatus, setIsEditStatus] = useState(false);
   const [loading1, setLoading1] = useState(false);
-  const [addressCapitalValue, setAddressCapitalValue] = useState("");
+  const [addressCapitalValue, setAddressCapitalValue] = useState(
+    userData.addressCapital ?? ""
+  );
   const [statusValue, setStatusValue] = useState<"pending" | "active">(
     "pending"
   );
@@ -71,23 +73,20 @@ const SingleUser = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     reset,
   } = useForm({
     defaultValues: {
-      username: "",
-      fullName: "",
-      email: "",
-      phone: undefined,
-      dni: undefined,
-      image: "",
+      username: userData.username,
+      fullName: userData.fullName,
+      email: userData.email,
+      phone: userData.phone,
+      dni: userData.dni,
       addressCda: {
-        street: "",
-        streetNumber: undefined,
-        crossStreets: "",
+        street: userData.addressCda.street,
+        streetNumber: userData.addressCda.streetNumber,
+        crossStreets: userData.addressCda.crossStreets,
       },
-      addressCapital: "",
-      status: undefined,
     },
   });
 
@@ -117,7 +116,6 @@ const SingleUser = () => {
           navigate("/login");
         }, 100);
       }
-      const errorMsg = err.response.data.msg;
       toast({
         variant: "destructive",
         description: "Error al guardar los cambios, intentar mas tarde.",
@@ -128,77 +126,50 @@ const SingleUser = () => {
   };
 
   const handleOnSubmit = async (data: UserProfileData) => {
+    if (
+      !isDirty &&
+      addressCapitalValue === userData.addressCapital &&
+      (!image || (typeof image === "string" && image === userData.image))
+    ) {
+      return toast({
+        variant: "destructive",
+        description: "Es necesario realizar cambios antes de enviar",
+      });
+    }
+
     setLoading(true);
 
-    const imgData = new FormData();
-    imgData.append("file", image);
-    imgData.append("upload_preset", "upload");
-
     try {
-      if (!image) {
-        const res = await axiosPrivate.put(`/users/${id}`, {
-          userData: {
-            ...data,
-            addressCapital: addressCapitalValue,
-            status: capitalizeWord(statusValue),
-          },
-        });
-        setLoading(false);
-        setData(res.data);
-        setAddressCapitalValue(res.data.addressCapital);
-        const userData = res.data;
-        reset({
-          username: userData.username,
-          email: userData.email,
-          fullName: userData.fullName,
-          phone: userData.phone,
-          dni: userData.dni,
-          addressCda: {
-            street: userData.addressCda.street,
-            streetNumber: userData.addressCda.streetNumber,
-            crossStreets: userData.addressCda.crossStreets,
-          },
-        });
-        toast({
-          description: "Cambios guardados con exito.",
-        });
-      } else {
-        const uploadRes = await axiosPrivate.post(
+      let userDataToUpdate = {
+        ...data,
+        addressCapital: addressCapitalValue,
+      };
+
+      if (image instanceof File) {
+        const imgData = new FormData();
+        imgData.append("file", image);
+        imgData.append("upload_preset", "upload");
+
+        const uploadRes = await axios.post(
           "https://api.cloudinary.com/v1_1/dioqjddko/image/upload",
           imgData
         );
-        const { url } = uploadRes.data;
 
-        const res = await axiosPrivate.put(`/users/${id}`, {
-          userData: {
-            ...data,
-            image: url,
-            addressCapital: addressCapitalValue,
-            status: capitalizeWord(statusValue),
-          },
-        });
-        setLoading(false);
-        setData(res.data);
-        setStatusValue(res.data.status.toLowerCase());
-        setAddressCapitalValue(res.data.addressCapital);
-        const userData = res.data;
-        reset({
-          username: userData.username,
-          email: userData.email,
-          fullName: userData.fullName,
-          phone: userData.phone,
-          dni: userData.dni,
-          addressCda: {
-            street: userData.addressCda.street,
-            streetNumber: userData.addressCda.streetNumber,
-            crossStreets: userData.addressCda.crossStreets,
-          },
-          image: userData.image ? userData.image : "",
-        });
-        toast({
-          description: "Cambios guardados con exito.",
-        });
+        userDataToUpdate = {
+          ...userDataToUpdate,
+          image: uploadRes.data.url,
+        };
       }
+
+      await axiosPrivate.put(`/users/${id}`, {
+        userData: userDataToUpdate,
+      });
+
+      fetchData();
+      toast({
+        description: "Cambios guardados con exito.",
+      });
+      setLoading(false);
     } catch (err: any) {
       if (err.response?.status === 403) {
         setAuth({ user: null });
@@ -206,7 +177,7 @@ const SingleUser = () => {
           navigate("/login");
         }, 100);
       }
-      const errorMsg = err.response.data.msg;
+      const errorMsg = err.response?.data?.msg;
       setLoading(false);
       setErr(errorMsg);
       toast({
@@ -216,40 +187,58 @@ const SingleUser = () => {
     }
   };
 
-  useEffect(() => {
+  const fetchData = async () => {
     setLoading(true);
-    const fetchData = async () => {
-      try {
-        const res = await axiosPrivate.get(`/users/${id}`);
-        setData(res.data.user);
-        setStatusValue(res.data.user.status.toLowerCase());
-        setAddressCapitalValue(res.data.addressCapital);
-        const userData = res.data.user;
-        reset({
-          username: userData.username,
-          email: userData.email,
-          fullName: userData.fullName,
-          phone: userData.phone,
-          dni: userData.dni,
-          addressCda: {
-            street: userData.addressCda.street,
-            streetNumber: userData.addressCda.streetNumber,
-            crossStreets: userData.addressCda.crossStreets,
-          },
-          image: userData.image ? userData.image : "",
-        });
-      } catch (err) {
-        setErr(true);
-        toast({
-          variant: "destructive",
-          description:
-            "Error al obtener información del usuario, intentar mas tarde.",
-        });
-      }
+    try {
+      const res = await axiosPrivate.get(`/users/${id}`);
+
+      const userData = res.data.user;
+      setUserData(userData);
+      setStatusValue(userData.status.toLowerCase());
+      setAddressCapitalValue(userData.addressCapital);
+      setImage(userData.image ? userData.image : "");
+      reset({
+        username: userData.username,
+        fullName: userData.fullName,
+        email: userData.email,
+        phone: userData.phone,
+        dni: userData.dni,
+        addressCda: {
+          street: userData.addressCda.street,
+          streetNumber: userData.addressCda.streetNumber,
+          crossStreets: userData.addressCda.crossStreets,
+        },
+      });
       setLoading(false);
-    };
+    } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
+      setErr(true);
+      setLoading(false);
+      toast({
+        variant: "destructive",
+        description:
+          "Error al obtener información del usuario, intentar mas tarde.",
+      });
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
+
+  const handleFileChange = (e: any) => {
+    const file = e.target.files[0];
+    if (file instanceof File) {
+      setImage(file);
+    } else {
+      console.error("Invalid file type");
+    }
+  };
 
   return (
     <section className="flex flex-col gap-3">
@@ -324,7 +313,7 @@ const SingleUser = () => {
                   </div>
                 )}
               </div>
-              <UserInfo userData={data} />
+              <UserInfo userData={userData} />
             </div>
 
             <Dialog>
@@ -357,7 +346,7 @@ const SingleUser = () => {
                             src={
                               image instanceof File
                                 ? URL.createObjectURL(image)
-                                : data.image
+                                : userData.image
                             }
                             alt="avatar"
                           />
@@ -379,22 +368,8 @@ const SingleUser = () => {
                             id="image"
                             accept="image/*"
                             className="hidden"
-                            {...register("image", {
-                              onChange: (e) => {
-                                const file = e.target.files[0];
-                                if (file instanceof File) {
-                                  setImage(file);
-                                } else {
-                                  console.error("Invalid file type");
-                                }
-                              },
-                            })}
+                            onChange={handleFileChange}
                           />
-                          {errors.image && (
-                            <p className="text-red-600">
-                              {errors.image.message}
-                            </p>
-                          )}
                         </div>
                       </div>
 
@@ -689,10 +664,11 @@ const SingleUser = () => {
             <h3 className="font-bold text-xl uppercase dark:text-white lg:text-2xl">
               Próximos viajes del usuario:
             </h3>
-            {data.myTrips && data.myTrips.length > 0 ? (
+            {userData.myTrips && userData.myTrips.length > 0 ? (
               <MyTripsDatatable
-                userTrips={data.myTrips}
+                userTrips={userData.myTrips}
                 columns={tripColumns}
+                userId={userData._id}
               />
             ) : (
               <div className="mx-auto flex flex-col items-center gap-3">

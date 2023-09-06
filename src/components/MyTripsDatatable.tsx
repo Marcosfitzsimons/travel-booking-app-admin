@@ -36,17 +36,21 @@ type TripProps = {
 
 type MyTripsDataTableProps = {
   columns: any;
+  userId: string;
   userTrips: TripProps[];
 };
 
-const MyTripsDatatable = ({ columns, userTrips }: MyTripsDataTableProps) => {
+const MyTripsDatatable = ({
+  columns,
+  userTrips,
+  userId,
+}: MyTripsDataTableProps) => {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState(false);
   const [list, setList] = useState(userTrips);
 
-  const { auth, setAuth } = useAuth();
-  const userId = auth?.user?._id;
-
+  const { setAuth } = useAuth();
+  // fix userId from userData
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
 

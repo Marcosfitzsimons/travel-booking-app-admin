@@ -28,6 +28,8 @@ type DataTableProps = {
   fetchData: any;
 };
 
+// Check all request and prevent submit data when data doesn't change.
+
 const PassengersDatable = ({
   columns,
   tripPassengers,
@@ -51,11 +53,10 @@ const PassengersDatable = ({
   const handleIsPaid = async (passengerId: string) => {
     setIsLoading(true);
     try {
-      const res = await axiosPrivate.put(
-        `/passengers/${passengerId}/${tripId}`,
-        { isPaid: optionSelected === "paid" }
-      );
-      fetchData();
+      await axiosPrivate.put(`/passengers/paid/${passengerId}/${tripId}`, {
+        isPaid: optionSelected === "paid",
+      });
+      setIsLoading(false);
       toast({
         description: (
           <div className="flex items-center gap-1">
@@ -64,7 +65,6 @@ const PassengersDatable = ({
           </div>
         ),
       });
-      setIsLoading(false);
     } catch (err: any) {
       if (err.response?.status === 403) {
         setAuth({ user: null });
@@ -81,6 +81,7 @@ const PassengersDatable = ({
           : "Error al actualizar estado del pago, intentar más tarde.",
       });
     }
+    fetchData();
   };
 
   const handleValueChange = (optionSeletected: "paid" | "unpaid") => {

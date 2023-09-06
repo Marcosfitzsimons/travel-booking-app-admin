@@ -1,4 +1,4 @@
-import { Publication, PublicationInput, TripInput } from './types';
+import { Publication, PublicationInput, TripInput, UserProfileData } from './types';
 import { Column } from './types';
 import { Trip, User } from './types'
 export interface NewTripProps {
@@ -74,3 +74,7 @@ export interface NewPublicationProps {
 export interface NewPublicationFormProps {
   inputs: PublicationInput[];
 };
+
+export interface UserInfoProps {
+  userData: UserProfileData;
+}
