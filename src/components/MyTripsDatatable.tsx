@@ -50,7 +50,7 @@ const MyTripsDatatable = ({
   const [list, setList] = useState(userTrips);
 
   const { setAuth } = useAuth();
-  // fix userId from userData
+
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
 
