@@ -123,7 +123,13 @@ const PassengersDatable = ({
                   </AlertDialogCancel>
                   <AlertDialogAction
                     disabled={isLoading}
-                    onClick={() => handleDelete(params.row._id)}
+                    onClick={() =>
+                      handleDelete(
+                        params.row.createdBy
+                          ? params.row.createdBy?._id
+                          : params.row._id
+                      )
+                    }
                     className="md:w-auto"
                   >
                     Si, borrar pasajero

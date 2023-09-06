@@ -126,7 +126,13 @@ const SingleTrip = () => {
         description: "Lugar cancelado con éxito.",
       });
       setIsLoading(false);
-      setPassengers(passengers.filter((item) => item._id !== passengerId));
+      const updatedPassengers = passengers.filter((passenger) => {
+        const isMatchingId = passenger._id === passengerId;
+        const isMatchingCreatedBy = passenger.createdBy?._id === passengerId;
+        return !(isMatchingId || isMatchingCreatedBy);
+      });
+
+      setPassengers(updatedPassengers);
     } catch (err: any) {
       if (err.response?.status === 403) {
         setAuth({ user: null });
