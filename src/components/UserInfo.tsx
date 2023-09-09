@@ -2,9 +2,9 @@ import { Crop, Fingerprint, Mail, Milestone, Phone, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Separator } from "./ui/separator";
 import { UserInfoProps } from "@/types/props";
+import ChangePasswordDialog from "./ChangePasswordDialog";
 
 const UserInfo = ({ userData }: UserInfoProps) => {
-  console.log(userData);
   return (
     <div className="w-full relative flex flex-col items-center gap-5">
       <Avatar className="w-32 h-32">
@@ -17,7 +17,7 @@ const UserInfo = ({ userData }: UserInfoProps) => {
           <User className="w-12 h-12" />
         </AvatarFallback>
       </Avatar>
-
+      <ChangePasswordDialog userId={userData?._id} />
       <div className="relative flex flex-col items-center">
         <h3 className="font-medium text-xl dark:text-white ">
           {userData?.fullName}
