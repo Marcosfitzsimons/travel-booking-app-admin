@@ -103,15 +103,15 @@ const Login = () => {
                 {...register("emailOrUsername", {
                   required: {
                     value: true,
-                    message: "Por favor, ingresa tu email o nombre de usuario.",
+                    message: "Por favor, ingresa tu email o nombre de usuario",
                   },
                   minLength: {
                     value: 3,
-                    message: "Email o nombre de usuario demasiado corto.",
+                    message: "Email o nombre de usuario demasiado corto",
                   },
                   maxLength: {
                     value: 40,
-                    message: "Email o nombre de usuario demasiado largo.",
+                    message: "Email o nombre de usuario demasiado largo",
                   },
                 })}
               />
@@ -131,11 +131,11 @@ const Login = () => {
                   },
                   minLength: {
                     value: 3,
-                    message: "Contraseña no puede ser tan corta.",
+                    message: "Contraseña no puede ser tan corta",
                   },
                   maxLength: {
                     value: 25,
-                    message: "Contraseña no puede ser tan larga.",
+                    message: "Contraseña no puede ser tan larga",
                   },
                 })}
               />
