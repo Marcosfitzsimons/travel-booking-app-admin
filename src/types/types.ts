@@ -94,6 +94,7 @@ export type UserFormData = {
 };
 
 export type UserProfileData = {
+  _id?: string;
   fullName: string;
   username: string;
   addressCda: addressCda;
@@ -169,3 +170,8 @@ export type Column = {
 export type ExtendedColumn = Column & {
   renderCell?: (params: any) => JSX.Element;
 };
+
+export type ChangePasswordData = {
+  password: string;
+  cpassword: string;
+}
