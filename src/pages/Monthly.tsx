@@ -4,6 +4,8 @@ import SectionTitle from "@/components/SectionTitle";
 import useFetch from "@/hooks/useFetch";
 import { ResponsiveLine } from "@nivo/line";
 import { convertToSpanishMonth } from "@/lib/utils/convertToSpanishMonth";
+import Breadcrumb from "@/components/Breadcrumb";
+import { ChevronsRight } from "lucide-react";
 
 const Monthly = () => {
   const { data, loading }: any = useFetch(`/sales`);
@@ -30,7 +32,14 @@ const Monthly = () => {
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Box m="1.5rem 0">
+    <Box className="flex flex-col gap-6">
+      <Breadcrumb>
+        <p className="flex items-center gap-1 text-card-foreground">
+          Ventas
+          <ChevronsRight className="w-5 h-5" />
+          Resumen mensual
+        </p>
+      </Breadcrumb>
       <SectionTitle>Ventas mensuales</SectionTitle>
       <p className="text-card-foreground">Gráfico de ingresos mensuales.</p>
       <Box height="75vh">

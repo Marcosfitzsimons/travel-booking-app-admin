@@ -30,7 +30,6 @@ import useAuth from "@/hooks/useAuth";
 import { Trip } from "@/types/types";
 import { ExtendedColumn } from "@/types/types";
 import { DataTableProps } from "@/types/props";
-
 const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(false);

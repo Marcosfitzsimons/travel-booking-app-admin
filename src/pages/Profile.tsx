@@ -3,12 +3,13 @@ import SectionTitle from "../components/SectionTitle";
 import BackButton from "../components/BackButton";
 import Loading from "../components/Loading";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import { Mail, Phone, User } from "lucide-react";
+import { ChevronsRight, Mail, Phone, User } from "lucide-react";
 import DefaultButton from "../components/DefaultButton";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import { useToast } from "@/hooks/ui/use-toast";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const INITIAL_STATES = {
   _id: "",
@@ -68,7 +69,14 @@ const Profile = () => {
   }, []);
 
   return (
-    <section className="">
+    <section className="flex flex-col gap-6">
+      <Breadcrumb>
+        <p className="flex items-center gap-1 text-card-foreground">
+          Admin
+          <ChevronsRight className="w-5 h-5" />
+          Mi perfil
+        </p>
+      </Breadcrumb>
       <SectionTitle>
         <User className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
         Mi perfil
@@ -78,9 +86,6 @@ const Profile = () => {
       ) : (
         <>
           <div className="flex flex-col gap-3">
-            <div className="self-start my-4 mb-6">
-              <BackButton linkTo="/" />
-            </div>
             {error && (
               <p className="text-red-600">
                 Error al obtener información, intente más tarde.

@@ -1,4 +1,4 @@
-import { Newspaper, Plus } from "lucide-react";
+import { ChevronsRight, Newspaper, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import useFetch from "../hooks/useFetch";
 import PublicationCard from "../components/PublicationCard";
@@ -7,6 +7,7 @@ import Loading from "../components/Loading";
 import ActionButton from "@/components/ActionButton";
 import TotalCountCard from "@/components/TotalCountCard";
 import { Publication } from "@/types/types";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const PublicationsDatatable = () => {
   const [list, setList] = useState<Publication[]>([]);
@@ -21,6 +22,13 @@ const PublicationsDatatable = () => {
 
   return (
     <div className="flex flex-col gap-6">
+      <Breadcrumb>
+        <p className="flex items-center gap-1 text-card-foreground">
+          Listas
+          <ChevronsRight className="w-5 h-5" />
+          Publicaciones
+        </p>
+      </Breadcrumb>
       <SectionTitle>
         <Newspaper className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
         Publicaciones destacadas
