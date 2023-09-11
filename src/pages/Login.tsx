@@ -37,7 +37,7 @@ const Login = () => {
 
   const handleOnSubmit = async (data: User) => {
     setIsLoading(true);
-
+    setErr("");
     try {
       const {
         data: { token, details },
@@ -45,13 +45,12 @@ const Login = () => {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
+      setIsLoading(false);
       if (details.isAdmin) {
         setAuth({ user: details, token });
-        setIsLoading(false);
         navigate("/");
       } else {
         const errorMsg = "No estás autorizado";
-        setIsLoading(false);
         setErr(errorMsg);
       }
     } catch (err: any) {
@@ -59,8 +58,9 @@ const Login = () => {
         setErr(
           "Ha ocurrido un error en el servidor. Intentar de nuevo más tarde"
         );
+        setIsLoading(false);
       } else {
-        const errorMsg = err.response.data.msg;
+        const errorMsg = err.response?.data?.msg;
         setErr(errorMsg);
         setIsLoading(false);
       }

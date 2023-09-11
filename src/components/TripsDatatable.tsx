@@ -55,8 +55,8 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
       variant: "loading",
       description: (
         <div className="flex gap-1">
-          {<Loader2 className="h-5 w-5 animate-spin shrink-0" />} Eliminando
-          viaje...
+          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Eliminando viaje...
         </div>
       ),
     });
@@ -138,7 +138,7 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
             </div>
             <AlertDialog>
               <div className="relative flex items-center">
-                <AlertDialogTrigger>
+                <AlertDialogTrigger disabled={isLoading}>
                   <TrashButtonDatatable
                     icon={
                       <Trash2 className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />

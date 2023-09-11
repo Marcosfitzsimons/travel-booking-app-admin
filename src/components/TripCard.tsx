@@ -24,6 +24,7 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import moment from "moment";
 import { Button } from "./ui/button";
+import { useState } from "react";
 
 type Trip = {
   _id: string;
@@ -47,7 +48,8 @@ type TripCardProps = {
   arrivalTimeValue: string;
   errors: any;
   setDepartureTimeValue: any;
-  err: any;
+  setIsDialogOpen: any;
+  isDialogOpen: boolean;
   handleSubmit: any;
   setStartDate: any;
   startDate: any;
@@ -66,7 +68,8 @@ const TripCard = ({
   setStartDate,
   startDate,
   handleSubmit,
-  err,
+  isDialogOpen,
+  setIsDialogOpen,
   errors,
 }: TripCardProps) => {
   const todayDate = moment().locale("es").format("ddd DD/MM");
@@ -154,7 +157,10 @@ const TripCard = ({
               </div>
             </div>
 
-            <Dialog>
+            <Dialog
+              open={isDialogOpen}
+              onOpenChange={() => setIsDialogOpen(!isDialogOpen)}
+            >
               <div className="lg:self-end">
                 <div className="mt-2 relative w-full after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
                   <DialogTrigger className="relative w-full rounded-lg px-5 py-1.5 lg:py-0 bg-primary text-slate-100 hover:text-white dark:shadow-input dark:shadow-black/5 dark:text-slate-100 dark:hover:text-white lg:h-8">
@@ -181,7 +187,7 @@ const TripCard = ({
                     Editar viaje
                   </DialogTitle>
                   <DialogDescription className="text-center lg:text-lg">
-                    Hace cambios en el viaje.
+                    Hace cambios en el viaje
                   </DialogDescription>
                 </DialogHeader>
                 <div className="w-full flex flex-col items-center gap-5">
@@ -250,11 +256,6 @@ const TripCard = ({
                             onChange={setArrivalTimeValue}
                           />
                         </div>
-                        {err && (
-                          <p className="text-red-600 text-sm self-start">
-                            Ha ocurrido un error. Intentar más tarde
-                          </p>
-                        )}{" "}
                       </div>
                     </div>
 
@@ -375,9 +376,6 @@ const TripCard = ({
                         )}
                       </div>
                     </div>
-                    {err && (
-                      <p className="text-red-600 text-sm self-start">{err}</p>
-                    )}
                     <DialogFooter>
                       <div className="w-full relative mt-2 after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
                         <Button

@@ -1,15 +1,9 @@
-import { DotWave } from "@uiball/loaders";
+import { Loader2 } from "lucide-react";
 
 const Loading = () => {
-  const theme = localStorage.getItem("theme");
-
   return (
     <div className="w-full my-[13rem] flex items-center justify-center lg:my-[17rem]">
-      <DotWave
-        size={47}
-        speed={1}
-        color={theme === "light" ? "#004c5a" : "#e5e5e5"}
-      />
+      <Loader2 className="w-5 h-5 animate-spin" />
     </div>
   );
 };

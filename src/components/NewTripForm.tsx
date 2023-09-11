@@ -12,6 +12,7 @@ import { NewTripFormProps } from "@/types/props";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 import { Trip } from "@/types/types";
+import { Check, Loader2, X } from "lucide-react";
 
 const NewTripForm = ({ inputs }: NewTripFormProps) => {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
@@ -45,6 +46,16 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
 
   const handleOnSubmit = async (data: Trip) => {
     setLoading(true);
+    setErr(false);
+    toast({
+      variant: "loading",
+      description: (
+        <div className="flex gap-1">
+          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Creando viaje...
+        </div>
+      ),
+    });
     try {
       await axiosPrivate.post(`/trips`, {
         ...data,
@@ -54,7 +65,12 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
       });
       setLoading(false);
       toast({
-        description: "Viaje creado con éxito.",
+        description: (
+          <div className="flex gap-1">
+            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Viaje ha
+            sido creado con éxito
+          </div>
+        ),
       });
       navigate("/trips");
     } catch (err: any) {
@@ -66,13 +82,18 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
       }
       setLoading(false);
       setErr(true);
-      const errorMsg = err.response.data.err.message;
+      const errorMsg = err.response?.data?.msg;
       toast({
         variant: "destructive",
-        title: "Error al crear viaje",
+        title: (
+          <div className="flex gap-1">
+            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al crear
+            viaje
+          </div>
+        ) as any,
         description: errorMsg
           ? errorMsg
-          : "Error crear viaje, intente más tarde.",
+          : "Ha ocurrido un error al crear viaje. Por favor, intentar más tarde",
       });
     }
   };
@@ -106,7 +127,6 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
               onChange={setArrivalTimeValue}
             />
           </div>
-          {err && <p className="text-red-600 self-start">{err}</p>}{" "}
         </div>
         {inputs.map((input) => (
           <div key={input.id} className="grid w-full items-center gap-2">

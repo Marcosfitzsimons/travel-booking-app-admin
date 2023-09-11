@@ -43,10 +43,8 @@ export interface MyTripsDataTableProps {
   userData: User;
 };
 export interface DialogAnonPassengerProps  {
-  setErr: any;
   id: string | undefined;
-  err: any;
-  fetchData: () => any;
+  setPassengers: any;
 };
 
 export interface UserDataTableProps  {

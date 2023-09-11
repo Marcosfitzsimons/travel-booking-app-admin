@@ -1,13 +1,16 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import {
+  Check,
   Crop,
   Fingerprint,
+  Loader2,
   Mail,
   Milestone,
   Phone,
   Plus,
   User,
+  X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import useFetch from "../hooks/useFetch";
@@ -28,6 +31,7 @@ import { getRowHeight } from "@/lib/utils/getRowHeight";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 import { UserDataTableProps } from "@/types/props";
+import Error from "./Error";
 
 type MyRowType = {
   _id: string;
@@ -36,6 +40,7 @@ type MyRowType = {
 const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [list, setList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
 
@@ -54,14 +59,28 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
   const handleAddPassenger = async (userId: string) => {
     setLoading(true);
     setErr(false);
+    toast({
+      variant: "loading",
+      description: (
+        <div className="flex gap-1">
+          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Creando pasajero...
+        </div>
+      ),
+    });
     try {
       await axiosPrivate.post(`/passengers/${userId}/${tripId}`, {
         userId: userId,
       });
       setLoading(false);
-      setErr(false);
+      setIsDialogOpen(false);
       toast({
-        description: "Pasajero agregado con éxito.",
+        description: (
+          <div className="flex gap-1">
+            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Pasajero ha
+            sido creado con éxito
+          </div>
+        ),
       });
       setTimeout(() => {
         navigate(`/trips/${tripId}`);
@@ -73,14 +92,21 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
           navigate("/login");
         }, 100);
       }
-      const errorMsg = err.response.data.msg;
+      const errorMsg = err.response?.data?.msg;
       setLoading(false);
       setErr(true);
+      setIsDialogOpen(false);
       toast({
         variant: "destructive",
+        title: (
+          <div className="flex gap-1">
+            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al crear
+            pasajero
+          </div>
+        ) as any,
         description: errorMsg
           ? errorMsg
-          : "Error al agregar pasajero, intente más tarde.",
+          : "Ha ocurrido un error al crear pasajero. Por favor, intentar más tarde",
       });
     }
   };
@@ -93,11 +119,17 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
       renderCell: (params: any) => {
         return (
           <div className="flex items-center gap-2">
-            <Dialog>
+            <Dialog
+              open={isDialogOpen}
+              onOpenChange={() => setIsDialogOpen(!isDialogOpen)}
+            >
               <DialogTrigger asChild>
                 <div className="relative flex items-center">
                   <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
-                    <Button className="h-[28px] px-[13px] pl-[30px] relative bg-teal-800/60 text-white shadow-input hover:text-white dark:text-slate-100 dark:bg-teal-700/60 dark:hover:text-white dark:shadow-none">
+                    <Button
+                      disabled={loading}
+                      className="h-[28px] px-[13px] pl-[30px] relative bg-teal-800/60 text-white shadow-input hover:text-white dark:text-slate-100 dark:bg-teal-700/60 dark:hover:text-white dark:shadow-none"
+                    >
                       <Plus className="absolute left-[12px] top-[6px] h-4 w-4" />
                       Agregar
                     </Button>
@@ -225,109 +257,105 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
 
   return (
     <div className="h-[650px] w-full max-w-[1400px]">
-      <div className="my-3">
-        <SearchUserInput list={list} setFilteredList={setFilteredList} />
-      </div>
-      {error && (
-        <p className="text-red-600">
-          Error al cargar usuarios. Intentar más tarde
-        </p>
-      )}
-      {err && (
-        <p className="text-red-600">
-          Error al agregar pasajero. Intentar más tarde
-        </p>
-      )}
-      {filteredList.length > 0 ? (
-        <DataGrid<MyRowType>
-          rows={filteredList}
-          columns={actionColumn.concat(columns)}
-          checkboxSelection
-          hideFooterSelectedRowCount
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 9,
-              },
-            },
-          }}
-          pageSizeOptions={[9]}
-          getRowId={(row) => row._id}
-          sx={{
-            borderRadius: "7px",
-            "&>.MuiDataGrid-main": {
-              "&>.MuiDataGrid-columnHeaders": {
-                borderBottom: "none",
-              },
-
-              "& div div div div >.MuiDataGrid-cell": {
-                borderBottom: "none",
-              },
-            },
-            "&>.MuiDataGrid-footerContainer": {
-              borderTop: "none",
-            },
-          }}
-          getRowHeight={getRowHeight}
-          slots={{
-            noRowsOverlay: () => (
-              <div className="h-full flex justify-center items-center">
-                Cargando usuarios...
-              </div>
-            ),
-            noResultsOverlay: () => (
-              <div className="h-full flex justify-center items-center">
-                No se encontraron usuarios
-              </div>
-            ),
-          }}
-          className="max-w-[1400px]"
-        />
+      {error ? (
+        <Error />
       ) : (
-        <DataGrid<MyRowType>
-          rows={list}
-          columns={actionColumn.concat(columns)}
-          checkboxSelection
-          hideFooterSelectedRowCount
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 9,
-              },
-            },
-          }}
-          pageSizeOptions={[9]}
-          getRowId={(row) => row._id}
-          sx={{
-            borderRadius: "7px",
-            "&>.MuiDataGrid-main": {
-              "&>.MuiDataGrid-columnHeaders": {
-                borderBottom: "none",
-              },
+        <>
+          <div className="my-3">
+            <SearchUserInput list={list} setFilteredList={setFilteredList} />
+          </div>
+          {filteredList.length > 0 ? (
+            <DataGrid<MyRowType>
+              rows={filteredList}
+              columns={actionColumn.concat(columns)}
+              checkboxSelection
+              hideFooterSelectedRowCount
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 9,
+                  },
+                },
+              }}
+              pageSizeOptions={[9]}
+              getRowId={(row) => row._id}
+              sx={{
+                borderRadius: "7px",
+                "&>.MuiDataGrid-main": {
+                  "&>.MuiDataGrid-columnHeaders": {
+                    borderBottom: "none",
+                  },
 
-              "& div div div div >.MuiDataGrid-cell": {
-                borderBottom: "none",
-              },
-            },
-            "&>.MuiDataGrid-footerContainer": {
-              borderTop: "none",
-            },
-          }}
-          slots={{
-            noRowsOverlay: () => (
-              <div className="h-full flex justify-center items-center">
-                Cargando usuarios...
-              </div>
-            ),
-            noResultsOverlay: () => (
-              <div className="h-full flex justify-center items-center">
-                No se encontraron usuarios
-              </div>
-            ),
-          }}
-          getRowHeight={getRowHeight}
-          className="max-w-[1400px]"
-        />
+                  "& div div div div >.MuiDataGrid-cell": {
+                    borderBottom: "none",
+                  },
+                },
+                "&>.MuiDataGrid-footerContainer": {
+                  borderTop: "none",
+                },
+              }}
+              getRowHeight={getRowHeight}
+              slots={{
+                noRowsOverlay: () => (
+                  <div className="h-full flex justify-center items-center">
+                    Cargando usuarios...
+                  </div>
+                ),
+                noResultsOverlay: () => (
+                  <div className="h-full flex justify-center items-center">
+                    No se encontraron usuarios
+                  </div>
+                ),
+              }}
+              className="max-w-[1400px]"
+            />
+          ) : (
+            <DataGrid<MyRowType>
+              rows={list}
+              columns={actionColumn.concat(columns)}
+              checkboxSelection
+              hideFooterSelectedRowCount
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 9,
+                  },
+                },
+              }}
+              pageSizeOptions={[9]}
+              getRowId={(row) => row._id}
+              sx={{
+                borderRadius: "7px",
+                "&>.MuiDataGrid-main": {
+                  "&>.MuiDataGrid-columnHeaders": {
+                    borderBottom: "none",
+                  },
+
+                  "& div div div div >.MuiDataGrid-cell": {
+                    borderBottom: "none",
+                  },
+                },
+                "&>.MuiDataGrid-footerContainer": {
+                  borderTop: "none",
+                },
+              }}
+              slots={{
+                noRowsOverlay: () => (
+                  <div className="h-full flex justify-center items-center">
+                    Cargando usuarios...
+                  </div>
+                ),
+                noResultsOverlay: () => (
+                  <div className="h-full flex justify-center items-center">
+                    No se encontraron usuarios
+                  </div>
+                ),
+              }}
+              getRowHeight={getRowHeight}
+              className="max-w-[1400px]"
+            />
+          )}
+        </>
       )}
     </div>
   );

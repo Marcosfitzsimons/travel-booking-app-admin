@@ -11,7 +11,7 @@ import {
 } from "../components/ui/dialog";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
-import { Fingerprint, User, UserPlus } from "lucide-react";
+import { Check, Fingerprint, Loader2, User, UserPlus, X } from "lucide-react";
 import { useToast } from "@/hooks/ui/use-toast";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
@@ -25,12 +25,12 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { userAddressInputs } from "@/formSource";
 
 const DialogAnonPassenger = ({
-  setErr,
-  err,
   id,
-  fetchData,
+  setPassengers,
 }: DialogAnonPassengerProps) => {
   const [isSubmitted2, setIsSubmitted2] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [err, setErr] = useState(false);
   const [addressCapitalValue, setAddressCapitalValue] = useState("");
 
   const axiosPrivate = useAxiosPrivate();
@@ -92,16 +92,35 @@ const DialogAnonPassenger = ({
     if (addressCapitalValue.trim() !== "") {
       filteredData.addressCapital = addressCapitalValue;
     }
-
+    setErr(false);
     setIsSubmitted2(true);
+    toast({
+      variant: "loading",
+      description: (
+        <div className="flex gap-1">
+          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Creando pasajero...
+        </div>
+      ),
+    });
     try {
-      await axiosPrivate.post(`/passengers/${user?._id}/${id}`, {
+      const res = await axiosPrivate.post(`/passengers/${user?._id}/${id}`, {
         ...filteredData,
       });
+      const { savedPassenger } = res.data;
+      setPassengers((prevPassengers: Passenger[]) => [
+        ...prevPassengers,
+        savedPassenger,
+      ]);
+      setIsDialogOpen(false);
       toast({
-        description: "Pasajero ha sido creado con éxito.",
+        description: (
+          <div className="flex gap-1">
+            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Pasajero ha
+            sido creado con éxito
+          </div>
+        ),
       });
-      fetchData();
       setIsSubmitted2(false);
     } catch (err: any) {
       if (err.response?.status === 403) {
@@ -110,25 +129,55 @@ const DialogAnonPassenger = ({
           navigate("/login");
         }, 100);
       }
-      const errorMsg = err.response.data.err.message;
-      setErr(true);
+      const errorMsg = err.response?.data?.msg;
       setIsSubmitted2(false);
+      setErr(true);
       toast({
+        variant: "destructive",
+        title: (
+          <div className="flex gap-1">
+            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al crear
+            pasajero
+          </div>
+        ) as any,
         description: errorMsg
           ? errorMsg
-          : "Error al crear pasajero, intente más tarde.",
+          : "Ha ocurrido un error al crear pasajero. Por favor, intentar más tarde",
       });
     }
   };
 
   const handleOnSubmitAnonymousPassenger = async () => {
     setIsSubmitted2(true);
+    setErr(false);
+    toast({
+      variant: "loading",
+      description: (
+        <div className="flex gap-1">
+          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Creando pasajero...
+        </div>
+      ),
+    });
     try {
-      await axiosPrivate.post(`/passengers/${user?._id}/${id}`, {});
+      const res = await axiosPrivate.post(`/passengers/${user?._id}/${id}`, {});
       toast({
-        description: "Pasajero anónimo ha sido creado con éxito.",
+        description: "Pasajero anónimo ha sido creado con éxito",
       });
-      fetchData();
+      const { savedPassenger } = res.data;
+      setPassengers((prevPassengers: Passenger[]) => [
+        ...prevPassengers,
+        savedPassenger,
+      ]);
+      toast({
+        description: (
+          <div className="flex gap-1">
+            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Pasajero ha
+            sido creado con éxito
+          </div>
+        ),
+      });
+      setIsDialogOpen(false);
       setIsSubmitted2(false);
     } catch (err: any) {
       if (err.response?.status === 403) {
@@ -137,19 +186,29 @@ const DialogAnonPassenger = ({
           navigate("/login");
         }, 100);
       }
-      const errorMsg = err.response.data.err.message;
-      setErr(true);
+      const errorMsg = err.response?.data?.msg;
       setIsSubmitted2(false);
+      setErr(true);
       toast({
+        variant: "destructive",
+        title: (
+          <div className="flex gap-1">
+            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al crear
+            pasajero
+          </div>
+        ) as any,
         description: errorMsg
           ? errorMsg
-          : "Error al crear pasajero anónimo, intente más tarde.",
+          : "Ha ocurrido un error al crear pasajero. Por favor, intentar más tarde",
       });
     }
   };
 
   return (
-    <Dialog>
+    <Dialog
+      open={isDialogOpen}
+      onOpenChange={() => setIsDialogOpen(!isDialogOpen)}
+    >
       <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
         <DialogTrigger className="px-3.5 w-auto h-8 pl-[35px] z-20 rounded-lg bg-black/80 text-slate-100 hover:text-white dark:text-slate-100 dark:hover:text-white">
           <UserPlus className="absolute cursor-pointer left-3 top-[5px] h-5 w-5" />
@@ -295,7 +354,7 @@ const DialogAnonPassenger = ({
           </div>
 
           {err && (
-            <p className="text-red-600 text-sm self-start">
+            <p className="mx-auto text-red-600 text-sm self-start">
               Ha ocurrido un error. Intentar más tarde
             </p>
           )}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Check, CheckCircle, Edit, Trash2, X } from "lucide-react";
+import { Check, CheckCircle, Edit, Loader2, Trash2, X } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,30 +19,29 @@ import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
+import { Passenger } from "@/types/types";
 
 type DataTableProps = {
   columns: any;
   tripPassengers: any;
   tripId: string | undefined;
   handleDelete: any;
-  fetchData: any;
+  loading: boolean;
+  setPassengers: any;
 };
-
-// Check all request and prevent submit data when data doesn't change.
 
 const PassengersDatable = ({
   columns,
   tripPassengers,
   tripId,
   handleDelete,
-  fetchData,
+  loading,
+  setPassengers,
 }: DataTableProps) => {
   const [optionSelected, setOptionSelected] = useState<"paid" | "unpaid">(
     "paid"
   );
-  console.log(optionSelected);
   const [isLoading, setIsLoading] = useState(false);
-  const [err, setErr] = useState(false);
 
   const { toast } = useToast();
   const axiosPrivate = useAxiosPrivate();
@@ -52,16 +51,36 @@ const PassengersDatable = ({
 
   const handleIsPaid = async (passengerId: string) => {
     setIsLoading(true);
+    toast({
+      variant: "loading",
+      description: (
+        <div className="flex gap-1">
+          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Actualizando estado del pago...
+        </div>
+      ),
+    });
     try {
-      await axiosPrivate.put(`/passengers/paid/${passengerId}/${tripId}`, {
-        isPaid: optionSelected === "paid",
-      });
+      const res = await axiosPrivate.put(
+        `/passengers/paid/${passengerId}/${tripId}`,
+        {
+          isPaid: optionSelected === "paid",
+        }
+      );
+      const updatedPassenger = res.data.updatedPassenger;
+      setPassengers((prevPassengers: Passenger[]) =>
+        prevPassengers.map((passenger) =>
+          passenger._id === updatedPassenger._id
+            ? { ...passenger, isPaid: updatedPassenger.isPaid }
+            : passenger
+        )
+      );
       setIsLoading(false);
       toast({
         description: (
-          <div className="flex items-center gap-1">
-            {<CheckCircle className="w-[15px] h-[15px]" />} Estado del pago
-            actualizado con éxito
+          <div className="flex gap-1">
+            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Estado del
+            pago actualizado con éxito
           </div>
         ),
       });
@@ -73,15 +92,19 @@ const PassengersDatable = ({
         }, 100);
       }
       setIsLoading(false);
-      setErr(true);
       toast({
         variant: "destructive",
-        description: err.response.data.msg
-          ? err.response.data.msg
-          : "Error al actualizar estado del pago, intentar más tarde.",
+        title: (
+          <div className="flex gap-1">
+            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
+            actualizar estado del pago
+          </div>
+        ) as any,
+        description: err.response?.data?.msg
+          ? err.response?.data?.msg
+          : "Ha ocurrido un error al actualizar estado del pago. Por favor, intentar más tarde",
       });
     }
-    fetchData();
   };
 
   const handleValueChange = (optionSeletected: "paid" | "unpaid") => {
@@ -100,7 +123,7 @@ const PassengersDatable = ({
           <div className="flex items-center">
             <AlertDialog>
               <div className="relative flex items-center">
-                <AlertDialogTrigger className="z-50">
+                <AlertDialogTrigger disabled={loading} className="z-50">
                   <TrashButtonDatatable
                     icon={
                       <Trash2 className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />
@@ -161,7 +184,10 @@ const PassengersDatable = ({
             )}
             <AlertDialog>
               <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-300/50 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-600 dark:focus-within:after:shadow-slate-100">
-                <AlertDialogTrigger className="text-sm h-auto w-auto pl-[33px] py-1 px-3 z-20 rounded-lg bg-white dark:bg-black/80 dark:text-slate-100 dark:hover:text-white">
+                <AlertDialogTrigger
+                  disabled={isLoading}
+                  className="text-sm h-auto w-auto pl-[33px] py-1 px-3 z-20 rounded-lg bg-white dark:bg-black/80 dark:text-slate-100 dark:hover:text-white"
+                >
                   <Edit className="absolute cursor-pointer left-3.5 top-[5px] h-[15px] w-[15px]" />
                   Editar
                 </AlertDialogTrigger>
@@ -221,7 +247,7 @@ const PassengersDatable = ({
                     </div>
                   </ToggleGroup.Root>
                 </div>
-                <AlertDialogFooter className="lg:gap-3 lg:self-end">
+                <AlertDialogFooter>
                   <AlertDialogCancel>Cancelar</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => {
@@ -231,8 +257,16 @@ const PassengersDatable = ({
                       ) {
                         return toast({
                           variant: "destructive",
+                          title: (
+                            <div className="flex gap-1">
+                              {
+                                <X className="h-5 w-5 text-destructive shrink-0" />
+                              }{" "}
+                              Error al actualizar estado del pago
+                            </div>
+                          ) as any,
                           description:
-                            "El estado del pago ya tiene ese valor. Debes cambiarlo para que se actualice.",
+                            "El estado del pago ya tiene ese valor. Debes cambiarlo para que se actualice",
                         });
                       }
                       handleIsPaid(params.row._id);
