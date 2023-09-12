@@ -40,7 +40,6 @@ type MyRowType = {
 const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [list, setList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
 
@@ -56,7 +55,7 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
 
   const { data, error } = useFetch(baseUrl);
 
-  const handleAddPassenger = async (userId: string) => {
+  const handleAddPassenger = async (userId: string, setIsDialogOpen: any) => {
     setLoading(true);
     setErr(false);
     toast({
@@ -70,7 +69,7 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
     });
     try {
       await axiosPrivate.post(`/passengers/${userId}/${tripId}`, {
-        userId: userId,
+        userId,
       });
       setLoading(false);
       setIsDialogOpen(false);
@@ -117,6 +116,7 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
       headerName: "Acción",
       width: 120,
       renderCell: (params: any) => {
+        const [isDialogOpen, setIsDialogOpen] = useState(false);
         return (
           <div className="flex items-center gap-2">
             <Dialog
@@ -237,7 +237,9 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
                   <div className="flex justify-center my-4 mx-auto">
                     <DefaultButton
                       loading={loading}
-                      onClick={() => handleAddPassenger(params.row._id)}
+                      onClick={() =>
+                        handleAddPassenger(params.row._id, setIsDialogOpen)
+                      }
                     >
                       Agregar pasajero
                     </DefaultButton>
