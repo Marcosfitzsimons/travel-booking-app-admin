@@ -26,12 +26,14 @@ type DataTableProps = {
   columns: any;
   tripPassengers: SpecialPassenger[];
   handleDelete: any;
+  isLoading: boolean;
 };
 
 const SpecialPassengersDatable = ({
   columns,
   tripPassengers,
   handleDelete,
+  isLoading,
 }: DataTableProps) => {
   const actionColumn = [
     {
@@ -79,7 +81,7 @@ const SpecialPassengersDatable = ({
             </div>
             <AlertDialog>
               <div className="relative flex items-center">
-                <AlertDialogTrigger className="z-50">
+                <AlertDialogTrigger disabled={isLoading} className="z-50">
                   <TrashButtonDatatable
                     icon={
                       <Trash2 className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />

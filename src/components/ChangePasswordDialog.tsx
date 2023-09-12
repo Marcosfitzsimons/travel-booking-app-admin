@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/ui/use-toast";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { ChangePasswordData } from "@/types/types";
-import { Check, Lock, X } from "lucide-react";
+import { Check, Loader2, Lock, X } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +28,7 @@ const ChangePasswordDialog = ({ userId }: ChangePasswordDialogProps) => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     defaultValues: {
       password: "",
@@ -36,6 +37,7 @@ const ChangePasswordDialog = ({ userId }: ChangePasswordDialogProps) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { setAuth } = useAuth();
 
@@ -47,11 +49,21 @@ const ChangePasswordDialog = ({ userId }: ChangePasswordDialogProps) => {
   const handleOnSubmit = async (data: ChangePasswordData) => {
     setLoading(true);
     setError("");
+    toast({
+      variant: "loading",
+      description: (
+        <div className="flex gap-1">
+          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Cambiando contraseña...
+        </div>
+      ),
+    });
     try {
       await axiosPrivate.put(`/users/changepassword/${userId}`, {
         ...data,
       });
       setLoading(false);
+      setIsDialogOpen(false);
       toast({
         description: (
           <div className="flex gap-1">
@@ -59,6 +71,10 @@ const ChangePasswordDialog = ({ userId }: ChangePasswordDialogProps) => {
             ha sido actualizada con éxito
           </div>
         ),
+      });
+      reset({
+        password: "",
+        cpassword: "",
       });
     } catch (err: any) {
       if (err.response?.status === 403) {
@@ -86,7 +102,10 @@ const ChangePasswordDialog = ({ userId }: ChangePasswordDialogProps) => {
   };
 
   return (
-    <Dialog>
+    <Dialog
+      open={isDialogOpen}
+      onOpenChange={() => setIsDialogOpen(!isDialogOpen)}
+    >
       <div className="flex items-center relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 after:transition focus-within:after:shadow-slate-400 dark:after:shadow-highlight dark:after:shadow-zinc-500/50 dark:focus-within:after:shadow-slate-100 dark:hover:text-white">
         <DialogTrigger asChild>
           <Button className="h-8 py-2 px-3 outline-none inline-flex items-center justify-center text-sm font-medium transition-colors rounded-lg shadow-input bg-card border border-slate-800/20 hover:bg-white dark:text-neutral-200 dark:border-slate-800 dark:hover:bg-black dark:shadow-none dark:hover:text-white">
@@ -193,7 +212,7 @@ const ChangePasswordDialog = ({ userId }: ChangePasswordDialogProps) => {
                 <Button
                   disabled={loading}
                   type="submit"
-                  className="relative w-full bg-primary text-slate-100 hover:text-white dark:text-slate-100 dark:bg-primary dark:hover:text-white h-7"
+                  className="h-8 relative w-full bg-primary text-slate-100 hover:text-white dark:text-slate-100 dark:bg-primary dark:hover:text-white"
                 >
                   Cambiar contraseña
                 </Button>

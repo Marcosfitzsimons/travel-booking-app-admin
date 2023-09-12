@@ -5,13 +5,16 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
+  Check,
   Crop,
   Fingerprint,
+  Loader2,
   Lock,
   Mail,
   Milestone,
   Phone,
   User,
+  X,
 } from "lucide-react";
 import { useToast } from "../hooks/ui/use-toast";
 import DefaultButton from "./DefaultButton";
@@ -20,6 +23,7 @@ import AddressAutocomplete from "./AddressAutocomplete";
 import { UserFormData } from "@/types/types";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
+import axios from "@/api/axios";
 
 const NewUserForm = () => {
   const [image, setImage] = useState<File | string>("");
@@ -60,37 +64,54 @@ const NewUserForm = () => {
 
   const handleOnSubmit = async (data: UserFormData) => {
     setIsLoading(true);
+    toast({
+      variant: "loading",
+      description: (
+        <div className="flex gap-1">
+          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Creando usuario...
+        </div>
+      ),
+    });
     const imgData = new FormData();
     imgData.append("file", image);
     imgData.append("upload_preset", "upload");
     try {
       if (!image) {
-        const datasent = await axiosPrivate.post(`/auth/register`, {
+        await axiosPrivate.post(`/auth/register`, {
           ...data,
           addressCapital: addressCapitalValue,
         });
-        console.log(datasent);
         setIsLoading(false);
         toast({
-          description: "Usuario creado con éxito.",
+          description: (
+            <div className="flex gap-1">
+              {<Check className="h-5 w-5 text-green-600 shrink-0" />} Usuario ha
+              sido creado con éxito
+            </div>
+          ),
         });
         navigate("/users");
       } else {
-        const uploadRes = await axiosPrivate.post(
+        const uploadRes = await axios.post(
           "https://api.cloudinary.com/v1_1/dioqjddko/image/upload",
           imgData
         );
         const { url } = uploadRes.data;
 
-        const datasent = await axiosPrivate.post(`/auth/register`, {
+        await axiosPrivate.post(`/auth/register`, {
           ...data,
           image: url,
           addressCapital: addressCapitalValue,
         });
-        console.log(datasent);
         setIsLoading(false);
         toast({
-          description: "Usuario creado con éxito.",
+          description: (
+            <div className="flex gap-1">
+              {<Check className="h-5 w-5 text-green-600 shrink-0" />} Usuario ha
+              sido creado con éxito
+            </div>
+          ),
         });
         navigate("/users");
       }
@@ -102,30 +123,53 @@ const NewUserForm = () => {
           navigate("/login");
         }, 100);
       }
-      if (err.response.data.err?.keyValue.username) {
+      if (err.response?.data?.err?.keyValue?.username) {
         setErr(
-          `Nombre de usuario ${err.response.data.err.keyValue.username} ya está en uso`
+          `Nombre de usuario ${err.response?.data?.err?.keyValue?.username} ya está en uso`
         );
         toast({
           variant: "destructive",
-          title: "Error al crear cuenta",
+          title: (
+            <div className="flex gap-1">
+              {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
+              crear cuenta
+            </div>
+          ) as any,
           description: "Nombre de usuario ya está en uso",
         });
-      } else if (err.response.data.err?.keyValue.email) {
-        setErr(`Email ${err.response.data.err.keyValue.email} ya está en uso`);
+      } else if (err.response?.data?.err?.keyValue?.email) {
+        setErr(
+          `Email ${err.response?.data?.err?.keyValue?.email} ya está en uso`
+        );
         toast({
           variant: "destructive",
-          title: "Error al crear cuenta",
+          title: (
+            <div className="flex gap-1">
+              {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
+              crear cuenta
+            </div>
+          ) as any,
           description: "Email ya está en uso",
         });
       } else {
-        setErr(err.response.data.msg);
+        setErr(err.response?.data?.msg);
         toast({
           variant: "destructive",
           title: "Error al crear cuenta",
-          description: err.response.data.msg
-            ? err.response.data.msg
-            : "Error al crear cuenta, intente más tarde.",
+          description: err.response?.data?.msg
+            ? err.response?.data?.msg
+            : "Error , intente más tarde.",
+        });
+        toast({
+          variant: "destructive",
+          title: (
+            <div className="flex gap-1">
+              {<X className="h-5 w-5 text-destructive shrink-0" />} Error al al
+              crear cuenta
+            </div>
+          ) as any,
+          description:
+            "Ha ocurrido un error al crear cuenta. Por favor, intentar más tarde",
         });
       }
     }

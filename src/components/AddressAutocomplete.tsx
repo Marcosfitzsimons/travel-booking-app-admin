@@ -92,7 +92,7 @@ const AddressAutocomplete = ({ value, setValue }: AddressAutocompleteProps) => {
   return (
     <div>
       <div className="w-full relative flex items-center">
-        <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px] pb-[2px] " />
+        <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px] pb-[2px] shrink-0" />
         <Input
           id="location-input"
           placeholder="Las Heras 2304"

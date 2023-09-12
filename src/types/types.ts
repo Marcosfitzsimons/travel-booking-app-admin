@@ -103,7 +103,7 @@ export type UserProfileData = {
   phone: undefined | number;
   email: string;
   image?: string;
-  status?: undefined | "Active" | "Pending";
+  status?: string;
 }
 
 export type Publication = {

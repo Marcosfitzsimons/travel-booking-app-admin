@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Trash2 } from "lucide-react";
+import { Check, Loader2, Trash2, X } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -59,10 +59,24 @@ const MyTripsDatatable = ({
   const handleDelete = async (tripId: string) => {
     setLoading(true);
     setErr(false);
+    toast({
+      variant: "loading",
+      description: (
+        <div className="flex gap-1">
+          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Eliminando pasajero del viaje...
+        </div>
+      ),
+    });
     try {
       await axiosPrivate.delete(`/passengers/${userId}/${tripId}`);
       toast({
-        description: "Lugar cancelado con éxito.",
+        description: (
+          <div className="flex gap-1">
+            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Lugar
+            cancelado con éxito
+          </div>
+        ),
       });
       setLoading(false);
       setList(list.filter((item) => item.id !== tripId));
@@ -73,14 +87,20 @@ const MyTripsDatatable = ({
           navigate("/login");
         }, 100);
       }
+      const errorMsg = err.response?.data?.msg;
       setLoading(false);
       setErr(true);
       toast({
         variant: "destructive",
-        title: "Error al cancelar lugar",
-        description: err.response.data.msg
-          ? err.response.data.msg
-          : "Error al cancelar lugar, intente más tarde.",
+        title: (
+          <div className="flex gap-1">
+            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
+            eliminar pasajero del viaje
+          </div>
+        ) as any,
+        description: errorMsg
+          ? errorMsg
+          : "Ha ocurrido un error al eliminar pasajero. Por favor, intentar más tarde",
       });
     }
   };
@@ -104,7 +124,7 @@ const MyTripsDatatable = ({
             </div>
             <AlertDialog>
               <div className="relative flex items-center">
-                <AlertDialogTrigger>
+                <AlertDialogTrigger disabled={loading}>
                   <TrashButtonDatatable
                     icon={
                       <Trash2 className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />

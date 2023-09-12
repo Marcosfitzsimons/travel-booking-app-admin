@@ -39,7 +39,7 @@ const PublicationCard = ({ item, setList, list }: PublicationCardProps) => {
       setIsLoading(false);
       setIsError(false);
       toast({
-        description: "Usuario eliminado con éxito.",
+        description: "Publicación eliminado con éxito.",
       });
     } catch (err: any) {
       if (err.response?.status === 403) {

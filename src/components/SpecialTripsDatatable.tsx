@@ -1,5 +1,14 @@
 import { DataGrid } from "@mui/x-data-grid";
-import { Eye, Trash2, Map, RotateCcw, Plus } from "lucide-react";
+import {
+  Eye,
+  Trash2,
+  Map,
+  RotateCcw,
+  Plus,
+  X,
+  Check,
+  Loader2,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import "moment-timezone";
@@ -29,6 +38,7 @@ import { DataTableProps } from "@/types/props";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
+import Error from "./Error";
 
 const SpecialTripsDatatable = ({ columns, linkText }: DataTableProps) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -47,13 +57,28 @@ const SpecialTripsDatatable = ({ columns, linkText }: DataTableProps) => {
 
   const handleDelete = async (id: string) => {
     setIsLoading(true);
+    setErr(false);
+    toast({
+      variant: "loading",
+      description: (
+        <div className="flex gap-1">
+          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Eliminando viaje...
+        </div>
+      ),
+    });
     try {
       await axiosPrivate.delete(`${baseUrl}/${id}`);
-      toast({
-        description: "Viaje eliminado con éxito.",
-      });
       setIsLoading(false);
       setList(list.filter((item) => item._id !== id));
+      toast({
+        description: (
+          <div className="flex gap-1">
+            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Viaje ha
+            sido eliminado con éxito
+          </div>
+        ),
+      });
     } catch (err: any) {
       if (err.response?.status === 403) {
         setAuth({ user: null });
@@ -61,14 +86,20 @@ const SpecialTripsDatatable = ({ columns, linkText }: DataTableProps) => {
           navigate("/login");
         }, 100);
       }
-      const errorMsg = err.response.data.msg;
+      const errorMsg = err.response?.data?.msg;
       setIsLoading(false);
       setErr(true);
       toast({
         variant: "destructive",
+        title: (
+          <div className="flex gap-1">
+            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
+            eliminar viaje
+          </div>
+        ) as any,
         description: errorMsg
           ? errorMsg
-          : "Error al eliminar viaje, intentar más tarde.",
+          : "Ha ocurrido un error al eliminar viaje. Por favor, intentar más tarde",
       });
     }
   };
@@ -114,7 +145,7 @@ const SpecialTripsDatatable = ({ columns, linkText }: DataTableProps) => {
             </div>
             <AlertDialog>
               <div className="relative flex items-center">
-                <AlertDialogTrigger>
+                <AlertDialogTrigger disabled={isLoading}>
                   <TrashButtonDatatable
                     icon={
                       <Trash2 className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />
@@ -161,142 +192,138 @@ const SpecialTripsDatatable = ({ columns, linkText }: DataTableProps) => {
 
   return (
     <div className="h-[650px] w-full max-w-[1400px]">
-      <div className="relative w-full my-3 flex flex-col items-center gap-3">
-        <div className="md:absolute md:right-0 md:top-[-100px]">
-          <TotalCountCard
-            icon={<Map className="text-accent h-8 w-8" />}
-            title="Viajes disponibles"
-            value={loading ? "0" : list.length}
-          />
-        </div>
-        <div className="w-full flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
-          <div className="relative flex items-end gap-1 w-[min(100%,184px)]">
-            <DatePickerContainer
-              startDate={startDate}
-              setStartDate={setStartDate}
-            />
-            <div className="absolute -right-[46px] h-full">
-              <div className="relative flex w-[38px] h-full aspect-square before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300">
-                <Button
-                  className="absolute w-[38px] h-full flex items-center justify-center cursor-pointer p-2 bg-card rounded-lg border border-slate-800/20 shadow-input dark:bg-[hsl(0,0%,11%)] dark:border-slate-800 dark:shadow-none !outline-none dark:hover:text-white"
-                  onClick={() => setStartDate(null)}
-                >
-                  <RotateCcw className="w-4 h-4" />
-                </Button>
+      {error ? (
+        <Error />
+      ) : (
+        <>
+          <div className="relative w-full my-3 flex flex-col items-center gap-3">
+            <div className="md:absolute md:right-0 md:top-[-100px]">
+              <TotalCountCard
+                icon={<Map className="text-accent h-8 w-8" />}
+                title="Viajes disponibles"
+                value={loading ? "0" : list.length}
+              />
+            </div>
+            <div className="w-full flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
+              <div className="relative flex items-end gap-1 w-[min(100%,184px)]">
+                <DatePickerContainer
+                  startDate={startDate}
+                  setStartDate={setStartDate}
+                />
+                <div className="absolute -right-[46px] h-full">
+                  <div className="relative flex w-[38px] h-full aspect-square before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300">
+                    <Button
+                      className="absolute w-[38px] h-full flex items-center justify-center cursor-pointer p-2 bg-card rounded-lg border border-slate-800/20 shadow-input dark:bg-[hsl(0,0%,11%)] dark:border-slate-800 dark:shadow-none !outline-none dark:hover:text-white"
+                      onClick={() => setStartDate(null)}
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between items-end">
+                <ActionButton
+                  text={linkText}
+                  icon={
+                    <Plus className="absolute cursor-pointer left-[13px] top-[7.3px] h-[18px] w-[18px] md:top-[4px] md:left-[8px] md:h-6 md:w-6" />
+                  }
+                  linkTo="/special-trips/new"
+                />
               </div>
             </div>
-            {err && (
-              <p className="text-red-500 order-2">
-                Ha ocurrido un error. Intentar más tarde
-              </p>
-            )}
-            {error && (
-              <p className="text-red-500 order-2">
-                Ha ocurrido un error. Intentar más tarde
-              </p>
-            )}
           </div>
-          <div className="flex justify-between items-end">
-            <ActionButton
-              text={linkText}
-              icon={
-                <Plus className="absolute cursor-pointer left-[13px] top-[7.3px] h-[18px] w-[18px] md:top-[4px] md:left-[8px] md:h-6 md:w-6" />
-              }
-              linkTo={"/special-trips/new"}
+          {filteredList.length > 0 ? (
+            <DataGrid
+              rows={filteredList}
+              columns={actionColumn.concat(columns)}
+              getRowHeight={getRowHeight}
+              slots={{
+                noRowsOverlay: () => (
+                  <div className="h-full flex justify-center items-center">
+                    No hay viajes
+                  </div>
+                ),
+                noResultsOverlay: () => (
+                  <div className="h-full flex justify-center items-center">
+                    No se encontraron viajes en esa fecha
+                  </div>
+                ),
+              }}
+              checkboxSelection
+              hideFooterSelectedRowCount
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 9,
+                  },
+                },
+              }}
+              sx={{
+                borderRadius: "7px",
+                "&>.MuiDataGrid-main": {
+                  "&>.MuiDataGrid-columnHeaders": {
+                    borderBottom: "none",
+                  },
+
+                  "& div div div div >.MuiDataGrid-cell": {
+                    borderBottom: "none",
+                  },
+                },
+                "&>.MuiDataGrid-footerContainer": {
+                  borderTop: "none",
+                },
+              }}
+              pageSizeOptions={[9]}
+              getRowId={(row) => row._id || ""}
+              className="max-w-[1400px]"
             />
-          </div>
-        </div>
-      </div>
-      {filteredList.length > 0 ? (
-        <DataGrid
-          rows={filteredList}
-          columns={actionColumn.concat(columns)}
-          getRowHeight={getRowHeight}
-          slots={{
-            noRowsOverlay: () => (
-              <div className="h-full flex justify-center items-center">
-                No hay viajes
-              </div>
-            ),
-            noResultsOverlay: () => (
-              <div className="h-full flex justify-center items-center">
-                No se encontraron viajes en esa fecha
-              </div>
-            ),
-          }}
-          checkboxSelection
-          hideFooterSelectedRowCount
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 9,
-              },
-            },
-          }}
-          sx={{
-            borderRadius: "7px",
-            "&>.MuiDataGrid-main": {
-              "&>.MuiDataGrid-columnHeaders": {
-                borderBottom: "none",
-              },
+          ) : (
+            <DataGrid
+              rows={list}
+              columns={actionColumn.concat(columns)}
+              slots={{
+                noRowsOverlay: () => (
+                  <div className="h-full flex justify-center items-center">
+                    No hay viajes
+                  </div>
+                ),
+                noResultsOverlay: () => (
+                  <div className="h-full flex justify-center items-center">
+                    No se encontraron viajes en esa fecha
+                  </div>
+                ),
+              }}
+              getRowHeight={getRowHeight}
+              checkboxSelection
+              hideFooterSelectedRowCount
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 9,
+                  },
+                },
+              }}
+              pageSizeOptions={[9]}
+              getRowId={(row) => row._id || ""}
+              sx={{
+                borderRadius: "7px",
+                "&>.MuiDataGrid-main": {
+                  "&>.MuiDataGrid-columnHeaders": {
+                    borderBottom: "none",
+                  },
 
-              "& div div div div >.MuiDataGrid-cell": {
-                borderBottom: "none",
-              },
-            },
-            "&>.MuiDataGrid-footerContainer": {
-              borderTop: "none",
-            },
-          }}
-          pageSizeOptions={[9]}
-          getRowId={(row) => row._id || ""}
-          className="max-w-[1400px]"
-        />
-      ) : (
-        <DataGrid
-          rows={list}
-          columns={actionColumn.concat(columns)}
-          slots={{
-            noRowsOverlay: () => (
-              <div className="h-full flex justify-center items-center">
-                No hay viajes
-              </div>
-            ),
-            noResultsOverlay: () => (
-              <div className="h-full flex justify-center items-center">
-                No se encontraron viajes en esa fecha
-              </div>
-            ),
-          }}
-          getRowHeight={getRowHeight}
-          checkboxSelection
-          hideFooterSelectedRowCount
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 9,
-              },
-            },
-          }}
-          pageSizeOptions={[9]}
-          getRowId={(row) => row._id || ""}
-          sx={{
-            borderRadius: "7px",
-            "&>.MuiDataGrid-main": {
-              "&>.MuiDataGrid-columnHeaders": {
-                borderBottom: "none",
-              },
-
-              "& div div div div >.MuiDataGrid-cell": {
-                borderBottom: "none",
-              },
-            },
-            "&>.MuiDataGrid-footerContainer": {
-              borderTop: "none",
-            },
-          }}
-          className="max-w-[1400px]"
-        />
+                  "& div div div div >.MuiDataGrid-cell": {
+                    borderBottom: "none",
+                  },
+                },
+                "&>.MuiDataGrid-footerContainer": {
+                  borderTop: "none",
+                },
+              }}
+              className="max-w-[1400px]"
+            />
+          )}
+        </>
       )}
     </div>
   );

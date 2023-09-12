@@ -19,7 +19,6 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
   const [arrivalTimeValue, setArrivalTimeValue] = useState("10:00");
   const [departureTimeValue, setDepartureTimeValue] = useState("10:00");
   const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState(false);
 
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -46,7 +45,6 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
 
   const handleOnSubmit = async (data: Trip) => {
     setLoading(true);
-    setErr(false);
     toast({
       variant: "loading",
       description: (
@@ -81,7 +79,6 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
         }, 100);
       }
       setLoading(false);
-      setErr(true);
       const errorMsg = err.response?.data?.msg;
       toast({
         variant: "destructive",

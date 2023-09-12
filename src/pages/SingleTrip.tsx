@@ -42,10 +42,8 @@ const SingleTrip = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [departureTimeValue, setDepartureTimeValue] = useState("");
   const [arrivalTimeValue, setArrivalTimeValue] = useState("");
-  const [error, setError] = useState(false);
   const [err, setErr] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  console.log(passengers);
   const [startDate, setStartDate] = useState<any>(null);
 
   const isMaxCapacity = passengers.length === tripData.maxCapacity;
@@ -92,7 +90,6 @@ const SingleTrip = () => {
       });
     }
     setIsSubmitted(true);
-    setError(false);
     toast({
       variant: "loading",
       description: (
@@ -129,7 +126,6 @@ const SingleTrip = () => {
         }, 100);
       }
       const errorMsg = err.response?.data?.msg;
-      setError(true);
       setIsSubmitted(false);
       toast({
         variant: "destructive",
@@ -178,7 +174,6 @@ const SingleTrip = () => {
       }
       const errorMsg = err.response?.data?.msg;
       setLoading(false);
-      setError(true);
       toast({
         variant: "destructive",
         title: (

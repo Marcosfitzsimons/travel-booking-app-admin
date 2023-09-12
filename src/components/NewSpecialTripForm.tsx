@@ -9,7 +9,7 @@ import DatePickerContainer from "./DatePickerContainer";
 import TimePickerContainer from "./TimePickerContainer";
 import { NewTripFormProps } from "../types/props";
 import { Checkbox } from "./ui/checkbox";
-import { Users } from "lucide-react";
+import { Check, Loader2, Users, X } from "lucide-react";
 import { NewSpecialTrip } from "@/types/types";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
@@ -49,8 +49,16 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
 
   const handleOnSubmit = async (data: NewSpecialTrip) => {
     const { defaultPassengerCount } = data;
-    setErr(false);
     setLoading(true);
+    toast({
+      variant: "loading",
+      description: (
+        <div className="flex gap-1">
+          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Creando viaje...
+        </div>
+      ),
+    });
     try {
       await axiosPrivate.post(`/special-trips`, {
         ...data,
@@ -60,9 +68,13 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
         default_passenger_count: defaultPassengerCount,
       });
       setLoading(false);
-      setErr(false);
       toast({
-        description: "Viaje creado con éxito.",
+        description: (
+          <div className="flex gap-1">
+            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Viaje creado
+            con éxito
+          </div>
+        ),
       });
       navigate("/special-trips");
     } catch (err: any) {
@@ -72,14 +84,19 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
           navigate("/login");
         }, 100);
       }
-      const errorMsg = err.response.data.err.message;
       setLoading(false);
-      setErr(true);
+      const errorMsg = err.response?.data?.msg;
       toast({
         variant: "destructive",
+        title: (
+          <div className="flex gap-1">
+            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al crear
+            viaje
+          </div>
+        ) as any,
         description: errorMsg
           ? errorMsg
-          : "Error al crear viaje, intente más tarde.",
+          : "Ha ocurrido un error al crear viaje. Por favor, intentar más tarde",
       });
     }
   };
@@ -122,7 +139,6 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
               onChange={setDepartureTimeValue}
             />
           </div>
-          {err && <p className="text-red-600 self-start">{err}</p>}{" "}
         </div>
         {inputs.map((input) => (
           <div key={input.id} className="grid w-full items-center gap-2">
@@ -198,13 +214,8 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
             ""
           )}
         </div>
-        {err && (
-          <p className="text-red-600">
-            Error al crear viaje, intentar más tarde
-          </p>
-        )}
         <div className="w-full mt-2 lg:w-[9rem] lg:col-start-1 lg:col-end-3 lg:justify-self-center lg:self-center">
-          <DefaultButton>Crear viaje</DefaultButton>
+          <DefaultButton loading={loading}>Crear viaje</DefaultButton>
         </div>
       </div>
     </form>

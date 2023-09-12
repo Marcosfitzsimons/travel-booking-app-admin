@@ -140,7 +140,7 @@ export const userAddressInputs = [
   {
     id: "street",
     icon: (
-      <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px]" />
+      <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] shrink-0" />
     ),
     label: "Calle",
     type: "text",
@@ -163,7 +163,7 @@ export const userAddressInputs = [
   {
     id: "streetNumber",
     icon: (
-      <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px]  " />
+      <Milestone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] shrink-0" />
     ),
     label: "Número",
     type: "number",
@@ -190,7 +190,7 @@ export const userAddressInputs = [
   {
     id: "crossStreets",
     icon: (
-      <Crop className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px]" />
+      <Crop className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] shrink-0" />
     ),
     label: "Calles que cruzan",
     type: "text",
@@ -221,7 +221,7 @@ export const tripInputs = [
     type: "text",
     placeholder: "Carmen",
     icon: (
-      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px] shrink-0" />
     ),
     validation: {
       required: {
@@ -245,7 +245,7 @@ export const tripInputs = [
     type: "text",
     placeholder: "Capital",
     icon: (
-      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px] shrink-0" />
     ),
     validation: {
       required: {
@@ -269,7 +269,7 @@ export const tripInputs = [
     type: "number",
     placeholder: "2500",
     icon: (
-      <DollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+      <DollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px] shrink-0" />
     ),
     validation: {
       required: {
@@ -293,7 +293,7 @@ export const tripInputs = [
     type: "number",
     placeholder: "15",
     icon: (
-      <UserMinus2 className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+      <UserMinus2 className="z-30 h-5 w-5 text-accent absolute left-[10px] shrink-0" />
     ),
     validation: {
       required: {
@@ -317,7 +317,7 @@ export const tripInputs = [
     type: "text",
     placeholder: "De carmen a Capital",
     icon: (
-      <HelpingHand className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+      <HelpingHand className="z-30 h-5 w-5 text-accent absolute left-[10px] shrink-0" />
     ),
     validation: {
       required: {
@@ -344,7 +344,7 @@ export const specialTripInputs = [
     type: "text",
     placeholder: "Carmen",
     icon: (
-      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px] shrink-0" />
     ),
     validation: {
       required: {
@@ -368,7 +368,7 @@ export const specialTripInputs = [
     type: "text",
     placeholder: "Capital",
     icon: (
-      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px] shrink-0" />
     ),
     validation: {
       required: {
@@ -392,7 +392,7 @@ export const specialTripInputs = [
     type: "number",
     placeholder: "2500",
     icon: (
-      <DollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+      <DollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px] shrink-0" />
     ),
     validation: {
       required: {
@@ -416,7 +416,7 @@ export const specialTripInputs = [
     type: "number",
     placeholder: "15",
     icon: (
-      <UserMinus2 className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+      <UserMinus2 className="z-30 h-5 w-5 text-accent absolute left-[10px] shrink-0" />
     ),
     validation: {
       required: {
@@ -440,7 +440,7 @@ export const specialTripInputs = [
     type: "text",
     placeholder: "Viaje a cancha de San Lorenzo",
     icon: (
-      <HelpingHand className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+      <HelpingHand className="z-30 h-5 w-5 text-accent absolute left-[10px] shrink-0" />
     ),
     validation: {
       required: {

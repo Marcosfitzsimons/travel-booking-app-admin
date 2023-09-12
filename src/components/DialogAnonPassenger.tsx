@@ -161,9 +161,7 @@ const DialogAnonPassenger = ({
     });
     try {
       const res = await axiosPrivate.post(`/passengers/${user?._id}/${id}`, {});
-      toast({
-        description: "Pasajero anónimo ha sido creado con éxito",
-      });
+
       const { savedPassenger } = res.data;
       setPassengers((prevPassengers: Passenger[]) => [
         ...prevPassengers,

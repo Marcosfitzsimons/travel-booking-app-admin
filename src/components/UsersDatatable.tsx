@@ -1,5 +1,13 @@
 import { DataGrid } from "@mui/x-data-grid";
-import { Eye, Trash2, UserPlusIcon, Users } from "lucide-react";
+import {
+  Check,
+  Eye,
+  Loader2,
+  Trash2,
+  UserPlusIcon,
+  Users,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import useFetch from "../hooks/useFetch";
 import {
@@ -26,12 +34,12 @@ import { useNavigate } from "react-router-dom";
 import { ExtendedColumn } from "@/types/types";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
+import Error from "./Error";
 
 const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
   const [list, setList] = useState<User[]>([]);
   const [filteredList, setFilteredList] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
   const baseUrl = `/users`;
 
   const axiosPrivate = useAxiosPrivate();
@@ -42,12 +50,26 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
 
   const handleDelete = async (id: string) => {
     setIsLoading(true);
+    toast({
+      variant: "loading",
+      description: (
+        <div className="flex gap-1">
+          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Eliminando usuario...
+        </div>
+      ),
+    });
     try {
       await axiosPrivate.delete(`${baseUrl}/${id}`);
       setList(list.filter((item) => item._id !== id));
       setIsLoading(false);
       toast({
-        description: "Usuario eliminado con éxito.",
+        description: (
+          <div className="flex gap-1">
+            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Usuario
+            eliminado con éxito
+          </div>
+        ),
       });
     } catch (err: any) {
       if (err.response?.status === 403) {
@@ -56,14 +78,19 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
           navigate("/login");
         }, 100);
       }
-      const errorMsg = err.response.data.msg;
+      const errorMsg = err.response?.data?.msg;
       setIsLoading(false);
-      setIsError(true);
       toast({
         variant: "destructive",
+        title: (
+          <div className="flex gap-1">
+            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
+            eliminar usuario
+          </div>
+        ) as any,
         description: errorMsg
           ? errorMsg
-          : "Error al eliminar usuario, intentar más tarde.",
+          : "Ha ocurrido un error al eliminar usuario. Por favor, intentar más tarde",
       });
     }
   };
@@ -85,7 +112,7 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
             />
             <AlertDialog>
               <div className="relative flex items-center">
-                <AlertDialogTrigger>
+                <AlertDialogTrigger disabled={isLoading}>
                   <TrashButtonDatatable
                     icon={
                       <Trash2 className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />
@@ -127,126 +154,121 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
 
   return (
     <div className="h-[650px] w-full max-w-[1400px]">
-      <div className="w-full my-3 flex flex-col items-center gap-3 md:flex-row md:items-end md:justify-between">
-        <div className="flex flex-col gap-1">
-          {error && (
-            <p className="text-red-500 order-2">
-              Ha ocurrido un error. Intentar más tarde
-            </p>
-          )}
-          {isError && (
-            <p className="text-red-500 order-2">
-              Ha ocurrido un error. Intentar más tarde
-            </p>
-          )}
-          {isLoading && <p className="text-red-500 order-2">is loading...</p>}
-          <SearchUserInput list={list} setFilteredList={setFilteredList} />
-        </div>
-        <div className="relative w-full flex items-end justify-between sm:w-auto sm:gap-3">
-          <div className="md:absolute md:right-0 md:top-[-100px]">
-            <TotalCountCard
-              icon={<Users className="text-accent h-8 w-8" />}
-              title="Usuarios"
-              value={loading ? "0" : list.length}
-            />
-          </div>
-          <ActionButton
-            text={linkText}
-            icon={
-              <UserPlusIcon className="absolute left-[13px] top-[6px] h-5 w-5" />
-            }
-            linkTo={"/users/new"}
-          />
-        </div>
-      </div>
-      {filteredList.length > 0 ? (
-        <DataGrid
-          rows={filteredList}
-          columns={actionColumn.concat(columns)}
-          checkboxSelection
-          hideFooterSelectedRowCount
-          slots={{
-            noRowsOverlay: () => (
-              <div className="h-full flex justify-center items-center">
-                Cargando usuarios...
-              </div>
-            ),
-            noResultsOverlay: () => (
-              <div className="h-full flex justify-center items-center">
-                No se encontraron usuarios
-              </div>
-            ),
-          }}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 9,
-              },
-            },
-          }}
-          sx={{
-            borderRadius: "7px",
-            "&>.MuiDataGrid-main": {
-              "&>.MuiDataGrid-columnHeaders": {
-                borderBottom: "none",
-              },
-
-              "& div div div div >.MuiDataGrid-cell": {
-                borderBottom: "none",
-              },
-            },
-            "&>.MuiDataGrid-footerContainer": {
-              borderTop: "none",
-            },
-          }}
-          pageSizeOptions={[9]}
-          getRowId={(row) => row._id ?? ""}
-          getRowHeight={getRowHeight}
-          className="max-w-[1400px]"
-        />
+      {error ? (
+        <Error />
       ) : (
-        <DataGrid
-          rows={list}
-          columns={actionColumn.concat(columns)}
-          checkboxSelection
-          slots={{
-            noRowsOverlay: () => (
-              <div className="h-full flex justify-center items-center">
-                Cargando usuarios...
+        <>
+          <div className="w-full my-3 flex flex-col items-center gap-3 md:flex-row md:items-end md:justify-between">
+            <div className="flex flex-col gap-1">
+              <SearchUserInput list={list} setFilteredList={setFilteredList} />
+            </div>
+            <div className="relative w-full flex items-end justify-between sm:w-auto sm:gap-3">
+              <div className="md:absolute md:right-0 md:top-[-100px]">
+                <TotalCountCard
+                  icon={<Users className="text-accent h-8 w-8" />}
+                  title="Usuarios"
+                  value={loading ? "0" : list.length}
+                />
               </div>
-            ),
-            noResultsOverlay: () => (
-              <div className="">No se encontraron usuarios</div>
-            ),
-          }}
-          hideFooterSelectedRowCount
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 9,
-              },
-            },
-          }}
-          sx={{
-            borderRadius: "7px",
-            "&>.MuiDataGrid-main": {
-              "&>.MuiDataGrid-columnHeaders": {
-                borderBottom: "none",
-              },
+              <ActionButton
+                text={linkText}
+                icon={
+                  <UserPlusIcon className="absolute left-[13px] top-[6px] h-5 w-5" />
+                }
+                linkTo={"/users/new"}
+              />
+            </div>
+          </div>
+          {filteredList.length > 0 ? (
+            <DataGrid
+              rows={filteredList}
+              columns={actionColumn.concat(columns)}
+              checkboxSelection
+              hideFooterSelectedRowCount
+              slots={{
+                noRowsOverlay: () => (
+                  <div className="h-full flex justify-center items-center">
+                    Cargando usuarios...
+                  </div>
+                ),
+                noResultsOverlay: () => (
+                  <div className="h-full flex justify-center items-center">
+                    No se encontraron usuarios
+                  </div>
+                ),
+              }}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 9,
+                  },
+                },
+              }}
+              sx={{
+                borderRadius: "7px",
+                "&>.MuiDataGrid-main": {
+                  "&>.MuiDataGrid-columnHeaders": {
+                    borderBottom: "none",
+                  },
 
-              "& div div div div >.MuiDataGrid-cell": {
-                borderBottom: "none",
-              },
-            },
-            "&>.MuiDataGrid-footerContainer": {
-              borderTop: "none",
-            },
-          }}
-          pageSizeOptions={[9]}
-          getRowId={(row) => row._id ?? ""} // ?? operator is used to provide a default value of an empty string '' if row._id is null or undefined.
-          getRowHeight={getRowHeight}
-          className="max-w-[1400px]"
-        />
+                  "& div div div div >.MuiDataGrid-cell": {
+                    borderBottom: "none",
+                  },
+                },
+                "&>.MuiDataGrid-footerContainer": {
+                  borderTop: "none",
+                },
+              }}
+              pageSizeOptions={[9]}
+              getRowId={(row) => row._id ?? ""}
+              getRowHeight={getRowHeight}
+              className="max-w-[1400px]"
+            />
+          ) : (
+            <DataGrid
+              rows={list}
+              columns={actionColumn.concat(columns)}
+              checkboxSelection
+              slots={{
+                noRowsOverlay: () => (
+                  <div className="h-full flex justify-center items-center">
+                    Cargando usuarios...
+                  </div>
+                ),
+                noResultsOverlay: () => (
+                  <div className="">No se encontraron usuarios</div>
+                ),
+              }}
+              hideFooterSelectedRowCount
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 9,
+                  },
+                },
+              }}
+              sx={{
+                borderRadius: "7px",
+                "&>.MuiDataGrid-main": {
+                  "&>.MuiDataGrid-columnHeaders": {
+                    borderBottom: "none",
+                  },
+
+                  "& div div div div >.MuiDataGrid-cell": {
+                    borderBottom: "none",
+                  },
+                },
+                "&>.MuiDataGrid-footerContainer": {
+                  borderTop: "none",
+                },
+              }}
+              pageSizeOptions={[9]}
+              getRowId={(row) => row._id ?? ""} // ?? operator is used to provide a default value of an empty string '' if row._id is null or undefined.
+              getRowHeight={getRowHeight}
+              className="max-w-[1400px]"
+            />
+          )}
+        </>
       )}
     </div>
   );
