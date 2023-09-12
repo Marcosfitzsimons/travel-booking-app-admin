@@ -39,7 +39,7 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
       arrivalTime: "10:00",
       to: "",
       price: undefined,
-      maxCapacity: undefined,
+      maxCapacity: 19,
     },
   });
 
