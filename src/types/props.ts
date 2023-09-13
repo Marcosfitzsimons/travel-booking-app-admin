@@ -15,12 +15,17 @@ export interface DataTableProps  {
   linkText: string;
 };
 
-export type NewPassengerProps = {
+export interface NewPassengerProps {
   title: string;
   columns: Column[];
 };
 
-export interface OverviewChartProps  {
+export interface DataBoxProps {
+  icon: any;
+  text: string;
+  children: React.ReactNode;
+};
+export interface OverviewChartProps {
   isDashboard?: boolean;
 };
 
