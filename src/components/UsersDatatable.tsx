@@ -129,13 +129,13 @@ const UsersDatatable = ({ columns, linkText }: DataTableProps) => {
                     permanentemente este usuario.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter className="flex flex-col-reverse gap-1 md:flex-row md:justify-end">
+                <AlertDialogFooter>
                   <AlertDialogCancel className="md:w-auto">
                     No, volver al listado de usuarios
                   </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => handleDelete(params.row._id)}
-                    className="md:w-auto"
+                    className="w-full md:w-auto"
                   >
                     Si, borrar usuario
                   </AlertDialogAction>

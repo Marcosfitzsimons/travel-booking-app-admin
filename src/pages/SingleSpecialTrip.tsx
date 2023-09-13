@@ -45,6 +45,8 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 import DialogAnonSpecialPassenger from "@/components/DialogAnonSpecialPassenger";
 import Error from "@/components/Error";
+import TripTime from "@/components/TripTime";
+import TripCardDataBox from "@/components/TripCardDataBox";
 
 const INITIAL_STATES = {
   _id: "",
@@ -69,8 +71,8 @@ const SingleSpecialTrip = () => {
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const isMaxCapacity = tripData.passengers.length === tripData.maxCapacity;
-  const passengersCount = `${tripData.passengers.length} / ${tripData.maxCapacity}`;
+  const isMaxCapacity = passengers.length === tripData.maxCapacity;
+  const passengersCount = `${passengers.length} / ${tripData.maxCapacity}`;
 
   const todayDate = moment().locale("es").format("ddd DD/MM");
 
@@ -112,7 +114,7 @@ const SingleSpecialTrip = () => {
   };
 
   const handleOnSubmit = async (data: SpecialTrip) => {
-    if (!isDirty && data.departureTime === departureTimeValue) {
+    if (!isDirty && tripData.departureTime === departureTimeValue) {
       return toast({
         variant: "destructive",
         description: (
@@ -317,41 +319,52 @@ const SingleSpecialTrip = () => {
                           Información acerca del viaje:
                         </h4>
                       </div>
-                      <div className="flex flex-col w-full bg-card gap-2 border py-4 px-1 shadow-inner rounded-md dark:bg-[#171717]">
-                        <div className="flex flex-col gap-2 overflow-auto pb-2">
-                          <div className="flex items-center gap-1">
-                            <MapPin className="h-4 w-4 text-accent shrink-0 " />
-                            <span className="font-medium shrink-0 dark:text-white">
-                              Salida:
-                            </span>{" "}
-                            <span className="shrink-0">{tripData.from}</span>
-                            <Separator className="w-2 bg-border-color dark:bg-border-color-dark" />
-                            <Clock className="h-4 w-4 text-accent shrink-0 " />
-                            <span className="shrink-0">
-                              {tripData.departureTime} hs.
-                            </span>
+                      <div className="flex flex-col w-full gap-2 border px-2 py-1 shadow-inner rounded-md dark:bg-[#171717]">
+                        <div className="flex flex-col overflow-auto pb-2">
+                          <TripCardDataBox
+                            icon={
+                              <MapPin className="h-5 w-5 text-accent shrink-0" />
+                            }
+                            text="Salida"
+                          >
+                            <div className="flex items-center gap-1">
+                              <p>{tripData.from}</p>
+                              <Separator className="w-1" />
+                              <TripTime>{tripData.departureTime} hs</TripTime>
+                            </div>
+                          </TripCardDataBox>
+                          <TripCardDataBox
+                            icon={
+                              <MapPin className="h-5 w-5 text-accent shrink-0" />
+                            }
+                            text="Destino"
+                          >
+                            <div className="flex items-center gap-1">
+                              <p>{tripData.to}</p>
+                            </div>
+                          </TripCardDataBox>
+                          <div className="w-full flex items-center justify-between gap-1">
+                            <div className="basis-1/2">
+                              <TripCardDataBox
+                                icon={
+                                  <DollarSign className="h-5 w-5 text-accent shrink-0" />
+                                }
+                                text="Precio"
+                              >
+                                {tripData.price}
+                              </TripCardDataBox>
+                            </div>
+                            <div className="basis-1/2">
+                              <TripCardDataBox
+                                icon={
+                                  <Users className="h-5 w-5 text-accent shrink-0" />
+                                }
+                                text="Capacidad máxima"
+                              >
+                                {tripData.maxCapacity}
+                              </TripCardDataBox>
+                            </div>
                           </div>
-                          <p className="flex items-center gap-1">
-                            <MapPin className="h-4 w-4 text-accent shrink-0 " />
-                            <span className="dark:text-white shrink-0 font-medium">
-                              Destino:
-                            </span>{" "}
-                            <span className="shrink-0">{tripData.to}</span>
-                          </p>
-                          <p className="flex items-center gap-1">
-                            <DollarSign className="h-4 w-4 text-accent " />
-                            <span className="dark:text-white font-medium">
-                              Precio:{" "}
-                            </span>
-                            <span className="">${tripData.price}</span>
-                          </p>
-                          <p className="flex items-center gap-1">
-                            <Users className="h-4 w-4 text-accent " />
-                            <span className="dark:text-white font-medium">
-                              Capacidad máxima:
-                            </span>{" "}
-                            {tripData.maxCapacity}
-                          </p>
                         </div>
                       </div>
 

@@ -190,7 +190,7 @@ const EditProfile = () => {
           ) : (
             <div className="w-full mt-5 mb-16 flex flex-col items-center gap-5">
               <div className="w-full flex flex-col items-center gap-5 md:w-8/12">
-                <div className="w-full flex flex-col items-center gap-5 md:max-w-sm">
+                <div className="w-full flex flex-col items-center gap-5 max-w-sm">
                   <form
                     onSubmit={handleSubmit(handleOnSubmit)}
                     className="w-full flex flex-col items-center gap-3"
@@ -210,7 +210,6 @@ const EditProfile = () => {
                           <User className="w-12 h-12 dark:text-blue-lagoon-100" />
                         </AvatarFallback>
                       </Avatar>
-
                       <div className="absolute -bottom-1">
                         <Label
                           htmlFor="image"
@@ -228,7 +227,7 @@ const EditProfile = () => {
                         />
                       </div>
                     </div>
-                    <div className="grid w-full max-w-md items-center gap-2">
+                    <div className="grid w-full max-w-sm items-center gap-2">
                       <Label htmlFor="username">Username</Label>
                       <Input
                         type="text"
@@ -255,7 +254,7 @@ const EditProfile = () => {
                       )}
                     </div>
 
-                    <div className="grid w-full max-w-md items-center gap-2">
+                    <div className="grid w-full max-w-sm items-center gap-2">
                       <Label htmlFor="email">Email</Label>
                       <Input
                         type="email"
@@ -281,7 +280,7 @@ const EditProfile = () => {
                         </p>
                       )}
                     </div>
-                    <div className="w-full flex justify-center my-1 lg:w-[10rem]">
+                    <div className="w-full flex justify-center max-w-sm lg:w-[10rem]">
                       <DefaultButton loading={isLoading}>
                         Guardar cambios
                       </DefaultButton>

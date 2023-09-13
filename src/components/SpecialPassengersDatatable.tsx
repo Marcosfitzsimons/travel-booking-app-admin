@@ -98,13 +98,13 @@ const SpecialPassengersDatable = ({
                     permanentemente al pasajero de este viaje.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter className="flex flex-col-reverse gap-1 md:flex-row md:justify-end">
+                <AlertDialogFooter>
                   <AlertDialogCancel className="md:w-auto">
                     No, volver atrás
                   </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => handleDelete(params.row._id)}
-                    className="md:w-auto"
+                    className="w-full md:w-auto"
                   >
                     Si, borrar pasajero
                   </AlertDialogAction>
@@ -158,7 +158,7 @@ const SpecialPassengersDatable = ({
         />
       ) : (
         <div className="mx-auto flex flex-col items-center gap-3">
-          <p>El viaje no tiene pasajeros por el momento.</p>
+          <p>El viaje no tiene pasajeros por el momento</p>
         </div>
       )}
     </div>

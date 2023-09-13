@@ -141,13 +141,13 @@ const MyTripsDatatable = ({
                     permanentemente al usuario del viaje.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter className="flex flex-col-reverse gap-1 md:flex-row md:justify-end">
+                <AlertDialogFooter>
                   <AlertDialogCancel className="md:w-auto">
-                    No, volver al perfil del usuario.
+                    No, volver al perfil del usuario
                   </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => handleDelete(params.row.id)}
-                    className="md:w-auto"
+                    className="w-full md:w-auto"
                   >
                     Si, borrar pasajero
                   </AlertDialogAction>

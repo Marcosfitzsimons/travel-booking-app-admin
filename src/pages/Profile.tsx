@@ -11,6 +11,7 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import Breadcrumb from "@/components/Breadcrumb";
 import Error from "@/components/Error";
 import DataBox from "@/components/DataBox";
+import ChangePasswordDialog from "@/components/ChangePasswordDialog";
 
 const INITIAL_STATES = {
   _id: "",
@@ -101,6 +102,8 @@ const Profile = () => {
                   <User className="w-12 h-12" />
                 </AvatarFallback>
               </Avatar>
+
+              <ChangePasswordDialog userId={user?._id} />
 
               <div className="flex flex-col items-center gap-0">
                 <h4 className="text-slate-500 dark:text-slate-400">

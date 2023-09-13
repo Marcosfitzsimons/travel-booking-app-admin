@@ -24,7 +24,8 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import moment from "moment";
 import { Button } from "./ui/button";
-import { useState } from "react";
+import TripCardDataBox from "./TripCardDataBox";
+import TripTime from "./TripTime";
 
 type Trip = {
   _id: string;
@@ -120,40 +121,34 @@ const TripCard = ({
                 Información acerca del viaje:
               </h4>
             </div>
-            <div className="flex flex-col w-full bg-background gap-2 border px-1 py-4 shadow-inner rounded-md dark:bg-[#171717]">
-              <div className="flex flex-col gap-2 overflow-auto pb-2">
-                <div className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4 text-accent shrink-0 " />
-                  <span className="font-medium shrink-0 dark:text-white">
-                    Salida:
-                  </span>{" "}
-                  <span className="shrink-0">{data.from}</span>
-                  <Separator className="w-2 bg-border-color dark:bg-border-color-dark" />
-                  <Clock className="h-4 w-4 text-accent shrink-0 " />
-                  <span className="shrink-0">{data.departureTime} hs.</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4 text-accent shrink-0 " />
-                  <span className="dark:text-white shrink-0 font-medium">
-                    Destino:
-                  </span>{" "}
-                  <span className="shrink-0">{data.to}</span>
-                  <Separator className="w-2 bg-border-color dark:bg-border-color-dark" />
-                  <Clock className="h-4 w-4 text-accent shrink-0 " />
-                  <span className="shrink-0">{data.arrivalTime} hs.</span>
-                </div>
-                <p className="flex items-center gap-1">
-                  <DollarSign className="h-4 w-4 text-accent " />
-                  <span className="dark:text-white font-medium">Precio: </span>
-                  <span className="">${data.price}</span>
-                </p>
-                <p className="flex items-center gap-1">
-                  <Users className="h-4 w-4 text-accent " />
-                  <span className="dark:text-white font-medium">
-                    Capacidad máxima:
-                  </span>{" "}
-                  {data.maxCapacity}
-                </p>
+            <div className="flex flex-col w-full gap-2 border px-2 py-1 shadow-inner rounded-md dark:bg-[#171717]">
+              <div className="flex flex-col overflow-auto pb-2">
+                <TripCardDataBox
+                  icon={<MapPin className="h-5 w-5 text-accent shrink-0" />}
+                  text="Salida"
+                >
+                  <div className="flex items-center gap-1">
+                    <p>{data.from}</p>
+                    <Separator className="w-1" />
+                    <TripTime>{data.departureTime} hs</TripTime>
+                  </div>
+                </TripCardDataBox>
+                <TripCardDataBox
+                  icon={<MapPin className="h-5 w-5 text-accent shrink-0" />}
+                  text="Destino"
+                >
+                  <div className="flex items-center gap-1">
+                    <p>{data.to}</p>
+                    <Separator className="w-1" />
+                    <TripTime>{data.arrivalTime} hs</TripTime>
+                  </div>
+                </TripCardDataBox>
+                <TripCardDataBox
+                  icon={<DollarSign className="h-5 w-5 text-accent shrink-0" />}
+                  text="Precio"
+                >
+                  {data.price}
+                </TripCardDataBox>
               </div>
             </div>
 

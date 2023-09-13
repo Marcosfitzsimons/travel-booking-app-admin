@@ -140,9 +140,9 @@ const PassengersDatable = ({
                     permanentemente al usuario de este viaje.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter className="flex flex-col-reverse gap-1 md:flex-row md:justify-end">
+                <AlertDialogFooter>
                   <AlertDialogCancel className="md:w-auto">
-                    No, volver atrás.
+                    No, volver atrás
                   </AlertDialogCancel>
                   <AlertDialogAction
                     disabled={isLoading}
@@ -153,7 +153,7 @@ const PassengersDatable = ({
                           : params.row._id
                       )
                     }
-                    className="md:w-auto"
+                    className="w-full md:w-auto"
                   >
                     Si, borrar pasajero
                   </AlertDialogAction>
@@ -324,7 +324,7 @@ const PassengersDatable = ({
         />
       ) : (
         <div className="mx-auto flex flex-col items-center gap-3">
-          <p>El viaje no tiene pasajeros por el momento.</p>
+          <p>El viaje no tiene pasajeros por el momento</p>
         </div>
       )}
     </div>
