@@ -81,7 +81,7 @@ const SingleUser = () => {
   const [statusValue, setStatusValue] = useState<"pending" | "active">(
     "pending"
   );
-  console.log(userData);
+
   const {
     register,
     handleSubmit,
@@ -232,18 +232,18 @@ const SingleUser = () => {
         };
       }
 
-      await axiosPrivate.put(`/users/${id}`, {
+      const res = await axiosPrivate.put(`/users/${id}`, {
         userData: userDataToUpdate,
       });
 
-      fetchData();
+      setUserData(res.data.user);
       setLoading(false);
       setIsDialogOpen(false);
       toast({
         description: (
           <div className="flex gap-1">
             {<Check className="h-5 w-5 text-green-600 shrink-0" />} Cambios
-            guardados con exito
+            guardados con éxito
           </div>
         ),
       });
@@ -262,12 +262,12 @@ const SingleUser = () => {
         title: (
           <div className="flex gap-1">
             {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-            cargar información
+            editar información
           </div>
         ) as any,
         description: errorMsg
           ? errorMsg
-          : "Ha ocurrido un error al guardar los cambios. Por favor, intentar más tarde",
+          : "Ha ocurrido un error al editar perfil. Por favor, intentar más tarde",
       });
     }
   };
