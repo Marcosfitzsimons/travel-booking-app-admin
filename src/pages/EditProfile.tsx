@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Upload, User, UserCog } from "lucide-react";
+import { Check, Loader2, Upload, User, UserCog, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -13,28 +13,25 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import useFetch from "@/hooks/useFetch";
+import Error from "@/components/Error";
+import axios from "@/api/axios";
 
 type UserData = {
   username: string | undefined;
-  fullName: string | undefined;
   email: string | undefined;
-  phone: number | undefined;
   image?: string | undefined;
 };
 
 const INITIAL_VALUES = {
   username: "",
-  fullName: "",
   email: "",
-  phone: undefined,
   image: "",
 };
 
 const EditProfile = () => {
-  const [userData, setUserData] = useState<any>(INITIAL_VALUES);
+  const [userData, setUserData] = useState<UserData>(INITIAL_VALUES);
   const [image, setImage] = useState<File | string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const [err, setErr] = useState(false);
 
   const axiosPrivate = useAxiosPrivate();
   const { toast } = useToast();
@@ -42,31 +39,57 @@ const EditProfile = () => {
   const { auth, setAuth } = useAuth();
   const user = auth?.user;
 
-  const { data, loading, error } = useFetch(`/users/${user?._id}`);
+  const { data, loading, error }: any = useFetch(`/users/${user?._id}`);
+
+  console.log(userData);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isDirty },
   } = useForm({
     defaultValues: {
-      username: userData.username,
-      fullName: userData.fullName,
-      email: userData.email,
-      phone: userData.phone,
-      image: userData.image,
+      username: "",
+      email: "",
     },
   });
 
+  const handleFileChange = (e: any) => {
+    const file = e.target.files[0];
+    if (file instanceof File) {
+      setImage(file);
+    } else {
+      console.error("Invalid file type");
+    }
+  };
+
   const handleOnSubmit = async (data: UserData) => {
-    if (!isDirty) {
+    if (
+      !isDirty &&
+      (!image || (typeof image === "string" && image === userData.image))
+    ) {
       return toast({
         variant: "destructive",
+        title: (
+          <div className="flex gap-1">
+            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
+            guardar cambios
+          </div>
+        ) as any,
         description: "Es necesario realizar cambios antes de enviar",
       });
     }
     setIsLoading(true);
-    setErr(false);
+    toast({
+      variant: "loading",
+      description: (
+        <div className="flex gap-1">
+          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Editando perfil...
+        </div>
+      ),
+    });
     const imgData = new FormData();
     imgData.append("file", image);
     imgData.append("upload_preset", "upload");
@@ -77,26 +100,36 @@ const EditProfile = () => {
           userData: { ...data },
         });
         setIsLoading(false);
-        setErr(false);
         toast({
-          description: "Cambios guardados con éxito.",
+          description: (
+            <div className="flex gap-1">
+              {<Check className="h-5 w-5 text-green-600 shrink-0" />} Cambios
+              guardados con éxito
+            </div>
+          ),
         });
         setTimeout(() => {
           navigate("/mi-perfil");
         }, 100);
       } else {
-        const uploadRes = await axiosPrivate.post(
+        const uploadRes = await axios.post(
           "https://api.cloudinary.com/v1_1/dioqjddko/image/upload",
           imgData
         );
         const { url } = uploadRes.data;
 
-        await axiosPrivate.put(`/users/${user?._id}`, {
+        await axiosPrivate.put(`/users/admin/${user?._id}`, {
           userData: { ...data, image: url },
         });
+
         setIsLoading(false);
         toast({
-          description: "Cambios guardados con éxito.",
+          description: (
+            <div className="flex gap-1">
+              {<Check className="h-5 w-5 text-green-600 shrink-0" />} Cambios
+              guardados con éxito
+            </div>
+          ),
         });
         setTimeout(() => {
           navigate("/mi-perfil");
@@ -109,213 +142,156 @@ const EditProfile = () => {
           navigate("/login");
         }, 100);
       }
-      const errorMsg = err.response.data.msg;
+      const errorMsg = err.response?.data?.msg;
       setIsLoading(false);
-      setErr(true);
       toast({
         variant: "destructive",
+        title: (
+          <div className="flex gap-1">
+            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
+            editar información
+          </div>
+        ) as any,
         description: errorMsg
           ? errorMsg
-          : "Error al editar perfil, intente más tarde.",
+          : "Ha ocurrido un error al editar perfil. Por favor, intentar más tarde",
       });
     }
   };
 
   useEffect(() => {
-    setUserData(data);
+    setUserData({
+      username: data?.user?.username,
+      email: data?.user?.email,
+      image: data?.user?.image,
+    });
+    reset({
+      username: data?.user?.username,
+      email: data?.user?.email,
+    });
+    setImage(data?.user?.image);
   }, [data]);
 
   return (
-    <section className="">
+    <section className="flex flex-col gap-3">
+      <div className="self-start">
+        <BackButton linkTo="/mi-perfil" />
+      </div>
       <SectionTitle>
         <UserCog className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
         Editar perfil
       </SectionTitle>
-      {loading ? (
-        <Loading />
+      {error ? (
+        <Error />
       ) : (
-        <div className="">
-          <div className="w-full mt-5 mb-16 flex flex-col items-center gap-5">
-            <div className="self-start">
-              <BackButton linkTo="/mi-perfil" />
-            </div>
-            {error && (
-              <p className="text-red-600">
-                Error al obtener información, intentar más tarde.
-              </p>
-            )}
-            <div className="w-full flex flex-col items-center gap-5 md:w-8/12">
-              <div className="w-full flex flex-col items-center gap-5 md:max-w-sm">
-                <form
-                  onSubmit={handleSubmit(handleOnSubmit)}
-                  className="w-full flex flex-col items-center gap-3"
-                >
-                  <div className="relative flex flex-col items-center">
-                    <Avatar className="w-32 h-32">
-                      <AvatarImage
-                        className="origin-center hover:origin-bottom hover:scale-105 transition-all duration-200 z-90 align-middle"
-                        src={
-                          image instanceof File
-                            ? URL.createObjectURL(image)
-                            : user?.image
-                        }
-                        alt="avatar"
-                      />
-                      <AvatarFallback>
-                        <User className="w-12 h-12 dark:text-slate-200" />
-                      </AvatarFallback>
-                    </Avatar>
+        <>
+          {loading ? (
+            <Loading />
+          ) : (
+            <div className="w-full mt-5 mb-16 flex flex-col items-center gap-5">
+              <div className="w-full flex flex-col items-center gap-5 md:w-8/12">
+                <div className="w-full flex flex-col items-center gap-5 md:max-w-sm">
+                  <form
+                    onSubmit={handleSubmit(handleOnSubmit)}
+                    className="w-full flex flex-col items-center gap-3"
+                  >
+                    <div className="relative flex flex-col items-center mb-2 lg:px-6">
+                      <Avatar className="w-32 h-32">
+                        <AvatarImage
+                          className="origin-center hover:origin-bottom hover:scale-105 transition-all duration-200 z-90 align-middle"
+                          src={
+                            image instanceof File
+                              ? URL.createObjectURL(image)
+                              : userData.image
+                          }
+                          alt="avatar"
+                        />
+                        <AvatarFallback>
+                          <User className="w-12 h-12 dark:text-blue-lagoon-100" />
+                        </AvatarFallback>
+                      </Avatar>
 
-                    <div className="absolute -bottom-1 ">
-                      <Label
-                        htmlFor="image"
-                        className="flex items-center gap-1.5 cursor-pointer h-7 px-3 py-2 rounded-lg shadow-sm shadow-slate-200/40 border border-black/60 bg-secondary text-secondary-foreground hover:border-slate-100 dark:border-slate-600 dark:hover:border-slate-100"
-                      >
-                        Editar
-                        <Upload className="w-4 h-4 text-secondary-foreground" />
-                      </Label>
+                      <div className="absolute -bottom-1">
+                        <Label
+                          htmlFor="image"
+                          className="flex items-center gap-1 cursor-pointer h-7 px-3 py-2 rounded-lg shadow-sm shadow-blue-lagoon-900/30 border bg-card dark:text-blue-lagoon-100 dark:hover:border-zinc-300"
+                        >
+                          <Upload className="w-4 h-4 text-accent shrink-0" />
+                          Subir{" "}
+                        </Label>
+                        <Input
+                          type="file"
+                          id="image"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleFileChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="grid w-full max-w-md items-center gap-2">
+                      <Label htmlFor="username">Username</Label>
                       <Input
-                        type="file"
-                        id="image"
-                        accept="image/*"
-                        className="hidden"
-                        {...register("image", {
-                          onChange: (e) => {
-                            const file = e.target.files[0];
-                            if (file instanceof File) {
-                              setImage(file);
-                            } else {
-                              console.error("Invalid file type");
-                            }
+                        type="text"
+                        id="username"
+                        {...register("username", {
+                          required: {
+                            value: true,
+                            message: "Por favor, ingresa tu nombre de usuario.",
+                          },
+                          minLength: {
+                            value: 3,
+                            message: "Nombre de usuario debe ser mas corto.",
+                          },
+                          maxLength: {
+                            value: 15,
+                            message: "Nombre de usuario debe ser mas largo.",
                           },
                         })}
                       />
-                      {errors.image && (
+                      {errors.username && (
                         <p className="text-red-600">
-                          {errors.image.message?.toString()}
+                          {errors.username.message?.toString()}
                         </p>
                       )}
                     </div>
-                  </div>
-                  <div className="grid w-full max-w-md items-center gap-2">
-                    <Label htmlFor="username">Username</Label>
-                    <Input
-                      type="text"
-                      id="username"
-                      {...register("username", {
-                        required: {
-                          value: true,
-                          message: "Por favor, ingresa tu nombre de usuario.",
-                        },
-                        minLength: {
-                          value: 3,
-                          message: "Nombre de usuario debe ser mas corto.",
-                        },
-                        maxLength: {
-                          value: 15,
-                          message: "Nombre de usuario debe ser mas largo.",
-                        },
-                      })}
-                    />
-                    {errors.username && (
-                      <p className="text-red-600">
-                        {errors.username.message?.toString()}
-                      </p>
-                    )}
-                  </div>
-                  <div className="grid w-full max-w-md items-center gap-2">
-                    <Label htmlFor="fullName">Nombre completo</Label>
-                    <Input
-                      type="text"
-                      id="fullName"
-                      {...register("fullName", {
-                        required: {
-                          value: true,
-                          message: "Por favor, ingresa tu nombre completo.",
-                        },
-                        minLength: {
-                          value: 3,
-                          message: "Nombre y apellido no puede ser tan corto.",
-                        },
-                        maxLength: {
-                          value: 25,
-                          message: "Nombre y apellido no puede ser tan largo.",
-                        },
-                      })}
-                    />
-                    {errors.fullName && (
-                      <p className="text-red-600">
-                        {errors.fullName.message?.toString()}
-                      </p>
-                    )}
-                  </div>
-                  <div className="grid w-full max-w-md items-center gap-2">
-                    <Label htmlFor="tel">Celular</Label>
-                    <Input
-                      type="tel"
-                      id="phone"
-                      {...register("phone", {
-                        required: {
-                          value: true,
-                          message: "Por favor, ingresa tu número celular.",
-                        },
-                        minLength: {
-                          value: 3,
-                          message: "Número celular no puede ser tan corto.",
-                        },
-                        maxLength: {
-                          value: 25,
-                          message: "Número celular no puede ser tan largo.",
-                        },
-                        pattern: {
-                          value: /^[0-9]+$/,
-                          message: "Número celular debe incluir solo números.",
-                        },
-                      })}
-                    />
-                    {errors.phone && (
-                      <p className="text-red-600">
-                        {errors.phone.message?.toString()}
-                      </p>
-                    )}
-                  </div>
-                  <div className="grid w-full max-w-md items-center gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      type="email"
-                      id="email"
-                      {...register("email", {
-                        required: {
-                          value: true,
-                          message: "Por favor, ingresa tu email.",
-                        },
-                        minLength: {
-                          value: 3,
-                          message: "Email no puede ser tan corto.",
-                        },
-                        maxLength: {
-                          value: 40,
-                          message: "Email no puede ser tan largo.",
-                        },
-                      })}
-                    />
-                    {errors.email && (
-                      <p className="text-red-600">
-                        {errors.email.message?.toString()}
-                      </p>
-                    )}
-                  </div>
-                  {err && <p className="text-red-600 self-start">{err}</p>}
-                  <div className="w-full flex justify-center my-1 lg:w-[10rem]">
-                    <DefaultButton loading={isLoading}>
-                      Guardar cambios
-                    </DefaultButton>
-                  </div>
-                </form>
+
+                    <div className="grid w-full max-w-md items-center gap-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        type="email"
+                        id="email"
+                        {...register("email", {
+                          required: {
+                            value: true,
+                            message: "Por favor, ingresa tu email.",
+                          },
+                          minLength: {
+                            value: 3,
+                            message: "Email no puede ser tan corto.",
+                          },
+                          maxLength: {
+                            value: 40,
+                            message: "Email no puede ser tan largo.",
+                          },
+                        })}
+                      />
+                      {errors.email && (
+                        <p className="text-red-600">
+                          {errors.email.message?.toString()}
+                        </p>
+                      )}
+                    </div>
+                    <div className="w-full flex justify-center my-1 lg:w-[10rem]">
+                      <DefaultButton loading={isLoading}>
+                        Guardar cambios
+                      </DefaultButton>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          )}
+        </>
       )}
     </section>
   );
