@@ -75,15 +75,13 @@ const Profile = () => {
     <section className="flex flex-col gap-6">
       <Breadcrumb>
         <p className="flex items-center gap-1 text-card-foreground">
+          <User className="w-5 h-5 text-accent" />
           Admin
           <ChevronsRight className="w-5 h-5" />
           Mi perfil
         </p>
       </Breadcrumb>
-      <SectionTitle>
-        <User className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
-        Mi perfil
-      </SectionTitle>
+      <SectionTitle>Mi perfil</SectionTitle>
       {error ? (
         <Error />
       ) : (

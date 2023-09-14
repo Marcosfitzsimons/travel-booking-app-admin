@@ -120,7 +120,6 @@ export type PublicationFormData = {
   subtitle?: string;
   description: string;
   image?: string;
-  createdAt: string;
 }
 
 

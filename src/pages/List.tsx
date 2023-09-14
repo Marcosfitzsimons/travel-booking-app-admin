@@ -15,15 +15,13 @@ const List = ({ icon, title, columns, linkText }: ListProps) => {
     <section className="flex flex-col gap-6">
       <Breadcrumb>
         <p className="flex items-center gap-1 text-card-foreground">
+          {icon}
           Listas
           <ChevronsRight className="w-5 h-5" />
           {title}
         </p>
       </Breadcrumb>
-      <SectionTitle>
-        {icon}
-        {title}
-      </SectionTitle>
+      <SectionTitle>{title}</SectionTitle>
       {path === "users" ? (
         <UsersDatatable columns={columns} linkText={linkText} />
       ) : path === "trips" || path === "" ? (

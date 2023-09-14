@@ -65,9 +65,7 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <List
-                        icon={
-                          <Map className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
-                        }
+                        icon={<Map className="w-5 h-5 text-accent" />}
                         columns={tripColumns}
                         title="Viajes semanales"
                         linkText="Agregar viaje"
@@ -101,9 +99,7 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <List
-                          icon={
-                            <Users className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
-                          }
+                          icon={<Users className="w-5 h-5 text-accent" />}
                           columns={userColumns}
                           title="Usuarios"
                           linkText="Agregar usuario"
@@ -134,9 +130,7 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <List
-                          icon={
-                            <Map className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
-                          }
+                          icon={<Map className="w-5 h-5 text-accent" />}
                           columns={tripColumns}
                           title="Viajes semanales"
                           linkText="Agregar viaje"
@@ -170,9 +164,7 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <List
-                          icon={
-                            <Map className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
-                          }
+                          icon={<Map className="w-5 h-5 text-accent" />}
                           columns={specialTripColumns}
                           title="Viajes particulares"
                           linkText="Agregar viaje particular"

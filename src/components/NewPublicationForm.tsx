@@ -35,7 +35,6 @@ const NewTripForm = ({ inputs }: NewPublicationFormProps) => {
       title: "",
       subtitle: "",
       description: "",
-      createdAt: "",
       image: "",
     },
   });
@@ -139,14 +138,18 @@ const NewTripForm = ({ inputs }: NewPublicationFormProps) => {
                   src={image instanceof File ? URL.createObjectURL(image) : ""}
                   alt="avatar"
                 />
-                <div
-                  className="w-full relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
-          after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"
-                >
-                  <AvatarFallback className="rounded-lg">
-                    <Image className="w-12 h-12" />
-                  </AvatarFallback>
-                </div>
+                {image instanceof File ? (
+                  ""
+                ) : (
+                  <div
+                    className="w-full relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
+        after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"
+                  >
+                    <AvatarFallback className="rounded-lg">
+                      <Image className="w-12 h-12" />
+                    </AvatarFallback>
+                  </div>
+                )}
               </Avatar>
 
               <div className="self-center absolute -bottom-1">
@@ -212,7 +215,6 @@ const NewTripForm = ({ inputs }: NewPublicationFormProps) => {
             <Textarea id="description" />
           </div>
         </div>
-
         <div className="w-full mt-2 lg:w-[10rem]">
           <DefaultButton loading={isLoading}>
             {isLoading ? "Creando..." : "Crear publicación"}

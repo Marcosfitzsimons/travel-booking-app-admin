@@ -5,7 +5,7 @@ import useFetch from "@/hooks/useFetch";
 import { ResponsiveLine } from "@nivo/line";
 import { convertToSpanishMonth } from "@/lib/utils/convertToSpanishMonth";
 import Breadcrumb from "@/components/Breadcrumb";
-import { ChevronsRight } from "lucide-react";
+import { CalendarRange, ChevronsRight } from "lucide-react";
 
 const Monthly = () => {
   const { data, loading }: any = useFetch(`/sales`);
@@ -35,6 +35,7 @@ const Monthly = () => {
     <Box className="flex flex-col gap-6">
       <Breadcrumb>
         <p className="flex items-center gap-1 text-card-foreground">
+          <CalendarRange className="h-5 w-5 text-accent" />
           Ventas
           <ChevronsRight className="w-5 h-5" />
           Resumen mensual

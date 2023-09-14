@@ -1,4 +1,4 @@
-import { Eye, Trash2 } from "lucide-react";
+import { Check, Eye, Loader2, Trash2, X } from "lucide-react";
 import { useToast } from "../hooks/ui/use-toast";
 import {
   AlertDialog,
@@ -22,7 +22,6 @@ import useAuth from "@/hooks/useAuth";
 
 const PublicationCard = ({ item, setList, list }: PublicationCardProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
   const { _id, title, subtitle, image, description, createdAt } = item;
 
   const axiosPrivate = useAxiosPrivate();
@@ -32,14 +31,26 @@ const PublicationCard = ({ item, setList, list }: PublicationCardProps) => {
 
   const handleDelete = async (id: string) => {
     setIsLoading(true);
-    setIsError(false);
+    toast({
+      variant: "loading",
+      description: (
+        <div className="flex gap-1">
+          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Eliminando publicación
+        </div>
+      ),
+    });
     try {
       await axiosPrivate.delete(`/publications/${_id}`);
       setList(list.filter((item) => item._id !== id));
       setIsLoading(false);
-      setIsError(false);
       toast({
-        description: "Publicación eliminado con éxito.",
+        description: (
+          <div className="flex gap-1">
+            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Publicación
+            eliminada con éxito
+          </div>
+        ),
       });
     } catch (err: any) {
       if (err.response?.status === 403) {
@@ -48,14 +59,19 @@ const PublicationCard = ({ item, setList, list }: PublicationCardProps) => {
           navigate("/login");
         }, 100);
       }
-      const errorMsg = err.response.data.msg;
+      const errorMsg = err.response?.data?.msg;
       setIsLoading(false);
-      setIsError(true);
       toast({
         variant: "destructive",
+        title: (
+          <div className="flex gap-1">
+            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
+            eliminar publicación
+          </div>
+        ) as any,
         description: errorMsg
           ? errorMsg
-          : "Error al eliminar usuario, intente más tarde.",
+          : "Ha ocurrido un error al eliminar publicación. Por favor, intentar más tarde",
       });
     }
   };
@@ -78,7 +94,7 @@ const PublicationCard = ({ item, setList, list }: PublicationCardProps) => {
         </div>
         {image && (
           <div className="relative after:bg-gradient-to-b after:from-transparent after:to-black/5 after:inset-0 after:absolute after:z-10 dark:after:to-black/20">
-            <img src={image} className="" alt="imagen adjunta" />
+            <img src={image} alt="imagen adjunta" />
           </div>
         )}
         <p className="absolute right-0 top-1 text-sm">
@@ -115,13 +131,13 @@ const PublicationCard = ({ item, setList, list }: PublicationCardProps) => {
                 la publicación
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter className="flex flex-col-reverse gap-1 md:flex-row md:justify-end">
+            <AlertDialogFooter>
               <AlertDialogCancel className="md:w-auto">
                 No, volver al listado de publicaciones
               </AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => handleDelete(_id)}
-                className="md:w-auto"
+                className="w-full md:w-auto"
               >
                 Si, borrar publicación
               </AlertDialogAction>

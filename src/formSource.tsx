@@ -468,15 +468,15 @@ export const publicationInputs = [
     validation: {
       required: {
         value: true,
-        message: "Por favor, ingresar título.",
+        message: "Por favor, ingresar título",
       },
       minLength: {
         value: 3,
-        message: "Título no puede ser tan corto.",
+        message: "Título no puede ser tan corto",
       },
       maxLength: {
         value: 40,
-        message: "Título no puede ser tan largo.",
+        message: "Título no puede ser tan largo",
       },
     },
   },
@@ -488,15 +488,15 @@ export const publicationInputs = [
     validation: {
       required: {
         value: true,
-        message: "Por favor, ingresar subtítulo.",
+        message: "Por favor, ingresar subtítulo",
       },
       minLength: {
         value: 3,
-        message: "Subtítulo no puede ser tan corto.",
+        message: "Subtítulo no puede ser tan corto",
       },
       maxLength: {
         value: 40,
-        message: "Subtítulo no puede ser tan largo.",
+        message: "Subtítulo no puede ser tan largo",
       },
     },
   },

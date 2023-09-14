@@ -8,6 +8,7 @@ import ActionButton from "@/components/ActionButton";
 import TotalCountCard from "@/components/TotalCountCard";
 import { Publication } from "@/types/types";
 import Breadcrumb from "@/components/Breadcrumb";
+import Error from "@/components/Error";
 
 const PublicationsDatatable = () => {
   const [list, setList] = useState<Publication[]>([]);
@@ -24,22 +25,15 @@ const PublicationsDatatable = () => {
     <div className="flex flex-col gap-6">
       <Breadcrumb>
         <p className="flex items-center gap-1 text-card-foreground">
+          <Newspaper className="w-5 h-5 text-accent" />
           Listas
           <ChevronsRight className="w-5 h-5" />
           Publicaciones
         </p>
       </Breadcrumb>
-      <SectionTitle>
-        <Newspaper className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
-        Publicaciones destacadas
-      </SectionTitle>
+      <SectionTitle>Publicaciones destacadas</SectionTitle>
       <div className="w-full max-w-[1400px]">
         <div className="">
-          {error && (
-            <p className="text-red-600 order-2">
-              Error al cargar publicaciones, intentar más tarde
-            </p>
-          )}
           <div className="relative w-full flex flex-col items-center gap-2 md:pt-5">
             <div className="md:absolute md:right-0 md:top-[-80px]">
               <TotalCountCard
@@ -59,20 +53,26 @@ const PublicationsDatatable = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-center my-5 gap-3 xl:flex-row xl:justify-center">
-          {loading ? (
-            <Loading />
-          ) : (
-            list.map((publication) => (
-              <PublicationCard
-                key={publication._id}
-                setList={setList}
-                list={list}
-                item={publication}
-              />
-            ))
-          )}
-        </div>
+        {error ? (
+          <Error />
+        ) : (
+          <div className="flex flex-col items-center my-5 gap-3 xl:grid xl:grid-cols-2">
+            {loading ? (
+              <div className="col-start-1 col-end-3">
+                <Loading />
+              </div>
+            ) : (
+              list.map((publication) => (
+                <PublicationCard
+                  key={publication._id}
+                  setList={setList}
+                  list={list}
+                  item={publication}
+                />
+              ))
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
