@@ -19,6 +19,7 @@ import { Passenger, Trip } from "@/types/types";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import Error from "@/components/Error";
+import Incomes from "@/components/Incomes";
 
 const INITIAL_STATES = {
   _id: "",

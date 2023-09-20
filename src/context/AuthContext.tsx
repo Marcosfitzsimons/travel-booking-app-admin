@@ -6,16 +6,25 @@ import {
   SetStateAction,
 } from "react";
 export interface AuthContextType {
+  incomes: Income[];
   auth: AuthObject;
   setAuth: Dispatch<SetStateAction<AuthObject>>;
   persist: boolean;
   setPersist: Dispatch<SetStateAction<boolean>>;
+  setIncomes: any;
 }
 
 type UserData = {
   _id: string | undefined;
   image?: string | undefined;
   isAdmin: boolean | undefined;
+};
+
+export type Income = {
+  _id: string;
+  incomes: number;
+  date: any;
+  name?: string;
 };
 
 interface AuthObject {
@@ -40,9 +49,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const initialPersist = persistedValue ? persistedValue === "true" : false;
 
   const [persist, setPersist] = useState<boolean>(initialPersist);
+  const [incomes, setIncomes] = useState<Income[]>([]);
+  const [recentIncomes, setRecentIncomes] = useState([]);
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth, persist, setPersist }}>
+    <AuthContext.Provider
+      value={{
+        auth,
+        setAuth,
+        persist,
+        setPersist,
+        incomes,
+        setIncomes,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

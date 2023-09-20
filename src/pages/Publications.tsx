@@ -22,7 +22,7 @@ const PublicationsDatatable = () => {
   }, [data]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <section className="flex flex-col gap-6">
       <Breadcrumb>
         <p className="flex items-center gap-1 text-card-foreground">
           <Newspaper className="w-5 h-5 text-accent" />
@@ -74,7 +74,7 @@ const PublicationsDatatable = () => {
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 };
 

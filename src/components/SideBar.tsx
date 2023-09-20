@@ -1,13 +1,5 @@
-import {
-  User,
-  Map,
-  LogOut,
-  Newspaper,
-  GanttChartSquare,
-  CalendarRange,
-} from "lucide-react";
+import { User, LogOut, LayoutGrid } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { Users } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import useLogout from "@/hooks/useLogOut";
 import { useEffect, useState } from "react";
@@ -31,35 +23,35 @@ const SideBar = () => {
     }
   };
 
-  console.log(active);
   useEffect(() => {
-    // Use a switch statement to set isActive based on the path
     switch (path) {
       case "trips":
-        setIsActive(1);
-        break;
-      case "special-trips":
         setIsActive(2);
         break;
-      case "users":
+      case "special-trips":
         setIsActive(3);
         break;
-      case "publications":
+      case "users":
         setIsActive(4);
         break;
-      case "overview":
+      case "publications":
         setIsActive(5);
         break;
-      case "monthly":
+      case "overview":
         setIsActive(6);
         break;
-      case "mi-perfil":
+      case "monthly":
         setIsActive(7);
         break;
+      case "mi-perfil":
+        setIsActive(8);
+        break;
       default:
-        setIsActive(1); // Default value if path doesn't match any case
+        setIsActive(1);
     }
-  }, [path]); // Only run this effect when path changes
+  }, [path]);
+
+  // Inicio > Panel de Control
 
   return !user ? (
     <div className=""></div>
@@ -67,6 +59,24 @@ const SideBar = () => {
     <div className="hidden flex-[1] h-screen lg:flex lg:flex-col lg:items-center lg:pl-10 lg:py-[160px]">
       <div className="rounded-md flex flex-col mx-auto w-[13.5rem] gap-5">
         <nav className="flex flex-col gap-3">
+          <div className="flex flex-col">
+            <p className="text-accent uppercase pb-1 font-bold text-sm dark:text-white">
+              Inicio
+            </p>
+            <div className="relative flex items-center gap-2">
+              <LayoutGrid className="absolute left-2 w-5 h-5 text-accent" />
+              <Link
+                to="/"
+                className={`w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40 dark:hover:text-white ${
+                  active === 1
+                    ? "border-l-2 border-l-accent rounded-l-none bg-hover/40 font-semibold"
+                    : ""
+                }`}
+              >
+                Panel de Control
+              </Link>
+            </div>
+          </div>
           <ul className="flex flex-col">
             <p className="text-accent uppercase pb-1 font-bold text-sm dark:text-white">
               Listas
@@ -113,11 +123,10 @@ const SideBar = () => {
             </p>
             <li
               className={`relative flex items-center gap-2 ${
-                active === 7
+                active === 8
                   ? "border-l-2 border-l-accent rounded-l-none bg-hover/40 font-semibold"
                   : ""
               }`}
-              id="6"
             >
               <User className="absolute left-2 h-5 w-5 text-accent " />
               <Link
