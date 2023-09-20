@@ -29,6 +29,7 @@ import Overview from "./pages/Overview";
 import Monthly from "./pages/Monthly";
 import useAuth from "./hooks/useAuth";
 import PersistLogin from "./components/PersistLogin";
+import Dashboard from "./pages/Dashboard";
 
 type Props = {
   children: ReactElement;
@@ -64,12 +65,7 @@ function App() {
                   index
                   element={
                     <ProtectedRoute>
-                      <List
-                        icon={<Map className="w-5 h-5 text-accent" />}
-                        columns={tripColumns}
-                        title="Viajes semanales"
-                        linkText="Agregar viaje"
-                      />
+                      <Dashboard />
                     </ProtectedRoute>
                   }
                 />
