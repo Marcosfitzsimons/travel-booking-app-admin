@@ -4,6 +4,12 @@ import useAuth from "../hooks/useAuth";
 import useLogout from "@/hooks/useLogOut";
 import { useEffect, useState } from "react";
 import { listItems, salesItems } from "@/navbarsource";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const SideBar = () => {
   const [active, setIsActive] = useState(1);
@@ -77,75 +83,82 @@ const SideBar = () => {
               </Link>
             </div>
           </div>
-          <ul className="flex flex-col">
+          <div className="flex flex-col">
             <p className="text-accent uppercase pb-1 font-bold text-sm dark:text-white">
               Listas
             </p>
-            {listItems.map((item) => (
-              <li className="relative flex items-center gap-2" key={item.id}>
-                {item.icon}
-                <Link
-                  to={item.linkTo}
-                  className={`w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40 dark:hover:text-white ${
-                    active === item.id
-                      ? "border-l-2 border-l-accent rounded-l-none bg-hover/40 font-semibold"
-                      : ""
-                  }`}
-                >
-                  {item.text}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <ul className="flex flex-col">
+
+            <ul className="flex flex-col">
+              {listItems.map((item) => (
+                <li className="relative flex items-center gap-2" key={item.id}>
+                  {item.icon}
+                  <Link
+                    to={item.linkTo}
+                    className={`w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40 dark:hover:text-white ${
+                      active === item.id
+                        ? "border-l-2 border-l-accent rounded-l-none bg-hover/40 font-semibold"
+                        : ""
+                    }`}
+                  >
+                    {item.text}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="flex flex-col">
             <p className="text-accent uppercase pb-1 font-bold text-sm dark:text-white">
               Ventas
             </p>
-            {salesItems.map((item) => (
-              <li className="relative flex items-center gap-2" key={item.id}>
-                {item.icon}
-                <Link
-                  to={item.linkTo}
-                  className={`w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40 dark:hover:text-white ${
-                    active === item.id
-                      ? "border-l-2 border-l-accent rounded-l-none bg-hover/40 font-semibold"
-                      : ""
-                  }`}
-                >
-                  {item.text}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <ul className="flex flex-col">
+            <ul className="flex flex-col">
+              {salesItems.map((item) => (
+                <li className="relative flex items-center gap-2" key={item.id}>
+                  {item.icon}
+                  <Link
+                    to={item.linkTo}
+                    className={`w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40 dark:hover:text-white ${
+                      active === item.id
+                        ? "border-l-2 border-l-accent rounded-l-none bg-hover/40 font-semibold"
+                        : ""
+                    }`}
+                  >
+                    {item.text}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="flex flex-col">
             <p className="text-accent uppercase pb-1 font-bold text-sm dark:text-white">
               Admin
             </p>
-            <li
-              className={`relative flex items-center gap-2 ${
-                active === 8
-                  ? "border-l-2 border-l-accent rounded-l-none bg-hover/40 font-semibold"
-                  : ""
-              }`}
-            >
-              <User className="absolute left-2 h-5 w-5 text-accent " />
-              <Link
-                to="/mi-perfil"
-                className="w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40  dark:hover:text-white "
+            <ul className="flex flex-col">
+              <li
+                className={`relative flex items-center gap-2 ${
+                  active === 8
+                    ? "border-l-2 border-l-accent rounded-l-none bg-hover/40 font-semibold"
+                    : ""
+                }`}
               >
-                Perfil
-              </Link>
-            </li>
-            <li className="relative flex items-center gap-2">
-              <LogOut className="absolute left-2 h-5 w-5 text-accent " />
-              <button
-                onClick={handleLogOut}
-                className="w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40  dark:hover:text-white "
-              >
-                Salir
-              </button>
-            </li>
-          </ul>
+                <User className="absolute left-2 h-5 w-5 text-accent " />
+                <Link
+                  to="/mi-perfil"
+                  className="w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40  dark:hover:text-white "
+                >
+                  Perfil
+                </Link>
+              </li>
+              <li className="relative flex items-center gap-2">
+                <LogOut className="absolute left-2 h-5 w-5 text-accent " />
+                <button
+                  onClick={handleLogOut}
+                  className="w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40  dark:hover:text-white "
+                >
+                  Salir
+                </button>
+              </li>
+            </ul>
+          </div>
         </nav>
       </div>
     </div>
