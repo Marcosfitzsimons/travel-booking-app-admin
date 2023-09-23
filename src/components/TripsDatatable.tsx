@@ -25,12 +25,13 @@ import TotalCountCard from "./TotalCountCard";
 import TrashButtonDatatable from "./TrashButtonDatatable";
 import { getRowHeight } from "@/lib/utils/getRowHeight";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import { Trip } from "@/types/types";
 import { ExtendedColumn } from "@/types/types";
 import { DataTableProps } from "@/types/props";
 import Error from "./Error";
+import { Separator } from "./ui/separator";
 
 const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -213,7 +214,19 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
                   </div>
                 </div>
               </div>
-              <div className="self-end">
+              <div className="flex items-center gap-2 self-end">
+                <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-white/20  after:transition focus-within:after:shadow-slate-100 dark:after:shadow-highlight dark:after:shadow-white/20  dark:focus-within:after:shadow-slate-100">
+                  <Button className="h-[32px] p-0 relative bg-black/90 text-slate-100 hover:text-white shadow-input dark:text-slate-100 dark:hover:text-white dark:bg-black dark:shadow-none">
+                    <Link
+                      to="/trips/predefined-trips"
+                      className="px-3.5 flex items-center gap-1"
+                    >
+                      <Map className="w-5 h-5" />
+                      Administrar viajes fijos
+                    </Link>
+                  </Button>
+                </div>
+                <Separator className="h-2" orientation="vertical" />
                 <ActionButton
                   text={linkText}
                   icon={

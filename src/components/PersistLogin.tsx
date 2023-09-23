@@ -29,12 +29,6 @@ const PersistLogin = () => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log(`isLoading: ${isLoading}`);
-    console.log(`aT: ${JSON.stringify(auth?.token)}`);
-    console.log(`Value of persist is: ${Boolean(persist)}`);
-  }, [isLoading]);
-
   return (
     <>
       {!persist ? (

@@ -50,7 +50,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const [persist, setPersist] = useState<boolean>(initialPersist);
   const [incomes, setIncomes] = useState<Income[]>([]);
-  const [recentIncomes, setRecentIncomes] = useState([]);
 
   return (
     <AuthContext.Provider
