@@ -30,6 +30,7 @@ import Monthly from "./pages/Monthly";
 import useAuth from "./hooks/useAuth";
 import PersistLogin from "./components/PersistLogin";
 import Dashboard from "./pages/Dashboard";
+import PredefinedTrips from "./pages/PredefinedTrips";
 
 type Props = {
   children: ReactElement;
@@ -153,6 +154,24 @@ function App() {
                       </ProtectedRoute>
                     }
                   />
+                  <Route path="predefined-trips">
+                    <Route
+                      index
+                      element={
+                        <ProtectedRoute>
+                          <PredefinedTrips />
+                        </ProtectedRoute>
+                      }
+                    />
+                    {/* <Route
+                    path=":id"
+                    element={
+                      <ProtectedRoute>
+                        
+                      </ProtectedRoute>
+                    }
+                  /> */}
+                  </Route>
                 </Route>
                 <Route path="special-trips">
                   <Route
