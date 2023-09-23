@@ -30,6 +30,16 @@ export type Trip = {
   available?: boolean;
   passengers?: any[];
 }
+
+export type PredefinedTrip = {
+  name: string;
+  from: string;
+  to: string;
+  departureTime?: string;
+  arrivalTime?: string;
+  maxCapacity: number | undefined;
+  price: number | undefined;
+}
   
 export type TripInput = {
     id: any;
@@ -151,6 +161,12 @@ export type NewSpecialTrip = {
   price: string;
   defaultPassengerCount: number;
 };
+
+export type DayCardType = {
+  _id: string;
+  dayOfWeek: 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
+  trips: any[]
+}
 
 export type SpecialPassenger = {
   _id?: string;
