@@ -10,6 +10,30 @@ export interface NewTripFormProps {
     inputs: TripInput[];
 };
 
+export interface DayCardProps {
+  day: 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
+  trips: any[]
+  setItems: any;
+  handleDelete: any;
+}
+
+export interface NewPredefinedTripDialogProps {
+  day: string;
+  setItems: any;
+}
+export interface TripItemProps {
+  name: string;
+  id: string;
+  day: string;
+  from: string;
+  to: string;
+  price: number | undefined;
+  maxCapacity: number | undefined;
+  arrivalTime: string;
+  handleDelete: any;
+  departureTime: string;
+}
+
 export interface DataTableProps  {
   columns: Column[];
   linkText: string;
