@@ -12,7 +12,9 @@ const Incomes = () => {
   // CREATE A NEW PAGE WHERE WITH SELECT COMPONENT
   // IN EACH MONTH, AND RECEIVE DATA OF THAT SPECIFIC MONTH
   // AND CHECK WHY I CAN'T DISPLAYING THE DATA BASED ON THE SELECT CORRECTLY...
-  const [monthValue, setMonthValue] = useState(new Date().getMonth() + 1);
+  const getCurrentMonth = () => new Date().getMonth() + 1;
+
+  const [monthValue, setMonthValue] = useState(getCurrentMonth);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
