@@ -4,12 +4,6 @@ import useAuth from "../hooks/useAuth";
 import useLogout from "@/hooks/useLogOut";
 import { useEffect, useState } from "react";
 import { listItems, salesItems } from "@/navbarsource";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 
 const SideBar = () => {
   const [active, setIsActive] = useState(1);
