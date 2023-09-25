@@ -6,7 +6,7 @@ export const dayOfWeekToNumber = {
     thursday: 4,
     friday: 5,
     saturday: 6,
-  };
+  } as any;
   
   export const dayOfWeekTranslations: Record<string, string> = {
     sunday: "Domingo",

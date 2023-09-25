@@ -12,6 +12,7 @@ import {
 import { Line } from "react-chartjs-2";
 import useAuth from "@/hooks/useAuth";
 import moment from "moment";
+import { Income } from "@/context/AuthContext";
 
 ChartJs.register(
   CategoryScale,
@@ -24,7 +25,11 @@ ChartJs.register(
   ArcElement
 );
 
-const MonthlyChart = ({ monthlyIncomes }) => {
+interface MonthlyChartProps {
+  monthlyIncomes: Income[];
+}
+
+const MonthlyChart = ({ monthlyIncomes }: MonthlyChartProps) => {
   const data = {
     labels: monthlyIncomes?.map((inc) => {
       const { date } = inc;
