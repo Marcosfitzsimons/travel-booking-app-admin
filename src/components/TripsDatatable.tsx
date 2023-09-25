@@ -32,6 +32,7 @@ import { ExtendedColumn } from "@/types/types";
 import { DataTableProps } from "@/types/props";
 import Error from "./Error";
 import { Separator } from "./ui/separator";
+import GorgeousBorder from "./GorgeousBorder";
 
 const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -198,20 +199,20 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
               />
             </div>
             <div className="w-full flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
-              <div className="relative flex items-end gap-1 w-[min(100%,184px)]">
+              <div className="relative flex items-center gap-1 w-[min(100%,184px)]">
                 <DatePickerContainer
                   startDate={startDate}
                   setStartDate={setStartDate}
                 />
-                <div className="absolute -right-[46px] h-full">
-                  <div className="relative flex w-[38px] h-full aspect-square before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300">
+                <div className="absolute -right-[48px]">
+                  <GorgeousBorder className="relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300">
                     <Button
-                      className="absolute w-[38px] h-full flex items-center justify-center cursor-pointer p-2 bg-card rounded-lg border border-slate-800/20 shadow-input dark:bg-[hsl(0,0%,11%)] dark:border-slate-800 dark:shadow-none !outline-none dark:hover:text-white"
+                      className="w-[38px] h-full p-0 aspect-square flex items-center justify-center cursor-pointer bg-card rounded-lg border border-slate-400/60 shadow-input dark:border-slate-800 dark:shadow-none !outline-none dark:bg-card dark:hover:text-white"
                       onClick={() => setStartDate(null)}
                     >
                       <RotateCcw className="w-4 h-4" />
                     </Button>
-                  </div>
+                  </GorgeousBorder>
                 </div>
               </div>
               <div className="flex items-center gap-2 self-end">

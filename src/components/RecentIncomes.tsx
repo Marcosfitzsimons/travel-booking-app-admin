@@ -36,8 +36,8 @@ const RecentIncomes = ({ incomes, loading, error }: RecentIncomesProps) => {
   }, [incomes]);
 
   return (
-    <div className="relative w-full max-w-md mx-auto 2xl:basis-[25%] 2xl:flex 2xl:flex-col 2xl:gap-1">
-      <div className="flex absolute right-0 -top-9">
+    <div className="relative w-full max-w-md mx-auto flex flex-col gap-2 2xl:basis-[25%] ">
+      <div className="self-end">
         <ActionButton
           text="Viajes semanales"
           icon={<Map className="absolute left-[13px] top-[6px] h-5 w-5" />}

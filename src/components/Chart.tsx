@@ -29,24 +29,50 @@ interface ChartProps {
 }
 
 function Chart({ incomes }: ChartProps) {
+  const allIncomes = incomes?.sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateA.getTime() - dateB.getTime(); // Sort by date in ascending order
+  });
+
   const data = {
-    labels: incomes?.map((inc) => {
+    labels: allIncomes?.map((inc) => {
       const { date } = inc;
       const formattedDate = moment(date).format("DD-MM-YYYY");
       return formattedDate;
     }),
     datasets: [
       {
-        label: "Ganancias",
+        label: "Ganancias viajes semanales",
         data: [
-          ...incomes?.map((inc) => {
-            const { incomes } = inc;
-            return incomes;
+          ...allIncomes.map((inc) => {
+            const { date, incomes, specialIncomes } = inc;
+            const formattedDate = moment(date).format("DD-MM-YYYY");
+            return { x: formattedDate, incomes, specialIncomes };
           }),
         ],
         backgroundColor: "rgba(75, 270, 200, 1)",
         borderColor: "rgba(35, 200, 160, 1)",
         tension: 0.2,
+        parsing: {
+          yAxisKey: "incomes",
+        },
+      },
+      {
+        label: "Ganancias viajes particulares",
+        data: [
+          ...allIncomes.map((inc) => {
+            const { date, specialIncomes, incomes } = inc;
+            const formattedDate = moment(date).format("DD-MM-YYYY");
+            return { x: formattedDate, specialIncomes, incomes };
+          }),
+        ],
+        backgroundColor: "#06b6d4",
+        borderColor: "#0e7490",
+        tension: 0.2,
+        parsing: {
+          yAxisKey: "specialIncomes",
+        },
       },
     ],
   };

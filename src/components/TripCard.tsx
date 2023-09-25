@@ -106,7 +106,7 @@ const TripCard = ({
             </div>
             <div className="absolute right-2 top-2 flex items-center gap-2 sm:right-4">
               <GorgeousBorder>
-                <p className="text-teal-900 order-2 font-medium flex items-center select-none gap-1 rounded-lg border border-slate-800/60 bg-slate-200/30 dark:bg-slate-800/70 dark:border-slate-200/80 dark:text-white px-3">
+                <p className="text-teal-900 order-2 font-medium flex items-center select-none gap-1 rounded-lg border border-slate-800/60 bg-slate-200/30 dark:bg-slate-800/70 dark:border-slate-700/80 dark:text-white px-3">
                   <CalendarDays className="w-4 h-4 relative lg:w-5 lg:h-5" />
                   {data.date}
                 </p>

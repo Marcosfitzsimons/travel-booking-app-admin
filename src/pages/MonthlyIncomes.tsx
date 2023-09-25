@@ -1,6 +1,12 @@
 import SectionTitle from "@/components/SectionTitle";
 import Breadcrumb from "@/components/Breadcrumb";
-import { CalendarDays, CalendarRange, ChevronsRight, X } from "lucide-react";
+import {
+  BadgeDollarSign,
+  CalendarDays,
+  CalendarRange,
+  ChevronsRight,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/ui/use-toast";
@@ -16,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import Loading from "@/components/Loading";
 import { Income } from "@/context/AuthContext";
+import GorgeousBorder from "@/components/GorgeousBorder";
 
 const MonthlyIncomes = () => {
   const [monthlyIncomes, setMonthlyIncomes] = useState<Income[]>([]);
@@ -45,7 +52,7 @@ const MonthlyIncomes = () => {
       if (!existingIncomes) {
         console.log("Fetching incomes...");
         const response = await axiosPrivate.get(
-          `${baseUrl}/incomes/2023/${monthValue}`
+          `${baseUrl}/monthly-incomes/2023/${monthValue}`
         );
         setMonthlyIncomes(response.data);
       }
@@ -79,9 +86,9 @@ const MonthlyIncomes = () => {
 
   const totalIncome = () => {
     let totalIncome = 0;
-    if (monthlyIncomes.length > 0) {
-      monthlyIncomes.forEach((income) => {
-        totalIncome += income.incomes;
+    if (monthlyIncomes?.length > 0) {
+      monthlyIncomes?.forEach((income: Income) => {
+        totalIncome += income.incomes ? income.incomes : income.specialIncomes;
       });
     }
     return totalIncome;
@@ -108,42 +115,48 @@ const MonthlyIncomes = () => {
       </Breadcrumb>
       <SectionTitle>Resumen de ganancias mensuales</SectionTitle>
 
-      <div className="relative w-full my-12 sm:mt-6 max-w-[1400px]">
-        <p className="flex gap-1 absolute left-0 -top-7 lg:text-lg">
-          Ganancias totales mes seleccionado:
-          <span className="font-bold dark:text-white">${totalIncomes}</span>
-        </p>
-
-        <div className="absolute right-0 -top-16 sm:-top-9">
-          <Select
-            value={monthValue.toString()}
-            onValueChange={(v) => setMonthValue(Number(v))}
-          >
-            <div
+      <div className="relative w-full flex flex-col gap-2  max-w-[1400px]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="lg:absolute lg:left-0 lg:-top-0.5">
+            <GorgeousBorder
               className="relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
           after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"
             >
+              <p className="rounded-lg bg-card p-1 border flex gap-1 shadow-input sm:px-3 dark:shadow-none">
+                <BadgeDollarSign className="hidden sm:flex shrink-0 w-5 h-5 self-center" />
+                Ganancias totales mes seleccionado
+                <span className="font-bold dark:text-white">
+                  ${totalIncome()}
+                </span>
+              </p>
+            </GorgeousBorder>
+          </div>
+
+          <div className="self-end">
+            <Select
+              value={monthValue.toString()}
+              onValueChange={(v) => setMonthValue(Number(v))}
+            >
               <SelectTrigger className="w-[180px] flex gap-1 h-[32px] px-4 items-center justify-between bg-card rounded-lg border border-slate-800/20 shadow-input placeholder:text-neutral-500 dark:placeholder:text-pink-1-100/70 dark:bg-[hsl(0,0%,11%)] dark:border-slate-800 dark:text-white dark:shadow-none !outline-none">
                 <CalendarDays className="w-5 h-5 relative bottom-[1px]" />
-
                 <SelectValue placeholder="Mes" />
               </SelectTrigger>
-            </div>
-            <SelectContent>
-              <SelectItem value="1">Enero</SelectItem>
-              <SelectItem value="2">Febrero</SelectItem>
-              <SelectItem value="3">Marzo</SelectItem>
-              <SelectItem value="4">Abril</SelectItem>
-              <SelectItem value="5">Mayo</SelectItem>
-              <SelectItem value="6">Junio</SelectItem>
-              <SelectItem value="7">Julio</SelectItem>
-              <SelectItem value="8">Agosto</SelectItem>
-              <SelectItem value="9">Septiembre</SelectItem>
-              <SelectItem value="10">Octubre</SelectItem>
-              <SelectItem value="11">Noviembre</SelectItem>
-              <SelectItem value="12">Diciembre</SelectItem>
-            </SelectContent>
-          </Select>
+              <SelectContent>
+                <SelectItem value="1">Enero</SelectItem>
+                <SelectItem value="2">Febrero</SelectItem>
+                <SelectItem value="3">Marzo</SelectItem>
+                <SelectItem value="4">Abril</SelectItem>
+                <SelectItem value="5">Mayo</SelectItem>
+                <SelectItem value="6">Junio</SelectItem>
+                <SelectItem value="7">Julio</SelectItem>
+                <SelectItem value="8">Agosto</SelectItem>
+                <SelectItem value="9">Septiembre</SelectItem>
+                <SelectItem value="10">Octubre</SelectItem>
+                <SelectItem value="11">Noviembre</SelectItem>
+                <SelectItem value="12">Diciembre</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         {error ? (
           <p className="text-center my-6">
@@ -154,7 +167,9 @@ const MonthlyIncomes = () => {
             {isLoading ? (
               <Loading />
             ) : (
-              <MonthlyChart monthlyIncomes={monthlyIncomes} />
+              <GorgeousBorder>
+                <MonthlyChart monthlyIncomes={monthlyIncomes} />
+              </GorgeousBorder>
             )}
           </>
         )}

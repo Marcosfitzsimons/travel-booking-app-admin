@@ -278,7 +278,7 @@ const SingleTrip = () => {
                 startDate={startDate}
                 setDepartureTimeValue={setDepartureTimeValue}
               />
-              <Separator className="self-center w-4 my-4" />
+              <Separator className="self-center w-2 my-4" />
               <div className="flex flex-col gap-2">
                 <div className="w-full flex flex-col gap-2">
                   <h3 className="text-center font-bold text-xl uppercase dark:text-white lg:text-3xl">
@@ -321,7 +321,7 @@ const SingleTrip = () => {
 
                             <Separator
                               orientation="vertical"
-                              className="h-4 shrink-0 bg-border hidden lg:flex"
+                              className="h-2 shrink-0 bg-border hidden lg:flex"
                             />
 
                             <ActionButton

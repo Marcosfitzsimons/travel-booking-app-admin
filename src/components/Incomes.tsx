@@ -1,7 +1,6 @@
 import Chart from "./Chart";
 import { BadgeDollarSign, CalendarDays } from "lucide-react";
 import Loading from "./Loading";
-
 import Error from "./Error";
 import { Income } from "@/context/AuthContext";
 import { IncomesProps } from "@/types/props";
@@ -30,14 +29,14 @@ const Incomes = ({ incomes, error, isLoading }: IncomesProps) => {
     let totalIncome = 0;
     if (incomes?.length > 0) {
       incomes?.forEach((income: Income) => {
-        totalIncome += income.incomes;
+        totalIncome += income.incomes ? income.incomes : income.specialIncomes;
       });
     }
     return totalIncome;
   };
 
   return (
-    <div className="relative w-full flex flex-col gap-1 2xl:basis-[70%]">
+    <div className="relative w-full flex flex-col gap-2 2xl:basis-[70%]">
       <div className="flex flex-col items-center gap-3">
         <div className="lg:absolute lg:left-0 lg:-top-0">
           <GorgeousBorder

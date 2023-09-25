@@ -16,9 +16,11 @@ const Overview = () => {
         </p>
       </Breadcrumb>
       <SectionTitle>Resumen general</SectionTitle>
-      <p className="text-card-foreground">
-        Resumen de los ingresos totales año 2021
+      <p className="text-card-foreground flex flex-col items-center justify-center gap-2">
+        YEARLY RESUME GRAPH WITH TOTAL INCOMES PER MONTH{" "}
+        <span> ASIDE: A LIST WITH MONTHS WITH HIGHEST INCOMES</span>
       </p>
+
       <Box height="75vh">
         <OverviewChart />
       </Box>

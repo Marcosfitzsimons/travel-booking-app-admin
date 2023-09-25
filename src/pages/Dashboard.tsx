@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/ui/use-toast";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { useEffect, useState } from "react";
+import { Income } from "@/context/AuthContext";
 
 const Dashboard = () => {
   const [monthValue, setMonthValue] = useState(() => new Date().getMonth() + 1);
@@ -35,7 +36,7 @@ const Dashboard = () => {
 
       if (!existingIncomes) {
         const response = await axiosPrivate.get(
-          `${baseUrl}/incomes/2023/${monthValue}`
+          `${baseUrl}/monthly-incomes/2023/${monthValue}`
         );
         setIncomes(response.data);
       }

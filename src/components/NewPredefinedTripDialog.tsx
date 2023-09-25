@@ -29,6 +29,7 @@ import {
 import { NewPredefinedTripDialogProps } from "@/types/props";
 import { translateDayOfWeek } from "@/lib/utils/translateDayOfWeek";
 import { Button } from "./ui/button";
+import GorgeousBorder from "./GorgeousBorder";
 
 const NewPredefinedTripDialog = ({
   day,
@@ -141,7 +142,7 @@ const NewPredefinedTripDialog = ({
     >
       <div className="flex items-center relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 after:transition focus-within:after:shadow-slate-400 dark:after:shadow-highlight dark:after:shadow-zinc-500/50 dark:focus-within:after:shadow-slate-100 dark:hover:text-white">
         <DialogTrigger asChild>
-          <Button className="h-8 py-0.5 px-5 outline-none inline-flex items-center justify-center font-medium transition-colors text-base rounded-lg shadow-input bg-card border border-slate-800/20 hover:bg-white dark:text-neutral-200 dark:border-slate-800 dark:hover:bg-black dark:shadow-none dark:hover:text-white">
+          <Button className="h-8 py-0.5 px-5 outline-none inline-flex items-center justify-center font-medium transition-colors text-base rounded-lg shadow-input bg-card border border-slate-400/60 hover:bg-white  dark:border-slate-800 dark:hover:bg-black dark:shadow-none dark:hover:text-white">
             Agregar viaje
           </Button>
         </DialogTrigger>
@@ -172,15 +173,12 @@ const NewPredefinedTripDialog = ({
         >
           <div className="relative w-full flex max-w-2xl mx-auto flex-col items-center gap-3">
             <div className="absolute -top-6 right-0">
-              <div
-                className="relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
-          after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"
-              >
-                <p className="flex select-none gap-1 h-[32px] px-4 items-center justify-between bg-card rounded-lg border border-slate-800/20 shadow-input placeholder:text-neutral-500 dark:placeholder:text-pink-1-100/70 dark:bg-[hsl(0,0%,11%)] dark:border-slate-800 dark:text-white dark:shadow-none !outline-none">
+              <GorgeousBorder>
+                <p className="flex select-none gap-1 h-[32px] px-4 items-center justify-between bg-card rounded-lg border border-slate-400/60 shadow-input placeholder:text-neutral-500 dark:bg-card dark:border-slate-800 dark:text-white dark:shadow-none !outline-none">
                   <CalendarDays className="w-5 h-5 relative bottom-[1px]" />
                   {translateDayOfWeek(day)}
                 </p>
-              </div>
+              </GorgeousBorder>
             </div>
             <div className="grid w-full max-w-2xl items-center gap-2">
               <Label htmlFor="name">Nombre del viaje</Label>

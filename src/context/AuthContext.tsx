@@ -24,6 +24,7 @@ export type Income = {
   _id: string;
   incomes: number;
   date: string;
+  specialIncomes: number;
   name?: string;
 };
 

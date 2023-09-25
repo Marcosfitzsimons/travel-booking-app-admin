@@ -34,12 +34,12 @@ export const listItems = [
 ];
 
 export const salesItems = [
-  {
-    id: 6,
-    linkTo: "/overview",
-    text: "Resumen general",
-    icon: <GanttChartSquare className="absolute left-2 h-5 w-5 text-accent " />,
-  },
+  // {
+  //   id: 6,
+  //   linkTo: "/overview",
+  //   text: "Resumen general",
+  //   icon: <GanttChartSquare className="absolute left-2 h-5 w-5 text-accent " />,
+  // },
   {
     id: 7,
     linkTo: "/monthly",
