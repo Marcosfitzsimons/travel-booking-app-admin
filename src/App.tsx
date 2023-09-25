@@ -26,11 +26,11 @@ import SingleSpecialTrip from "./pages/SingleSpecialTrip";
 import NewSpecialTrip from "./pages/NewSpecialTrip";
 import { Map, Users } from "lucide-react";
 import Overview from "./pages/Overview";
-import Monthly from "./pages/Monthly";
 import useAuth from "./hooks/useAuth";
 import PersistLogin from "./components/PersistLogin";
 import Dashboard from "./pages/Dashboard";
 import PredefinedTrips from "./pages/PredefinedTrips";
+import MonthlyIncomes from "./pages/MonthlyIncomes";
 
 type Props = {
   children: ReactElement;
@@ -85,7 +85,7 @@ function App() {
                     index
                     element={
                       <ProtectedRoute>
-                        <Monthly />
+                        <MonthlyIncomes />
                       </ProtectedRoute>
                     }
                   />

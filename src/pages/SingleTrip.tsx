@@ -19,6 +19,7 @@ import { Passenger, Trip } from "@/types/types";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import Error from "@/components/Error";
+import GorgeousBorder from "@/components/GorgeousBorder";
 
 const INITIAL_STATES = {
   _id: "",
@@ -260,7 +261,7 @@ const SingleTrip = () => {
           {loading ? (
             <Loading />
           ) : (
-            <>
+            <div className="w-full flex flex-col gap-3">
               <TripCard
                 setIsDialogOpen={setIsDialogOpen}
                 isDialogOpen={isDialogOpen}
@@ -280,27 +281,30 @@ const SingleTrip = () => {
               <Separator className="self-center w-4 my-4" />
               <div className="flex flex-col gap-2">
                 <div className="w-full flex flex-col gap-2">
-                  <h3 className=" text-center font-bold text-xl uppercase dark:text-white lg:text-3xl">
+                  <h3 className="text-center font-bold text-xl uppercase dark:text-white lg:text-3xl">
                     Pasajeros
                   </h3>
+
                   <div className="flex flex-col item-center gap-1 md:flex-row md:justify-between">
                     <div className="flex items-center justify-center gap-1 text-sm order-2 md:text-base md:order-1 md:self-end">
-                      <article className="flex items-center gap-4 bg-card py-4 px-8 border shadow-input rounded-lg dark:shadow-none">
-                        <div className="">
-                          <Users className="text-accent h-8 w-8 shrink-0 " />
-                        </div>
-                        <div className="flex flex-col">
-                          <h4 className="text-card-foreground">Pasajeros</h4>
-                          <p className="text-lg font-bold flex items-center gap-1">
-                            <span
-                              className={`animate-pulse w-3 h-3 rounded-full ${
-                                isMaxCapacity ? "bg-red-600" : "bg-green-500"
-                              }`}
-                            />
-                            {passengersCount}
-                          </p>
-                        </div>
-                      </article>
+                      <GorgeousBorder>
+                        <article className="flex items-center gap-4 bg-card py-4 px-8 border shadow-input rounded-lg dark:shadow-none">
+                          <div className="">
+                            <Users className="text-accent h-8 w-8 shrink-0 " />
+                          </div>
+                          <div className="flex flex-col">
+                            <h4 className="text-card-foreground">Pasajeros</h4>
+                            <p className="text-lg font-bold flex items-center gap-1">
+                              <span
+                                className={`animate-pulse w-3 h-3 rounded-full ${
+                                  isMaxCapacity ? "bg-red-600" : "bg-green-500"
+                                }`}
+                              />
+                              {passengersCount}
+                            </p>
+                          </div>
+                        </article>
+                      </GorgeousBorder>
                     </div>
                     <div className="flex items-center justify-center relative md:order-2 md:self-end">
                       <div className="flex items-center relative">
@@ -349,7 +353,7 @@ const SingleTrip = () => {
                   </div>
                 )}
               </div>
-            </>
+            </div>
           )}
         </>
       )}

@@ -1,3 +1,4 @@
+import { Income } from '@/context/AuthContext';
 import { Publication, PublicationInput, TripInput, UserProfileData } from './types';
 import { Column } from './types';
 import { Trip, User } from './types'
@@ -15,6 +16,13 @@ export interface DayCardProps {
   trips: any[]
   setItems: any;
   handleDelete: any;
+  items: any[]
+}
+
+export interface IncomesProps {
+  isLoading: boolean;
+  error: boolean;
+  incomes: Income[]
 }
 
 export interface NewPredefinedTripDialogProps {
@@ -32,6 +40,8 @@ export interface TripItemProps {
   arrivalTime: string;
   handleDelete: any;
   departureTime: string;
+  items: any;
+  setItems: any;
 }
 
 export interface DataTableProps  {

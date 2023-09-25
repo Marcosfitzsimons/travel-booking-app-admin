@@ -7,11 +7,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { Separator } from "./ui/separator";
 import { useState } from "react";
 import { Label } from "./ui/label";
 import TimePickerContainer from "./TimePickerContainer";
-import { tripInputs } from "@/formSource";
 import { Input } from "./ui/input";
 import { DayCardType, PredefinedTrip } from "@/types/types";
 import { useToast } from "@/hooks/ui/use-toast";
@@ -28,7 +26,6 @@ import {
   UserMinus2,
   X,
 } from "lucide-react";
-import DefaultButton from "./DefaultButton";
 import { NewPredefinedTripDialogProps } from "@/types/props";
 import { translateDayOfWeek } from "@/lib/utils/translateDayOfWeek";
 import { Button } from "./ui/button";
@@ -171,21 +168,20 @@ const NewPredefinedTripDialog = ({
 
         <form
           onSubmit={handleSubmit(handleOnSubmitTrip)}
-          className="relative w-full flex flex-col gap-3 p-3 py-6"
+          className="w-full flex flex-col gap-3 py-6"
         >
-          <div className="absolute top-0 right-2 ">
-            <div
-              className="relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
+          <div className="relative w-full flex max-w-2xl mx-auto flex-col items-center gap-3">
+            <div className="absolute -top-6 right-0">
+              <div
+                className="relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
           after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"
-            >
-              <p className="flex select-none gap-1 h-[32px] px-4 items-center justify-between bg-card rounded-lg border border-slate-800/20 shadow-input placeholder:text-neutral-500 dark:placeholder:text-pink-1-100/70 dark:bg-[hsl(0,0%,11%)] dark:border-slate-800 dark:text-white dark:shadow-none !outline-none">
-                <CalendarDays className="w-5 h-5 relative bottom-[1px]" />
-                {translateDayOfWeek(day)}
-              </p>
+              >
+                <p className="flex select-none gap-1 h-[32px] px-4 items-center justify-between bg-card rounded-lg border border-slate-800/20 shadow-input placeholder:text-neutral-500 dark:placeholder:text-pink-1-100/70 dark:bg-[hsl(0,0%,11%)] dark:border-slate-800 dark:text-white dark:shadow-none !outline-none">
+                  <CalendarDays className="w-5 h-5 relative bottom-[1px]" />
+                  {translateDayOfWeek(day)}
+                </p>
+              </div>
             </div>
-          </div>
-
-          <div className="w-full flex flex-col items-center gap-3">
             <div className="grid w-full max-w-2xl items-center gap-2">
               <Label htmlFor="name">Nombre del viaje</Label>
               <div className="relative flex items-center">
@@ -343,8 +339,15 @@ const NewPredefinedTripDialog = ({
                 Ha ocurrido un error. Intentar más tarde
               </p>
             )}
-            <div className="w-full mt-2 lg:w-[9rem] lg:col-start-1 lg:col-end-3 lg:justify-self-center">
-              <DefaultButton loading={isSubmitted}>Crear viaje</DefaultButton>
+            <div className="mx-auto">
+              <div className="w-full relative mt-2 after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
+                <Button
+                  className="relative w-full h-8 rounded-lg px-10 py-1.5 lg:py-0 bg-primary text-slate-100 hover:text-white dark:shadow-input dark:shadow-black/5 dark:text-slate-100 dark:hover:text-white"
+                  disabled={isSubmitted}
+                >
+                  Crear viaje
+                </Button>
+              </div>
             </div>
           </div>
         </form>

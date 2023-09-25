@@ -1,69 +1,42 @@
 import { Income } from "@/context/AuthContext";
-import { useToast } from "@/hooks/ui/use-toast";
-import useAuth from "@/hooks/useAuth";
-import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import { History, Map, X } from "lucide-react";
+import { BadgeDollarSign, History, Map } from "lucide-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
 import ActionButton from "./ActionButton";
+import GorgeousBorder from "./GorgeousBorder";
 
-const RecentIncomes = () => {
-  const [recentIncomes, setRecentIncomes] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+interface RecentIncomesProps {
+  incomes: Income[];
+  loading: boolean;
+  error: boolean;
+}
 
-  const baseUrl = `/trips`;
-
-  const axiosPrivate = useAxiosPrivate();
-  const { setAuth } = useAuth();
-  const { toast } = useToast();
-  const navigate = useNavigate();
-
-  const getRecentIncomes = async () => {
-    setLoading(true);
-    setError(false);
-    try {
-      const response = await axiosPrivate.get(`${baseUrl}/recentIncomes`);
-      const incomes = response.data;
-      const incomesFormatted = incomes.map((inc: Income) => ({
-        ...inc,
-        date: moment(inc.date).format("DD/MM/YYYY"),
-      }));
-      setLoading(false);
-      setRecentIncomes(incomesFormatted);
-    } catch (err: any) {
-      if (err.response?.status === 403) {
-        setAuth({ user: null });
-        setTimeout(() => {
-          navigate("/login");
-        }, 100);
-      }
-      setError(true);
-      setLoading(false);
-      const errorMsg = err.response?.data?.msg;
-      toast({
-        variant: "destructive",
-        title: (
-          <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-            cargar información
-          </div>
-        ) as any,
-        description: errorMsg
-          ? errorMsg
-          : "Ha ocurrido un error al cargar información. Por favor, intentar más tarde",
-      });
-    }
-  };
+const RecentIncomes = ({ incomes, loading, error }: RecentIncomesProps) => {
+  const [recentIncomes, setRecentIncomes] = useState<Income[]>([]);
 
   useEffect(() => {
-    getRecentIncomes();
-  }, []);
+    const filtered = incomes.filter((income) => income.incomes > 0);
+
+    const sorted = filtered.sort((a, b) => {
+      // Compare the dates as strings
+      if (a.date < b.date) return 1;
+      if (a.date > b.date) return -1;
+      return 0;
+    });
+    // Limit to the first 7 elements
+    const limited = sorted.slice(0, 7);
+
+    const incomesFormatted = limited.map((inc: Income) => ({
+      ...inc,
+      date: moment(inc.date).format("DD/MM/YYYY"),
+    }));
+
+    setRecentIncomes(incomesFormatted);
+  }, [incomes]);
 
   return (
-    <div className="relative hidden 2xl:basis-[30%] 2xl:flex 2xl:flex-col 2xl:gap-1">
+    <div className="relative w-full max-w-md mx-auto 2xl:basis-[25%] 2xl:flex 2xl:flex-col 2xl:gap-1">
       <div className="flex absolute right-0 -top-9">
         <ActionButton
           text="Viajes semanales"
@@ -85,18 +58,22 @@ const RecentIncomes = () => {
             ) : (
               <>
                 {recentIncomes.map((inc: Income) => (
-                  <li
-                    key={inc._id}
-                    className="w-full flex items-center justify-between p-2 bg-card rounded-lg border shadow-input max-w-md dark:shadow-none"
-                  >
-                    <div className="flex flex-col">
-                      <h3 className="font-semibold">{inc.name}</h3>
-                      <p className="text-sm text-card-foreground">{inc.date}</p>
-                    </div>
-                    <span className="text-[#268f71] dark:text-[rgba(75,270,200,1)] font-semibold">
-                      ${inc.incomes}
-                    </span>
-                  </li>
+                  <GorgeousBorder key={inc._id}>
+                    <li className="w-full flex items-center justify-between p-2 bg-card rounded-lg border shadow-input max-w-md dark:shadow-none">
+                      <div className="flex items-center gap-2">
+                        <BadgeDollarSign className="shrink-0 mx-2" />
+                        <div className="flex flex-col">
+                          <h3 className="font-semibold">{inc.name}</h3>
+                          <p className="text-sm text-card-foreground">
+                            {inc.date}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-[#268f71] dark:text-[rgba(75,270,200,1)] font-semibold">
+                        ${inc.incomes}
+                      </span>
+                    </li>
+                  </GorgeousBorder>
                 ))}
               </>
             )}

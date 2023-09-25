@@ -23,7 +23,7 @@ type UserData = {
 export type Income = {
   _id: string;
   incomes: number;
-  date: any;
+  date: string;
   name?: string;
 };
 

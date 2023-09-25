@@ -133,6 +133,7 @@ const PredefinedTrips = () => {
               {items.map((item) => (
                 <DayCard
                   setItems={setItems}
+                  items={items}
                   key={item._id}
                   day={item.dayOfWeek}
                   handleDelete={handleDelete}

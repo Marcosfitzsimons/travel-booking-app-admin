@@ -9,10 +9,9 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
-
 import { Line } from "react-chartjs-2";
-import useAuth from "@/hooks/useAuth";
 import moment from "moment";
+import { Income } from "@/context/AuthContext";
 
 ChartJs.register(
   CategoryScale,
@@ -25,11 +24,13 @@ ChartJs.register(
   ArcElement
 );
 
-function Chart() {
-  const { incomes } = useAuth();
+interface ChartProps {
+  incomes: Income[];
+}
 
+function Chart({ incomes }: ChartProps) {
   const data = {
-    labels: incomes.map((inc) => {
+    labels: incomes?.map((inc) => {
       const { date } = inc;
       const formattedDate = moment(date).format("DD-MM-YYYY");
       return formattedDate;
@@ -38,7 +39,7 @@ function Chart() {
       {
         label: "Ganancias",
         data: [
-          ...incomes.map((inc) => {
+          ...incomes?.map((inc) => {
             const { incomes } = inc;
             return incomes;
           }),
@@ -51,24 +52,40 @@ function Chart() {
   };
 
   const options = {
+    plugins: {
+      legend: {
+        labels: {
+          color: "hsl(225, 25%, 65%)",
+        },
+      },
+    },
     scales: {
       x: {
         title: {
           display: true,
           text: "Fecha",
+          color: "hsl(225, 25%, 65%)",
+        },
+        ticks: {
+          color: "hsl(225, 25%, 65%)",
         },
       },
+
       y: {
         title: {
           display: true,
           text: "Ganancias",
+          color: "hsl(225, 25%, 65%)",
+        },
+        ticks: {
+          color: "hsl(225, 25%, 65%)",
         },
       },
     },
   };
 
   return (
-    <div className="h-full bg-card dark:bg-black/80 border shadow-input rounded-lg dark:shadow-none">
+    <div className="h-full bg-card border shadow-input rounded-lg dark:shadow-none">
       <Line data={data} options={options} />
     </div>
   );

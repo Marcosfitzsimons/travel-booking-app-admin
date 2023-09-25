@@ -13,6 +13,7 @@ import {
 } from "./ui/alert-dialog";
 import TrashButtonDatatable from "./TrashButtonDatatable";
 import {
+  CalendarDays,
   Check,
   DollarSign,
   Edit,
@@ -28,7 +29,7 @@ import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { PredefinedTrip } from "@/types/types";
+import { DayCardType, PredefinedTrip } from "@/types/types";
 import { useEffect, useState } from "react";
 import {
   Dialog,
@@ -42,6 +43,7 @@ import {
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import TimePickerContainer from "./TimePickerContainer";
+import { translateDayOfWeek } from "@/lib/utils/translateDayOfWeek";
 
 const TripItem = ({
   name,
@@ -54,12 +56,14 @@ const TripItem = ({
   to,
   price,
   maxCapacity,
+  items,
+  setItems,
 }: TripItemProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [departureTimeValue, setDepartureTimeValue] = useState("");
   const [arrivalTimeValue, setArrivalTimeValue] = useState("");
-
+  console.log(items);
   const {
     register,
     handleSubmit,
@@ -116,9 +120,18 @@ const TripItem = ({
         },
       });
       setIsSubmitted(false);
-      console.log(res.data);
-      // set newItems here...
-      setIsDialogOpen(false);
+      const editedIndex = items.findIndex(
+        (item: DayCardType) => item._id === res.data._id
+      );
+
+      if (editedIndex !== -1) {
+        // Create a new copy of the items array with the edited trip
+        const updatedItems = [...items];
+        updatedItems[editedIndex] = res.data;
+
+        // Update the items state in the parent component
+        setItems(updatedItems);
+      }
       toast({
         description: (
           <div className="flex gap-1">
@@ -204,183 +217,188 @@ dark:text-slate-100 dark:bg-teal-700/60 dark:hover:text-white dark:shadow-none"
                 Hace cambios en el viaje fijo
               </DialogDescription>
             </DialogHeader>
-            <div className="w-full flex flex-col items-center gap-5">
-              <form
-                onSubmit={handleSubmit(handleOnSubmitEdit)}
-                className="w-full flex flex-col items-center gap-3"
-              >
-                <div className="grid w-full max-w-2xl items-center gap-2">
-                  <Label htmlFor="name">Nombre del viaje</Label>
+            <form
+              onSubmit={handleSubmit(handleOnSubmitEdit)}
+              className="relative w-full max-w-2xl mx-auto flex flex-col gap-3 py-6"
+            >
+              <div className="absolute top-0 right-0">
+                <div
+                  className="relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
+          after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"
+                >
+                  <p className="flex select-none gap-1 h-[32px] px-4 items-center justify-between bg-card rounded-lg border border-slate-800/20 shadow-input placeholder:text-neutral-500 dark:placeholder:text-pink-1-100/70 dark:bg-[hsl(0,0%,11%)] dark:border-slate-800 dark:text-white dark:shadow-none !outline-none">
+                    <CalendarDays className="w-5 h-5 relative bottom-[1px]" />
+                    {translateDayOfWeek(day)}
+                  </p>
+                </div>
+              </div>
+              <div className="grid w-full max-w-2xl items-center gap-2">
+                <Label htmlFor="name">Nombre del viaje</Label>
+                <div className="relative flex items-center">
+                  <HelpingHand className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                  <Input
+                    type="text"
+                    id="name"
+                    className="pl-8"
+                    {...register("name", {
+                      required: {
+                        value: true,
+                        message: "Por favor, ingresar nombre del viaje.",
+                      },
+                      minLength: {
+                        value: 3,
+                        message: "Nombre del viaje no puede ser tan corto.",
+                      },
+                      maxLength: {
+                        value: 30,
+                        message: "Nombre del viaje no puede ser tan largo.",
+                      },
+                    })}
+                  />
+                </div>
+                {errors.name && (
+                  <p className="text-red-600 text-sm">{errors.name.message}</p>
+                )}
+              </div>
+              <div className="w-full flex flex-col max-w-2xl gap-2 sm:flex-row sm:items-center">
+                <div className="w-full flex items-center max-w-2xl gap-2">
+                  <div className="grid w-full items-center gap-2">
+                    <Label htmlFor="departureTime">Horario de salida:</Label>
+                    <TimePickerContainer
+                      value={departureTimeValue}
+                      onChange={setDepartureTimeValue}
+                    />
+                  </div>
+                  <div className="grid w-full items-center gap-2">
+                    <Label htmlFor="arrivalTime">Horario de llegada:</Label>
+                    <TimePickerContainer
+                      value={arrivalTimeValue}
+                      onChange={setArrivalTimeValue}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="w-full flex flex-col max-w-2xl gap-2 sm:flex-row sm:items-center">
+                <div className="grid w-full max-w-md items-center gap-2">
+                  <Label htmlFor="from">Desde</Label>
                   <div className="relative flex items-center">
-                    <HelpingHand className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                    <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
                     <Input
                       type="text"
-                      id="name"
+                      id="from"
                       className="pl-8"
-                      {...register("name", {
+                      {...register("from", {
                         required: {
                           value: true,
-                          message: "Por favor, ingresar nombre del viaje.",
+                          message: "Por favor, ingresar lugar de salida.",
                         },
                         minLength: {
                           value: 3,
-                          message: "Nombre del viaje no puede ser tan corto.",
+                          message: "Lugar de salida no puede ser tan corto.",
                         },
                         maxLength: {
-                          value: 30,
-                          message: "Nombre del viaje no puede ser tan largo.",
+                          value: 25,
+                          message: "Lugar de salida no puede ser tan largo.",
                         },
                       })}
                     />
                   </div>
-                  {errors.name && (
+
+                  {errors.from && (
                     <p className="text-red-600 text-sm">
-                      {errors.name.message}
+                      {errors.from.message}
                     </p>
                   )}
                 </div>
-                <div className="w-full flex flex-col max-w-2xl gap-2 sm:flex-row sm:items-center">
-                  <div className="w-full flex items-center max-w-2xl gap-2">
-                    <div className="grid w-full items-center gap-2">
-                      <Label htmlFor="departureTime">Horario de salida:</Label>
-                      <TimePickerContainer
-                        value={departureTimeValue}
-                        onChange={setDepartureTimeValue}
-                      />
-                    </div>
-                    <div className="grid w-full items-center gap-2">
-                      <Label htmlFor="arrivalTime">Horario de llegada:</Label>
-                      <TimePickerContainer
-                        value={arrivalTimeValue}
-                        onChange={setArrivalTimeValue}
-                      />
-                    </div>
+                <div className="grid w-full max-w-md items-center gap-2">
+                  <Label htmlFor="to">Hasta</Label>
+                  <div className="relative flex items-center">
+                    <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                    <Input
+                      type="text"
+                      id="to"
+                      className="pl-8"
+                      {...register("to", {
+                        required: {
+                          value: true,
+                          message: "Por favor, ingresar lugar de llegada.",
+                        },
+                        minLength: {
+                          value: 3,
+                          message: "Lugar de llegada no puede ser tan corto.",
+                        },
+                        maxLength: {
+                          value: 25,
+                          message: "Lugar de llegada no puede ser tan largo.",
+                        },
+                      })}
+                    />
                   </div>
+
+                  {errors.to && (
+                    <p className="text-red-600 text-sm">{errors.to.message}</p>
+                  )}
                 </div>
+              </div>
 
-                <div className="w-full flex flex-col max-w-2xl gap-2 sm:flex-row sm:items-center">
-                  <div className="grid w-full max-w-md items-center gap-2">
-                    <Label htmlFor="from">Desde</Label>
-                    <div className="relative flex items-center">
-                      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
-                      <Input
-                        type="text"
-                        id="from"
-                        className="pl-8"
-                        {...register("from", {
-                          required: {
-                            value: true,
-                            message: "Por favor, ingresar lugar de salida.",
-                          },
-                          minLength: {
-                            value: 3,
-                            message: "Lugar de salida no puede ser tan corto.",
-                          },
-                          maxLength: {
-                            value: 25,
-                            message: "Lugar de salida no puede ser tan largo.",
-                          },
-                        })}
-                      />
-                    </div>
-
-                    {errors.from && (
-                      <p className="text-red-600 text-sm">
-                        {errors.from.message}
-                      </p>
-                    )}
+              <div className="w-full flex items-center max-w-2xl gap-2">
+                <div className="grid w-full items-center gap-2">
+                  <Label htmlFor="price">Precio</Label>
+                  <div className="relative flex items-center">
+                    <DollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                    <Input
+                      type="number"
+                      id="price"
+                      className="pl-8"
+                      {...register("price", {
+                        required: {
+                          value: true,
+                          message:
+                            "Por favor, ingresar precio/persona del viaje.",
+                        },
+                      })}
+                    />
                   </div>
-                  <div className="grid w-full max-w-md items-center gap-2">
-                    <Label htmlFor="to">Hasta</Label>
-                    <div className="relative flex items-center">
-                      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
-                      <Input
-                        type="text"
-                        id="to"
-                        className="pl-8"
-                        {...register("to", {
-                          required: {
-                            value: true,
-                            message: "Por favor, ingresar lugar de llegada.",
-                          },
-                          minLength: {
-                            value: 3,
-                            message: "Lugar de llegada no puede ser tan corto.",
-                          },
-                          maxLength: {
-                            value: 25,
-                            message: "Lugar de llegada no puede ser tan largo.",
-                          },
-                        })}
-                      />
-                    </div>
 
-                    {errors.to && (
-                      <p className="text-red-600 text-sm">
-                        {errors.to.message}
-                      </p>
-                    )}
-                  </div>
+                  {errors.price && (
+                    <p className="text-red-600 text-sm">
+                      {errors.price.message}
+                    </p>
+                  )}
                 </div>
-
-                <div className="w-full flex items-center max-w-2xl gap-2">
-                  <div className="grid w-full items-center gap-2">
-                    <Label htmlFor="price">Precio</Label>
-                    <div className="relative flex items-center">
-                      <DollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
-                      <Input
-                        type="number"
-                        id="price"
-                        className="pl-8"
-                        {...register("price", {
-                          required: {
-                            value: true,
-                            message:
-                              "Por favor, ingresar precio/persona del viaje.",
-                          },
-                        })}
-                      />
-                    </div>
-
-                    {errors.price && (
-                      <p className="text-red-600 text-sm">
-                        {errors.price.message}
-                      </p>
-                    )}
+                <div className="grid w-full items-center gap-2">
+                  <Label htmlFor="maxCapacity">Capacidad máxima</Label>
+                  <div className="relative flex items-center">
+                    <UserMinus2 className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                    <Input
+                      type="number"
+                      id="maxCapacity"
+                      className="pl-8"
+                      {...register("maxCapacity", {
+                        required:
+                          "Por favor, ingresar capacidad máxima del viaje.",
+                      })}
+                    />
                   </div>
-                  <div className="grid w-full items-center gap-2">
-                    <Label htmlFor="maxCapacity">Capacidad máxima</Label>
-                    <div className="relative flex items-center">
-                      <UserMinus2 className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
-                      <Input
-                        type="number"
-                        id="maxCapacity"
-                        className="pl-8"
-                        {...register("maxCapacity", {
-                          required:
-                            "Por favor, ingresar capacidad máxima del viaje.",
-                        })}
-                      />
-                    </div>
-                    {errors.maxCapacity && (
-                      <p className="text-red-600 text-sm">
-                        {errors.maxCapacity.message}
-                      </p>
-                    )}
-                  </div>
+                  {errors.maxCapacity && (
+                    <p className="text-red-600 text-sm">
+                      {errors.maxCapacity.message}
+                    </p>
+                  )}
                 </div>
-                <DialogFooter>
-                  <div className="w-full relative mt-2 after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
-                    <Button
-                      disabled={isSubmitted}
-                      className="relative w-full h-8 rounded-lg px-5 py-1.5 lg:py-0 bg-primary text-slate-100 hover:text-white dark:shadow-input dark:shadow-black/5 dark:text-slate-100 dark:hover:text-white"
-                    >
-                      Guardar cambios
-                    </Button>
-                  </div>
-                </DialogFooter>
-              </form>
-            </div>
+              </div>
+              <DialogFooter className="max-w-[10rem] mx-auto">
+                <div className="w-full relative mt-2 after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
+                  <Button
+                    disabled={isSubmitted}
+                    className="relative w-full h-8 rounded-lg px-5 py-1.5 lg:py-0 bg-primary text-slate-100 hover:text-white dark:shadow-input dark:shadow-black/5 dark:text-slate-100 dark:hover:text-white"
+                  >
+                    Guardar cambios
+                  </Button>
+                </div>
+              </DialogFooter>
+            </form>
           </DialogContent>
         </Dialog>
         <AlertDialog>

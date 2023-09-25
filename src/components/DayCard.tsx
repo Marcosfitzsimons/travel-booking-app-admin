@@ -1,10 +1,15 @@
 import { DayCardProps } from "@/types/props";
-import { Button } from "./ui/button";
 import TripItem from "./TripItem";
 import { translateDayOfWeek } from "@/lib/utils/translateDayOfWeek";
 import NewPredefinedTripDialog from "./NewPredefinedTripDialog";
 
-const DayCard = ({ day, trips, handleDelete, setItems }: DayCardProps) => {
+const DayCard = ({
+  day,
+  trips,
+  handleDelete,
+  setItems,
+  items,
+}: DayCardProps) => {
   const dayInSpanish = translateDayOfWeek(day);
 
   return (
@@ -38,6 +43,8 @@ const DayCard = ({ day, trips, handleDelete, setItems }: DayCardProps) => {
                 <TripItem
                   key={trip._id}
                   id={trip._id}
+                  setItems={setItems}
+                  items={items}
                   day={day}
                   from={trip.from}
                   to={trip.to}
