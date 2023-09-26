@@ -106,7 +106,7 @@ const PredefinedTrips = () => {
 
   return (
     <section className="flex flex-col gap-3 mb-6">
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-6">
         <div className="self-start">
           <BackButton linkTo="/trips" />
         </div>
