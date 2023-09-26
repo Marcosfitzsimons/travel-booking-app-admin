@@ -48,6 +48,7 @@ import { userAddressInputs } from "@/formSource";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 import Error from "@/components/Error";
+import GorgeousBoxBorder from "@/components/GorgeousBoxBorder";
 
 const INITIAL_STATES = {
   _id: "",
@@ -152,8 +153,8 @@ const SingleUser = () => {
       toast({
         description: (
           <div className="flex gap-1">
-            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Se ha
-            actualizado el estado de la cuenta con éxito
+            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Estado de la
+            cuenta se ha actualizado con éxito
           </div>
         ),
       });
@@ -348,41 +349,41 @@ const SingleUser = () => {
               <div className="flex flex-col items-center gap-3">
                 <div className="relative w-full flex flex-col items-center gap-2">
                   <div className="flex flex-col gap-2 sm:flex-row sm:gap-4 lg:absolute lg:left-0 lg:z-50">
-                    <div className="flex items-center gap-3 p-3 rounded-lg border bg-card">
-                      <div className="flex flex-col items-center gap-1">
-                        <p className="text-sm">Estado de la cuenta</p>
-                        {statusValue === "active" ? (
-                          <span className="rounded-md bg-green-600/30 border border-green-900 shadow-input px-4 dark:bg-green-200/40 dark:border-green-900/60 dark:shadow-none">
-                            Activa
-                          </span>
-                        ) : (
-                          <span className="rounded-md bg-orange-700/70 text-white border border-orange-900/80 shadow-input px-4 dark:bg-orange-500/70 dark:border-orange-900/60 dark:shadow-none">
-                            Pendiente
-                          </span>
-                        )}
+                    <GorgeousBoxBorder>
+                      <div className="flex items-center gap-3 p-3 rounded-lg border bg-card">
+                        <div className="flex flex-col items-center gap-1">
+                          <p className="text-sm">Estado de la cuenta</p>
+                          {statusValue === "active" ? (
+                            <span className="rounded-md bg-green-600/30 border border-green-900 shadow-input px-4 dark:bg-green-200/40 dark:border-green-900/60 dark:shadow-none">
+                              Activa
+                            </span>
+                          ) : (
+                            <span className="rounded-md bg-orange-700/70 text-white border border-orange-900/80 shadow-input px-4 dark:bg-orange-500/70 dark:border-orange-900/60 dark:shadow-none">
+                              Pendiente
+                            </span>
+                          )}
+                        </div>
+                        <div className="self-end flex items-center relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 after:transition focus-within:after:shadow-slate-400 dark:after:shadow-highlight dark:after:shadow-zinc-500/50 dark:focus-within:after:shadow-slate-100 dark:hover:text-white">
+                          <Button
+                            onClick={() => setIsEditStatus((prev) => !prev)}
+                            className="h-[30px] p-2 outline-none inline-flex items-center justify-center text-sm font-medium transition-colors rounded-lg shadow-input bg-card border border-slate-800/20 hover:bg-white dark:text-neutral-200 dark:border-slate-800 dark:hover:bg-black dark:shadow-none dark:hover:text-white"
+                          >
+                            Editar
+                          </Button>
+                        </div>
                       </div>
-                      <div className="self-end flex items-center relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 after:transition focus-within:after:shadow-slate-400 dark:after:shadow-highlight dark:after:shadow-zinc-500/50 dark:focus-within:after:shadow-slate-100 dark:hover:text-white">
-                        <Button
-                          onClick={() => setIsEditStatus((prev) => !prev)}
-                          className="h-[30px] p-2 outline-none inline-flex items-center justify-center text-sm font-medium transition-colors rounded-lg shadow-input bg-card border border-slate-800/20 hover:bg-white dark:text-neutral-200 dark:border-slate-800 dark:hover:bg-black dark:shadow-none dark:hover:text-white"
-                        >
-                          Editar
-                        </Button>
-                      </div>
-                    </div>
+                    </GorgeousBoxBorder>
+
                     {isEditStatus && (
-                      <div className="relative flex flex-col gap-2 py-3 pl-3 pr-8 rounded-lg animate-in bg-card border ">
-                        <X
-                          onClick={() => setIsEditStatus(false)}
-                          className="absolute right-1.5 top-1.5 text-card-foreground cursor-pointer w-4 h-4"
-                        />
-                        <Select
-                          value={statusValue}
-                          onValueChange={(v: any) => setStatusValue(v)}
-                        >
-                          <div
-                            className="relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
-          after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"
+                      <GorgeousBoxBorder>
+                        <div className="relative flex flex-col gap-2 py-3 pl-3 pr-8 rounded-lg animate-in bg-card border ">
+                          <X
+                            onClick={() => setIsEditStatus(false)}
+                            className="absolute right-1.5 top-1.5 text-card-foreground cursor-pointer w-4 h-4"
+                          />
+                          <Select
+                            value={statusValue}
+                            onValueChange={(v: any) => setStatusValue(v)}
                           >
                             <SelectTrigger className="px-2 h-8">
                               <SelectValue
@@ -393,24 +394,25 @@ const SingleUser = () => {
                                 }
                               />
                             </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="active">Activa</SelectItem>
+                              <SelectItem value="pending">Pendiente</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <div className="w-full self-end flex items-center relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 after:transition focus-within:after:shadow-slate-400 dark:after:shadow-highlight dark:after:shadow-zinc-500/50 dark:focus-within:after:shadow-slate-100 dark:hover:text-white">
+                            <Button
+                              onClick={handleIsActiveSubmit}
+                              disabled={loading1}
+                              className="w-full h-[30px] outline-none inline-flex items-center justify-center text-sm font-medium transition-colors rounded-lg shadow-input bg-card border border-slate-800/20 hover:bg-white dark:text-neutral-200 dark:border-slate-800 dark:hover:bg-black dark:shadow-none dark:hover:text-white"
+                            >
+                              Guardar cambios
+                            </Button>
                           </div>
-                          <SelectContent>
-                            <SelectItem value="active">Activa</SelectItem>
-                            <SelectItem value="pending">Pendiente</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <div className="w-full self-end flex items-center relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 after:transition focus-within:after:shadow-slate-400 dark:after:shadow-highlight dark:after:shadow-zinc-500/50 dark:focus-within:after:shadow-slate-100 dark:hover:text-white">
-                          <Button
-                            onClick={handleIsActiveSubmit}
-                            disabled={loading1}
-                            className="w-full h-[30px] outline-none inline-flex items-center justify-center text-sm font-medium transition-colors rounded-lg shadow-input bg-card border border-slate-800/20 hover:bg-white dark:text-neutral-200 dark:border-slate-800 dark:hover:bg-black dark:shadow-none dark:hover:text-white"
-                          >
-                            Guardar cambios
-                          </Button>
                         </div>
-                      </div>
+                      </GorgeousBoxBorder>
                     )}
                   </div>
+
                   <UserInfo userData={userData} />
                 </div>
 

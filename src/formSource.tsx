@@ -226,15 +226,15 @@ export const tripInputs = [
     validation: {
       required: {
         value: true,
-        message: "Por favor, ingresar lugar de salida.",
+        message: "Por favor, ingresar lugar de salida",
       },
       minLength: {
         value: 3,
-        message: "Lugar de salida no puede ser tan corto.",
+        message: "Lugar de salida no puede ser tan corto",
       },
       maxLength: {
         value: 25,
-        message: "Lugar de salida no puede ser tan largo.",
+        message: "Lugar de salida no puede ser tan largo",
       },
     },
   },
@@ -250,15 +250,15 @@ export const tripInputs = [
     validation: {
       required: {
         value: true,
-        message: "Por favor, ingresar lugar de llegada.",
+        message: "Por favor, ingresar lugar de llegada",
       },
       minLength: {
         value: 3,
-        message: "Lugar de llegada no puede ser tan corto.",
+        message: "Lugar de llegada no puede ser tan corto",
       },
       maxLength: {
         value: 25,
-        message: "Lugar de llegada no puede ser tan largo.",
+        message: "Lugar de llegada no puede ser tan largo",
       },
     },
   },
@@ -274,7 +274,7 @@ export const tripInputs = [
     validation: {
       required: {
         value: true,
-        message: "Por favor, ingresar precio/persona del viaje.",
+        message: "Por favor, ingresar precio/persona del viaje",
       },
       min: {
         value: 0,
@@ -322,15 +322,15 @@ export const tripInputs = [
     validation: {
       required: {
         value: true,
-        message: "Por favor, ingresar nombre del viaje.",
+        message: "Por favor, ingresar nombre del viaje",
       },
       minLength: {
         value: 3,
-        message: "Nombre del viaje no puede ser tan corto.",
+        message: "Nombre del viaje no puede ser tan corto",
       },
       maxLength: {
         value: 30,
-        message: "Nombre del viaje no puede ser tan largo.",
+        message: "Nombre del viaje no puede ser tan largo",
       },
     },
   },

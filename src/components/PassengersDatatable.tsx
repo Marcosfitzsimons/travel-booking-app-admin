@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 import { Passenger } from "@/types/types";
+import GorgeousBorder from "./GorgeousBorder";
 
 type DataTableProps = {
   columns: any;
@@ -203,7 +204,7 @@ const PassengersDatable = ({
                   <span className="w-4 h-[4px] bg-red-700 rounded-full " />
                   <span className="w-2 h-[4px] bg-red-700 rounded-full " />
                 </div>
-                <AlertDialogHeader className="lg:text-center">
+                <AlertDialogHeader className="sm:text-center">
                   <AlertDialogTitle>Cambiar estado del pago</AlertDialogTitle>
                   <AlertDialogDescription>
                     Seleccioná una opción
@@ -217,20 +218,22 @@ const PassengersDatable = ({
                     value={optionSelected}
                     onValueChange={handleValueChange}
                   >
-                    <ToggleGroup.Item
-                      value="paid"
-                      className={`${
-                        optionSelected === "paid"
-                          ? "before:transition-all before:absolute before:left-2 before:w-3.5 before:aspect-square before:bg-slate-500 before:rounded-full dark:before:bg-slate-300"
-                          : ""
-                      }
-                      transition-all relative flex items-center justify-center gap-[3px] w-48 border px-3 rounded-lg data-[state=on]:border-slate-400 data-[state=on]:bg-white focus:border-slate-300 outline-none hover:border-slate-300 dark:data-[state=on]:opacity-100 dark:hover:border-slate-200 dark:bg-card/80 dark:focus:border-slate-200 dark:data-[state=on]:bg-black dark:data-[state=on]:border-slate-300
+                    <GorgeousBorder>
+                      <ToggleGroup.Item
+                        value="paid"
+                        className={`${
+                          optionSelected === "paid"
+                            ? "before:transition-all before:absolute before:left-2 before:w-3.5 before:aspect-square before:bg-slate-500 before:rounded-full dark:before:bg-slate-300"
+                            : ""
+                        }
+                      transition-all relative flex items-center justify-center gap-[3px] w-48 border px-3 rounded-lg data-[state=on]:border-slate-600 data-[state=on]:bg-white focus:border-slate-300 outline-none hover:border-slate-300 dark:data-[state=on]:opacity-100 dark:hover:border-slate-200 dark:bg-card/80 dark:focus:border-slate-200 dark:data-[state=on]:bg-black dark:data-[state=on]:border-slate-300
                           `}
-                    >
-                      PAGO{" "}
-                      <Check className="w-4 h-4 relative bottom-[1px] text-green-600 lg:w-5 lg:h-5" />
-                    </ToggleGroup.Item>
-                    <div className="flex items-center">
+                      >
+                        PAGO{" "}
+                        <Check className="w-4 h-4 relative bottom-[1px] text-green-600 lg:w-5 lg:h-5" />
+                      </ToggleGroup.Item>
+                    </GorgeousBorder>
+                    <GorgeousBorder>
                       <ToggleGroup.Item
                         value="unpaid"
                         className={`${
@@ -238,13 +241,13 @@ const PassengersDatable = ({
                             ? "before:transition-all before:absolute before:left-2 before:w-3.5 before:aspect-square before:bg-slate-500 before:rounded-full dark:before:bg-slate-300"
                             : ""
                         }
-                        transition-all relative flex items-center justify-center gap-[3px] w-48 border px-3 rounded-lg data-[state=on]:border-slate-400 data-[state=on]:bg-white focus:border-slate-300 outline-none hover:border-slate-300 dark:data-[state=on]:opacity-100 dark:hover:border-slate-200 dark:bg-card/80 dark:focus:border-slate-200 dark:data-[state=on]:bg-black dark:data-[state=on]:border-slate-300
+                        transition-all relative flex items-center justify-center gap-[3px] w-48 border px-3 rounded-lg data-[state=on]:border-slate-600 data-[state=on]:bg-white focus:border-slate-300 outline-none hover:border-slate-300 dark:data-[state=on]:opacity-100 dark:hover:border-slate-200 dark:bg-card/80 dark:focus:border-slate-200 dark:data-[state=on]:bg-black dark:data-[state=on]:border-slate-300
                             `}
                       >
                         NO PAGO{" "}
                         <X className="w-4 h-4 relative bottom-[1px] text-red-600 lg:w-5 lg:h-5" />
                       </ToggleGroup.Item>
-                    </div>
+                    </GorgeousBorder>
                   </ToggleGroup.Root>
                 </div>
                 <AlertDialogFooter>

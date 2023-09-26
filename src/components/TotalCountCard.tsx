@@ -1,9 +1,9 @@
 import { TotalCountCardProps } from "@/types/props";
-import GorgeousBorder from "./GorgeousBorder";
+import GorgeousBoxBorder from "./GorgeousBoxBorder";
 
 const TotalCountCard = ({ icon, title, value }: TotalCountCardProps) => {
   return (
-    <GorgeousBorder>
+    <GorgeousBoxBorder>
       <article className="flex items-center gap-4 bg-card py-4 px-8 border shadow-input rounded-lg dark:shadow-none">
         <div className="">{icon}</div>
         <div className="flex flex-col">
@@ -18,7 +18,7 @@ const TotalCountCard = ({ icon, title, value }: TotalCountCardProps) => {
           </p>
         </div>
       </article>
-    </GorgeousBorder>
+    </GorgeousBoxBorder>
   );
 };
 

@@ -33,6 +33,8 @@ import { DataTableProps } from "@/types/props";
 import Error from "./Error";
 import { Separator } from "./ui/separator";
 import GorgeousBorder from "./GorgeousBorder";
+import GorgeousBoxBorder from "./GorgeousBoxBorder";
+import RestartButton from "./RestartButton";
 
 const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -205,18 +207,11 @@ const TripsDatatable = ({ columns, linkText }: DataTableProps) => {
                   setStartDate={setStartDate}
                 />
                 <div className="absolute -right-[48px]">
-                  <GorgeousBorder className="relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300">
-                    <Button
-                      className="w-[38px] h-full p-0 aspect-square flex items-center justify-center cursor-pointer bg-card rounded-lg border border-slate-400/60 shadow-input dark:border-slate-800 dark:shadow-none !outline-none dark:bg-card dark:hover:text-white"
-                      onClick={() => setStartDate(null)}
-                    >
-                      <RotateCcw className="w-4 h-4" />
-                    </Button>
-                  </GorgeousBorder>
+                  <RestartButton setStartDate={setStartDate} />
                 </div>
               </div>
               <div className="flex items-center gap-2 self-end">
-                <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-white/20  after:transition focus-within:after:shadow-slate-100 dark:after:shadow-highlight dark:after:shadow-white/20  dark:focus-within:after:shadow-slate-100">
+                <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-white/20  after:transition focus-within:after:shadow-slate-300 dark:after:shadow-highlight dark:after:shadow-white/20  dark:focus-within:after:shadow-slate-300">
                   <Button className="h-[32px] p-0 relative bg-black/90 text-slate-100 hover:text-white shadow-input dark:text-slate-100 dark:hover:text-white dark:bg-black dark:shadow-none">
                     <Link
                       to="/trips/predefined-trips"

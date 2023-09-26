@@ -32,6 +32,7 @@ import { publicationInputs } from "@/formSource";
 import { Input } from "@/components/ui/input";
 import axios from "@/api/axios";
 import Error from "@/components/Error";
+import GorgeousBoxBorder from "@/components/GorgeousBoxBorder";
 
 const INITIAL_STATES = {
   _id: "",
@@ -223,11 +224,11 @@ const SinglePublication = () => {
   });
 
   return (
-    <section className="flex flex-col gap-3">
+    <section className="flex flex-col gap-6">
       <div className="self-start">
         <BackButton linkTo="/publications" />
       </div>
-      <div className="flex flex-col gap-3 mb-4">
+      <div className="flex flex-col gap-3">
         <SectionTitle>Vista previa de la publicación</SectionTitle>
       </div>
       {error ? (
@@ -237,8 +238,8 @@ const SinglePublication = () => {
           {loading ? (
             <Loading />
           ) : (
-            <div className="pb-6">
-              <article className="w-full flex justify-center items-center relative mx-auto shadow-md max-w-[600px] bg-card shadow-input rounded-md border px-2 py-3 dark:shadow-none">
+            <GorgeousBoxBorder className="pb-6 self-center w-full max-w-[600px] ">
+              <article className="w-full flex justify-center items-center relative mx-auto shadow-md max-w-[600px] bg-card shadow-input rounded-lg border px-2 py-3 dark:shadow-none">
                 <Dialog
                   open={isDialogOpen}
                   onOpenChange={() => setIsDialogOpen(!isDialogOpen)}
@@ -433,7 +434,7 @@ const SinglePublication = () => {
                   </div>
                 </div>
               </article>
-            </div>
+            </GorgeousBoxBorder>
           )}
         </>
       )}

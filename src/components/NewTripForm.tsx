@@ -110,15 +110,15 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
         </div>
         <div className="w-full flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
           <div className="grid w-full items-center gap-2 lg:w-[155px]">
-            <Label htmlFor="departureTime">Horario de salida:</Label>
+            <Label htmlFor="departureTime">Horario de salida</Label>
             <TimePickerContainer
               value={departureTimeValue}
               onChange={setDepartureTimeValue}
             />
           </div>
-          <Separator className="w-4 mt-5" />
+          <Separator className="w-2" />
           <div className="grid w-full items-center gap-2 lg:w-[155px]">
-            <Label htmlFor="arrivalTime">Horario de llegada:</Label>
+            <Label htmlFor="arrivalTime">Horario de llegada</Label>
             <TimePickerContainer
               value={arrivalTimeValue}
               onChange={setArrivalTimeValue}
@@ -139,7 +139,7 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
               />
             </div>
             {errors[input.id as keyof typeof errors] && (
-              <p className="text-red-600">
+              <p className="text-red-600 text-sm">
                 {errors[input.id as keyof typeof errors]?.message}
               </p>
             )}

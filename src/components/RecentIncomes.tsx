@@ -4,7 +4,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import Loading from "./Loading";
 import ActionButton from "./ActionButton";
-import GorgeousBorder from "./GorgeousBorder";
+import GorgeousBoxBorder from "./GorgeousBoxBorder";
 
 interface RecentIncomesProps {
   incomes: Income[];
@@ -58,7 +58,7 @@ const RecentIncomes = ({ incomes, loading, error }: RecentIncomesProps) => {
             ) : (
               <>
                 {recentIncomes.map((inc: Income) => (
-                  <GorgeousBorder key={inc._id}>
+                  <GorgeousBoxBorder key={inc._id}>
                     <li className="w-full flex items-center justify-between p-2 bg-card rounded-lg border shadow-input max-w-md dark:shadow-none">
                       <div className="flex items-center gap-2">
                         <BadgeDollarSign className="shrink-0 mx-2" />
@@ -73,7 +73,7 @@ const RecentIncomes = ({ incomes, loading, error }: RecentIncomesProps) => {
                         ${inc.incomes}
                       </span>
                     </li>
-                  </GorgeousBorder>
+                  </GorgeousBoxBorder>
                 ))}
               </>
             )}

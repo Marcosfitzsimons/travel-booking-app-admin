@@ -3,6 +3,7 @@ import BackButton from "../components/BackButton";
 import NewUserForm from "../components/NewUserForm";
 import SectionTitle from "../components/SectionTitle";
 import { NewUserProps } from "@/types/props";
+import GorgeousBoxBorder from "@/components/GorgeousBoxBorder";
 
 const NewUser = ({ title }: NewUserProps) => {
   return (
@@ -15,9 +16,11 @@ const NewUser = ({ title }: NewUserProps) => {
         {title}
       </SectionTitle>
 
-      <div className="w-full max-w-lg self-center rounded-md bg-card border shadow-input lg:w-full lg:self-start lg:max-w-6xl dark:shadow-none">
-        <NewUserForm />
-      </div>
+      <GorgeousBoxBorder className="w-full max-w-lg self-center lg:w-full lg:self-start lg:max-w-6xl">
+        <div className="w-full max-w-lg self-center rounded-lg bg-card border shadow-input lg:w-full lg:self-start lg:max-w-6xl dark:shadow-none">
+          <NewUserForm />
+        </div>
+      </GorgeousBoxBorder>
     </section>
   );
 };
