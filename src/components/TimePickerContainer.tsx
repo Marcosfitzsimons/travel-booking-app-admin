@@ -15,7 +15,7 @@ const TimePickerContainer = ({ onChange, value }: TimePickerProps) => {
         <Clock2 className="absolute z-30 h-[18px] w-[18px] text-accent top-[10px] left-[10px]" />
         <TimePicker
           disableClock
-          className="w-full pl-8 pr-2.5 py-1.5 relative text-sm bg-input rounded-lg border border-slate-800/20 shadow-input placeholder:text-foreground dark:bg-[hsl(0,0%,11%)] dark:border-slate-800 dark:placeholder:text-zinc-300 dark:text-zinc-300 dark:placeholder:hover:text-white dark:hover:text-white dark:shadow-none !outline-none"
+          className="w-full pl-8 pr-2.5 py-1.5 relative text-sm bg-input-bg rounded-lg border border-slate-800/20 shadow-input placeholder:text-foreground dark:bg-[hsl(0,0%,11%)] dark:border-slate-800 dark:placeholder:text-zinc-300 dark:text-zinc-300 dark:placeholder:hover:text-white dark:hover:text-white dark:shadow-none !outline-none"
           onChange={onChange}
           clearIcon={<X className="w-4 h-4" />}
           required
