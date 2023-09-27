@@ -1,41 +1,17 @@
 import { Income } from "@/context/AuthContext";
 import { BadgeDollarSign, History, Map } from "lucide-react";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import Loading from "./Loading";
 import ActionButton from "./ActionButton";
 import GorgeousBoxBorder from "./GorgeousBoxBorder";
-
-interface RecentIncomesProps {
-  incomes: Income[];
-  loading: boolean;
-  error: boolean;
-}
+import { RecentIncomesProps } from "@/types/props";
+import { getRecentIncomesFormatted } from "@/lib/utils/incomes/calculateIncomes";
 
 const RecentIncomes = ({ incomes, loading, error }: RecentIncomesProps) => {
   const [recentIncomes, setRecentIncomes] = useState<Income[]>([]);
 
   useEffect(() => {
-    const incomesWithTotal = incomes?.map((income) => ({
-      ...income,
-      totalIncomes: income.incomes ? income.incomes : income.specialIncomes,
-    }));
-
-    const sorted = incomesWithTotal.sort((a, b) => {
-      // Compare the dates as strings
-      if (a.date < b.date) return 1;
-      if (a.date > b.date) return -1;
-      return 0;
-    });
-    // Limit to the first 7 elements
-    const limited = sorted.slice(0, 7);
-
-    const incomesFormatted = limited.map((inc: Income) => ({
-      ...inc,
-      date: moment(inc.date).format("DD/MM/YYYY"),
-    }));
-
-    setRecentIncomes(incomesFormatted);
+    setRecentIncomes(getRecentIncomesFormatted(incomes));
   }, [incomes]);
 
   return (

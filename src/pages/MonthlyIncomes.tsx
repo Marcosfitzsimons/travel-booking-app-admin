@@ -3,7 +3,6 @@ import Breadcrumb from "@/components/Breadcrumb";
 import {
   BadgeDollarSign,
   CalendarDays,
-  CalendarRange,
   ChevronsRight,
   LineChart,
   TrendingDown,
@@ -29,12 +28,13 @@ import GorgeousBorder from "@/components/GorgeousBorder";
 import { Separator } from "@radix-ui/react-separator";
 import GorgeousBoxBorder from "@/components/GorgeousBoxBorder";
 import {
+  getLowestFiveIncomes,
+  getTopFiveIncomes,
   totalIncome,
   totalSpecialTripIncomes,
   totalTripIncomes,
 } from "@/lib/utils/incomes/calculateIncomes";
 import IncomeStatistics from "@/components/IncomeStatistics";
-import moment from "moment";
 
 const MonthlyIncomes = () => {
   const [monthlyIncomes, setMonthlyIncomes] = useState<Income[]>([]);
@@ -98,29 +98,6 @@ const MonthlyIncomes = () => {
       });
     }
   };
-
-  const incomesWithTotal = monthlyIncomes?.map((income) => ({
-    ...income,
-    date: moment(income.date).format("DD/MM/YYYY"),
-    totalIncomes: income.incomes ? income.incomes : income.specialIncomes,
-  }));
-  console.log(incomesWithTotal);
-  const sortedIncomes = incomesWithTotal.sort(
-    (a, b) => b.totalIncomes - a.totalIncomes
-  );
-
-  // Get the top five incomes
-  const topFiveIncomes = sortedIncomes.slice(0, 4);
-  console.log(topFiveIncomes);
-
-  const sortedLowestIncomes = incomesWithTotal.sort(
-    (a, b) => a.totalIncomes - b.totalIncomes
-  );
-
-  // Get the lowest five incomes
-  const lowestFiveIncomes = sortedLowestIncomes.slice(0, 4);
-
-  console.log(lowestFiveIncomes);
 
   useEffect(() => {
     getIncomes();
@@ -245,14 +222,14 @@ const MonthlyIncomes = () => {
               <TrendingUp className="w-5 h-5 text-[#3d8f78] dark:text-[rgba(75,270,200,1)]" />
             }
             title="Viajes con mayores ingresos"
-            incomes={topFiveIncomes}
+            incomes={getTopFiveIncomes(monthlyIncomes)}
             error={error}
             loading={isLoading}
           />
           <IncomeStatistics
             icon={<TrendingDown className="w-5 h-5 text-destructive" />}
             title="Viajes con menores ingresos"
-            incomes={lowestFiveIncomes}
+            incomes={getLowestFiveIncomes(monthlyIncomes)}
             error={error}
             loading={isLoading}
           />
