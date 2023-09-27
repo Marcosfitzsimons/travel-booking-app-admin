@@ -8,7 +8,6 @@ import { useToast } from "@/hooks/ui/use-toast";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { useEffect, useState } from "react";
-import { Income } from "@/context/AuthContext";
 
 const Dashboard = () => {
   const [monthValue, setMonthValue] = useState(() => new Date().getMonth() + 1);
@@ -71,17 +70,19 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <section className="flex flex-col gap-6 ">
-      <Breadcrumb>
-        <p className="flex items-center gap-1 text-card-foreground">
-          <LayoutGrid className="w-5 h-5 text-accent" />
-          Inicio
-          <ChevronsRight className="w-5 h-5" />
-          Panel de Control
-        </p>
-      </Breadcrumb>
-      <SectionTitle>Panel de Control</SectionTitle>
-      <div className="w-full flex flex-col gap-12 mb-6 max-w-[1400px] 2xl:flex-row 2xl:justify-between ">
+    <section className="flex flex-col gap-10">
+      <div className="flex flex-col gap-6">
+        <Breadcrumb>
+          <p className="flex items-center gap-1 text-card-foreground">
+            <LayoutGrid className="w-5 h-5 text-accent" />
+            Inicio
+            <ChevronsRight className="w-5 h-5" />
+            Panel de Control
+          </p>
+        </Breadcrumb>
+        <SectionTitle>Panel de Control</SectionTitle>
+      </div>
+      <div className="w-full flex flex-col gap-12 mb-6 max-w-[1400px] 2xl:flex-row 2xl:justify-between">
         <Incomes incomes={incomes} isLoading={isLoading} error={error} />
         <RecentIncomes incomes={incomes} loading={isLoading} error={error} />
       </div>

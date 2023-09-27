@@ -25,6 +25,11 @@ import { Income } from "@/context/AuthContext";
 import GorgeousBorder from "@/components/GorgeousBorder";
 import { Separator } from "@radix-ui/react-separator";
 import GorgeousBoxBorder from "@/components/GorgeousBoxBorder";
+import {
+  totalIncome,
+  totalSpecialTripIncomes,
+  totalTripIncomes,
+} from "@/lib/utils/incomes/calculateIncomes";
 
 const MonthlyIncomes = () => {
   const [monthlyIncomes, setMonthlyIncomes] = useState<Income[]>([]);
@@ -36,10 +41,6 @@ const MonthlyIncomes = () => {
   const [monthValue, setMonthValue] = useState(() => new Date().getMonth() + 1);
 
   const baseUrl = `/trips`;
-
-  console.log(`total trips incomes: ${totalIncomes}`);
-  console.log(`only trips incomes: ${tripsIncomes}`);
-  console.log(`only special trips incomes: ${specialTripsIncomes}`);
 
   const axiosPrivate = useAxiosPrivate();
   const { setAuth } = useAuth();
@@ -65,7 +66,7 @@ const MonthlyIncomes = () => {
         );
         setMonthlyIncomes(response.data);
       }
-      setTotalIncomes(totalIncome());
+      setTotalIncomes(totalIncome(monthlyIncomes));
       setIsLoading(false);
     } catch (err: any) {
       if (err.response?.status === 403) {
@@ -93,48 +94,14 @@ const MonthlyIncomes = () => {
     }
   };
 
-  const totalIncome = () => {
-    let totalIncome = 0;
-    if (monthlyIncomes?.length > 0) {
-      monthlyIncomes?.forEach((income: Income) => {
-        totalIncome += income.incomes ? income.incomes : income.specialIncomes;
-      });
-    }
-    return totalIncome;
-  };
-
-  const totalTripIncome = () => {
-    let totalIncome = 0;
-    if (monthlyIncomes?.length > 0) {
-      const onlyTripsIncomes = monthlyIncomes?.filter((inc) => inc.incomes > 0);
-      onlyTripsIncomes?.forEach((income: Income) => {
-        totalIncome += income.incomes ? income.incomes : income.specialIncomes;
-      });
-    }
-    return totalIncome;
-  };
-
-  const totalSpecialTripIncome = () => {
-    let totalIncome = 0;
-    if (monthlyIncomes?.length > 0) {
-      const onlyTripsIncomes = monthlyIncomes?.filter(
-        (inc) => inc.specialIncomes > 0
-      );
-      onlyTripsIncomes?.forEach((income: Income) => {
-        totalIncome += income.incomes ? income.incomes : income.specialIncomes;
-      });
-    }
-    return totalIncome;
-  };
-
   useEffect(() => {
     getIncomes();
   }, [monthValue]);
 
   useEffect(() => {
-    setTotalIncomes(totalIncome());
-    setTripsIncomes(totalTripIncome());
-    setSpecialTripsIncomes(totalSpecialTripIncome());
+    setTotalIncomes(totalIncome(monthlyIncomes));
+    setTripsIncomes(totalTripIncomes(monthlyIncomes));
+    setSpecialTripsIncomes(totalSpecialTripIncomes(monthlyIncomes));
   }, [monthlyIncomes]);
 
   return (
