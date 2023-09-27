@@ -16,9 +16,12 @@ const RecentIncomes = ({ incomes, loading, error }: RecentIncomesProps) => {
   const [recentIncomes, setRecentIncomes] = useState<Income[]>([]);
 
   useEffect(() => {
-    const filtered = incomes.filter((income) => income.incomes > 0);
+    const incomesWithTotal = incomes?.map((income) => ({
+      ...income,
+      totalIncomes: income.incomes ? income.incomes : income.specialIncomes,
+    }));
 
-    const sorted = filtered.sort((a, b) => {
+    const sorted = incomesWithTotal.sort((a, b) => {
       // Compare the dates as strings
       if (a.date < b.date) return 1;
       if (a.date > b.date) return -1;
@@ -37,7 +40,7 @@ const RecentIncomes = ({ incomes, loading, error }: RecentIncomesProps) => {
 
   return (
     <div className="relative w-full max-w-md mx-auto flex flex-col gap-2 2xl:basis-[30%] ">
-      <div className="self-end">
+      <div className="absolute -top-10 self-end">
         <ActionButton
           text="Viajes semanales"
           icon={<Map className="absolute left-[13px] top-[6px] h-5 w-5" />}
@@ -70,7 +73,7 @@ const RecentIncomes = ({ incomes, loading, error }: RecentIncomesProps) => {
                         </div>
                       </div>
                       <span className="text-[#3d8f78] dark:text-[rgba(75,270,200,1)] font-semibold">
-                        ${inc.incomes}
+                        ${inc.totalIncomes}
                       </span>
                     </li>
                   </GorgeousBoxBorder>

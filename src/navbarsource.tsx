@@ -1,6 +1,7 @@
 import {
   CalendarRange,
   GanttChartSquare,
+  LineChart,
   Map,
   Newspaper,
   Users,
@@ -44,6 +45,6 @@ export const salesItems = [
     id: 7,
     linkTo: "/monthly",
     text: "Resumen mensual",
-    icon: <CalendarRange className="absolute left-2 h-5 w-5 text-accent " />,
+    icon: <LineChart className="absolute left-2 h-5 w-5 text-accent " />,
   },
 ];

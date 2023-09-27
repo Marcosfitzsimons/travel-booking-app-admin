@@ -11,6 +11,14 @@ export interface NewTripFormProps {
     inputs: TripInput[];
 };
 
+export interface IncomeStatisticsProps {
+    icon: any;
+    title: string;
+    error: boolean;
+    loading: boolean;
+    incomes: Income[]
+}
+
 export interface DayCardProps {
   day: 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
   trips: any[]

@@ -26,6 +26,7 @@ export type Income = {
   date: string;
   specialIncomes: number;
   name?: string;
+  totalIncomes?: number;
 };
 
 interface AuthObject {
