@@ -1,6 +1,5 @@
 import { Box } from "@mui/material";
 import SectionTitle from "@/components/SectionTitle";
-import OverviewChart from "@/components/OverviewChart";
 import Breadcrumb from "@/components/Breadcrumb";
 import { ChevronsRight, GanttChartSquare } from "lucide-react";
 
@@ -20,10 +19,6 @@ const Overview = () => {
         YEARLY RESUME GRAPH WITH TOTAL INCOMES PER MONTH{" "}
         <span> ASIDE: A LIST WITH MONTHS WITH HIGHEST INCOMES</span>
       </p>
-
-      <Box height="75vh">
-        <OverviewChart />
-      </Box>
     </Box>
   );
 };
