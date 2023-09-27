@@ -175,7 +175,7 @@ const TripItem = ({
 
   return (
     <GorgeousBoxBorder className="">
-      <li className="flex flex-col rounded-lg p-2 shadow-input border bg-input dark:shadow-none">
+      <li className="flex flex-col rounded-lg p-2 shadow-input border bg-input-bg dark:shadow-none">
         <div className="flex flex-col">
           <p className="font-semibold">{name}</p>
           <span className="text-card-foreground text-sm">

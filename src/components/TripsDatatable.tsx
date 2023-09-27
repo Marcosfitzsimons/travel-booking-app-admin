@@ -32,8 +32,6 @@ import { ExtendedColumn } from "@/types/types";
 import { DataTableProps } from "@/types/props";
 import Error from "./Error";
 import { Separator } from "./ui/separator";
-import GorgeousBorder from "./GorgeousBorder";
-import GorgeousBoxBorder from "./GorgeousBoxBorder";
 import RestartButton from "./RestartButton";
 
 const TripsDatatable = ({ columns, linkText }: DataTableProps) => {

@@ -69,7 +69,7 @@ const RecentIncomes = ({ incomes, loading, error }: RecentIncomesProps) => {
                           </p>
                         </div>
                       </div>
-                      <span className="text-[#268f71] dark:text-[rgba(75,270,200,1)] font-semibold">
+                      <span className="text-[#3d8f78] dark:text-[rgba(75,270,200,1)] font-semibold">
                         ${inc.incomes}
                       </span>
                     </li>

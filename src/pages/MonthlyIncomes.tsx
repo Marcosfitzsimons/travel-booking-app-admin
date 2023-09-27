@@ -27,10 +27,17 @@ import GorgeousBorder from "@/components/GorgeousBorder";
 const MonthlyIncomes = () => {
   const [monthlyIncomes, setMonthlyIncomes] = useState<Income[]>([]);
   const [totalIncomes, setTotalIncomes] = useState(0);
+  const [tripsIncomes, setTripsIncomes] = useState(0);
+  const [specialTripsIncomes, setSpecialTripsIncomes] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [monthValue, setMonthValue] = useState(() => new Date().getMonth() + 1);
+
   const baseUrl = `/trips`;
+
+  console.log(`total trips incomes: ${totalIncomes}`);
+  console.log(`only trips incomes: ${tripsIncomes}`);
+  console.log(`only special trips incomes: ${specialTripsIncomes}`);
 
   const axiosPrivate = useAxiosPrivate();
   const { setAuth } = useAuth();
@@ -94,6 +101,30 @@ const MonthlyIncomes = () => {
     return totalIncome;
   };
 
+  const totalTripIncome = () => {
+    let totalIncome = 0;
+    if (monthlyIncomes?.length > 0) {
+      const onlyTripsIncomes = monthlyIncomes?.filter((inc) => inc.incomes > 0);
+      onlyTripsIncomes?.forEach((income: Income) => {
+        totalIncome += income.incomes ? income.incomes : income.specialIncomes;
+      });
+    }
+    return totalIncome;
+  };
+
+  const totalSpecialTripIncome = () => {
+    let totalIncome = 0;
+    if (monthlyIncomes?.length > 0) {
+      const onlyTripsIncomes = monthlyIncomes?.filter(
+        (inc) => inc.specialIncomes > 0
+      );
+      onlyTripsIncomes?.forEach((income: Income) => {
+        totalIncome += income.incomes ? income.incomes : income.specialIncomes;
+      });
+    }
+    return totalIncome;
+  };
+
   useEffect(() => {
     getIncomes();
   }, [monthValue]);
@@ -101,6 +132,8 @@ const MonthlyIncomes = () => {
   useEffect(() => {
     // Calculate total income when monthlyIncomes changes
     setTotalIncomes(totalIncome());
+    setTripsIncomes(totalTripIncome());
+    setSpecialTripsIncomes(totalSpecialTripIncome());
   }, [monthlyIncomes]);
 
   return (
@@ -114,7 +147,18 @@ const MonthlyIncomes = () => {
         </p>
       </Breadcrumb>
       <SectionTitle>Resumen de ganancias mensuales</SectionTitle>
+      {/*
+          Conditional rendering:
+                  
+          _ filter by inc.incomes > 0 {... trips totalIncomes} 
+            filter by inc.specialIncomes > 0 {... specialTrips totalIncomes} 
+          
+          _
+            Add top 5 with highest incomes
+            Add top 5 with lowest incomes
 
+            Check why shadows doesn't works
+      */}
       <div className="relative w-full flex flex-col gap-2  max-w-[1400px]">
         <div className="flex flex-col items-center gap-3">
           <div className="lg:absolute lg:left-0 lg:-top-0.5">
@@ -125,8 +169,8 @@ const MonthlyIncomes = () => {
               <p className="rounded-lg bg-card p-1 border flex gap-1 shadow-input sm:px-3 dark:shadow-none">
                 <BadgeDollarSign className="hidden sm:flex shrink-0 w-5 h-5 self-center" />
                 Ganancias totales mes seleccionado
-                <span className="font-bold dark:text-white">
-                  ${totalIncome()}
+                <span className="text-[#3d8f78] dark:text-[rgba(75,270,200,1)] font-semibold">
+                  ${totalIncomes}
                 </span>
               </p>
             </GorgeousBorder>
@@ -137,7 +181,7 @@ const MonthlyIncomes = () => {
               value={monthValue.toString()}
               onValueChange={(v) => setMonthValue(Number(v))}
             >
-              <SelectTrigger className="w-[180px] flex gap-1 h-[32px] px-4 items-center justify-between bg-card rounded-lg border border-slate-800/20 shadow-input placeholder:text-neutral-500 dark:placeholder:text-pink-1-100/70 dark:bg-[hsl(0,0%,11%)] dark:border-slate-800 dark:text-white dark:shadow-none !outline-none">
+              <SelectTrigger className="w-[180px] ">
                 <CalendarDays className="w-5 h-5 relative bottom-[1px]" />
                 <SelectValue placeholder="Mes" />
               </SelectTrigger>

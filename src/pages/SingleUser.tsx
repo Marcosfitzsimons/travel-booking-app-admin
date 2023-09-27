@@ -350,11 +350,11 @@ const SingleUser = () => {
                 <div className="relative w-full flex flex-col items-center gap-2">
                   <div className="flex flex-col gap-2 sm:flex-row sm:gap-4 lg:absolute lg:left-0 lg:z-50">
                     <GorgeousBoxBorder>
-                      <div className="flex items-center gap-3 p-3 rounded-lg border bg-card">
+                      <div className="flex items-center gap-3 p-3 rounded-lg border bg-card shadow-md dark:shadow-none">
                         <div className="flex flex-col items-center gap-1">
                           <p className="text-sm">Estado de la cuenta</p>
                           {statusValue === "active" ? (
-                            <span className="rounded-md bg-green-600/30 border border-green-900 shadow-input px-4 dark:bg-green-200/40 dark:border-green-900/60 dark:shadow-none">
+                            <span className="rounded-md bg-green-600/30 border border-green-900 px-4 dark:bg-green-200/40 dark:border-green-900/60 dark:shadow-none">
                               Activa
                             </span>
                           ) : (
@@ -376,7 +376,7 @@ const SingleUser = () => {
 
                     {isEditStatus && (
                       <GorgeousBoxBorder>
-                        <div className="relative flex flex-col gap-2 py-3 pl-3 pr-8 rounded-lg animate-in bg-card border ">
+                        <div className="relative shadow-md flex flex-col gap-2 py-3 pl-3 pr-8 rounded-lg animate-in bg-card border dark:shadow-none">
                           <X
                             onClick={() => setIsEditStatus(false)}
                             className="absolute right-1.5 top-1.5 text-card-foreground cursor-pointer w-4 h-4"

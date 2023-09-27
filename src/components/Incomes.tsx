@@ -43,7 +43,7 @@ const Incomes = ({ incomes, error, isLoading }: IncomesProps) => {
             <p className="rounded-lg bg-card p-1 border flex gap-1 shadow-input sm:px-3 dark:shadow-none">
               <BadgeDollarSign className="hidden sm:flex shrink-0 w-5 h-5 self-center" />
               Ganancias totales de este mes
-              <span className="font-bold dark:text-white">
+              <span className="text-[#3d8f78] dark:text-[rgba(75,270,200,1)] font-semibold">
                 ${totalIncome()}
               </span>
             </p>

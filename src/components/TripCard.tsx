@@ -27,6 +27,8 @@ import { Button } from "./ui/button";
 import TripCardDataBox from "./TripCardDataBox";
 import TripTime from "./TripTime";
 import GorgeousBorder from "./GorgeousBorder";
+import TripDate from "./TripDate";
+import TodayDate from "./TodayDate";
 
 type Trip = {
   _id: string;
@@ -104,20 +106,9 @@ const TripCard = ({
               <span className="w-4 h-[4px] bg-red-700 rounded-full " />
               <span className="w-2 h-[4px] bg-red-700 rounded-full " />
             </div>
-            <div className="absolute right-2 top-2 flex items-center gap-2 sm:right-4">
-              <GorgeousBorder>
-                <p className="text-teal-900 order-2 font-medium flex items-center select-none gap-1 rounded-lg border border-slate-800/60 bg-slate-200/30 dark:bg-slate-800/70 dark:border-slate-700/80 dark:text-white px-3">
-                  <CalendarDays className="w-4 h-4 relative lg:w-5 lg:h-5" />
-                  {data.date}
-                </p>
-              </GorgeousBorder>
-              {data.date === todayDate && (
-                <GorgeousBorder>
-                  <p className="text-green-900 bg-green-300/30 border border-green-800/80 order-1 select-none font-medium rounded-lg dark:bg-[#75f5a8]/20 dark:border-[#a0eebf] dark:text-white px-3">
-                    HOY
-                  </p>
-                </GorgeousBorder>
-              )}
+            <div className="absolute right-2 top-2 flex items-center flex-row-reverse gap-2 sm:right-4">
+              <TripDate date={data.date} />
+              {data.date === todayDate && <TodayDate />}
             </div>
 
             <div className="flex flex-col gap-1">
