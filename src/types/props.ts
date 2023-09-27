@@ -19,6 +19,12 @@ export interface IncomeStatisticsProps {
     incomes: Income[]
 }
 
+export interface RecentIncomesProps {
+  incomes: Income[];
+  loading: boolean;
+  error: boolean;
+}
+
 export interface DayCardProps {
   day: 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
   trips: any[]

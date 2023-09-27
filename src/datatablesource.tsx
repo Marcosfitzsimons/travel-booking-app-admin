@@ -1,6 +1,8 @@
-import { Check, Clock, User, X } from "lucide-react";
+import { Clock, User } from "lucide-react";
 import moment from "moment";
 import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
+import TodayDate from "./components/TodayDate";
+import GorgeousBoxBorder from "./components/GorgeousBoxBorder";
 
 const formatDate = (date: string) => {
   const momentDate = moment.utc(date, "YYYY-MM-DDTHH:mm:ss.SSSZ");
@@ -89,16 +91,16 @@ export const tripColumns = [
 
       return (
         <div className="flex items-center gap-1">
-          <>
-            {params.row.date && isToday ? (
-              <span className="text-green-900 bg-green-300/30 border order-2 border-green-800/80 select-none font-medium rounded-md dark:bg-[#75f5a8]/30 dark:border-[#4ca770] dark:text-white px-1">
+          <p>{formattedDate}</p>
+          {params.row.date && isToday ? (
+            <GorgeousBoxBorder>
+              <span className="h-7 px-2 flex items-center text-green-900 bg-green-300/30 border border-green-800/80 select-none font-medium rounded-lg dark:bg-[#75f5a8]/20 dark:border-[#a0eebf] dark:text-white">
                 HOY
               </span>
-            ) : (
-              ""
-            )}
-            <p>{formattedDate}</p>
-          </>
+            </GorgeousBoxBorder>
+          ) : (
+            ""
+          )}
         </div>
       );
     },
@@ -179,16 +181,16 @@ export const specialTripColumns = [
 
       return (
         <div className="flex items-center gap-1">
-          <>
-            {params.row.date && isToday ? (
-              <span className="text-green-900 bg-green-300/30 border order-2 border-green-800/80 select-none font-medium rounded-md dark:bg-[#75f5a8]/30 dark:border-[#4ca770] dark:text-white px-1">
+          <p>{formattedDate}</p>
+          {params.row.date && isToday ? (
+            <GorgeousBoxBorder>
+              <span className="h-7 px-2 flex items-center text-green-900 bg-green-300/30 border border-green-800/80 select-none font-medium rounded-lg dark:bg-[#75f5a8]/20 dark:border-[#a0eebf] dark:text-white">
                 HOY
               </span>
-            ) : (
-              ""
-            )}
-            <p>{formattedDate}</p>
-          </>
+            </GorgeousBoxBorder>
+          ) : (
+            ""
+          )}
         </div>
       );
     },
