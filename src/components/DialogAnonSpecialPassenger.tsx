@@ -79,6 +79,7 @@ const DialogAnonSpecialPassenger = ({
           </div>
         ),
       });
+
       setIsSubmitted2(false);
     } catch (err: any) {
       if (err.response?.status === 403) {

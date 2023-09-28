@@ -8,6 +8,7 @@ const PersistLogin = () => {
   const refresh = useRefreshToken();
 
   const { auth, persist } = useAuth();
+
   useEffect(() => {
     let isMounted = true;
 

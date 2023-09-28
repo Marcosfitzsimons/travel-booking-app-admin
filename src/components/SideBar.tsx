@@ -4,6 +4,9 @@ import useAuth from "../hooks/useAuth";
 import useLogout from "@/hooks/useLogOut";
 import { useEffect, useState } from "react";
 import { listItems, salesItems } from "@/navbarsource";
+import Logo from "./Logo";
+import { Separator } from "./ui/separator";
+import ThemeToggle from "./ThemeToggle";
 
 const SideBar = () => {
   const [active, setIsActive] = useState(1);
@@ -56,8 +59,8 @@ const SideBar = () => {
   return !user ? (
     <div className=""></div>
   ) : (
-    <div className="hidden flex-[1] h-screen lg:flex lg:flex-col lg:items-center lg:pl-10 lg:py-[160px]">
-      <div className="rounded-md flex flex-col mx-auto w-[13.5rem] gap-5">
+    <div className="hidden flex-[1] h-screen lg:flex lg:flex-col lg:items-center pl-8 lg:py-[160px]">
+      <div className="rounded-md flex flex-col w-[14rem] gap-5">
         <nav className="flex flex-col gap-3">
           <div className="flex flex-col">
             <p className="text-accent uppercase pb-1 font-bold text-sm dark:text-white">

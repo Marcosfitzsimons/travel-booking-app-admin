@@ -47,6 +47,8 @@ import DialogAnonSpecialPassenger from "@/components/DialogAnonSpecialPassenger"
 import Error from "@/components/Error";
 import TripTime from "@/components/TripTime";
 import TripCardDataBox from "@/components/TripCardDataBox";
+import TripDate from "@/components/TripDate";
+import TodayDate from "@/components/TodayDate";
 
 const INITIAL_STATES = {
   _id: "",
@@ -298,16 +300,9 @@ const SingleSpecialTrip = () => {
                       <span className="w-4 h-[4px] bg-red-700 rounded-full " />
                       <span className="w-2 h-[4px] bg-red-700 rounded-full " />
                     </div>
-                    <div className="absolute right-2 top-2 flex items-center gap-2 sm:right-4">
-                      <p className="text-teal-900 order-2 font-medium flex items-center select-none gap-1 rounded-lg border border-slate-800/60 bg-slate-200/30 dark:bg-slate-800/70 dark:border-slate-200/80 dark:text-white px-3">
-                        <CalendarDays className="w-4 h-4 relative lg:w-5 lg:h-5" />
-                        {tripData.date}
-                      </p>
-                      {tripData.date === todayDate && (
-                        <p className="text-green-900 bg-green-300/30 border border-green-800/80 order-1 select-none font-medium rounded-lg dark:bg-[#75f5a8]/20 dark:border-[#86dda9] dark:text-white px-3">
-                          HOY
-                        </p>
-                      )}
+                    <div className="absolute right-2 top-2 flex items-center flex-row-reverse gap-2 sm:right-4">
+                      <TripDate date={tripData.date} />
+                      <TodayDate />
                     </div>
 
                     <div className="flex flex-col gap-1">
@@ -374,7 +369,7 @@ const SingleSpecialTrip = () => {
                       >
                         <div className="lg:self-end">
                           <div className="mt-2 relative w-full after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
-                            <DialogTrigger className="relative w-full rounded-lg px-5 py-1.5 lg:py-0 bg-primary text-slate-100 hover:text-white dark:shadow-input dark:shadow-black/5 dark:text-slate-100 dark:hover:text-white lg:h-8">
+                            <DialogTrigger className="relative w-full rounded-lg px-5 py-1.5 lg:py-0 bg-primary text-slate-100 hover:text-white shadow-input dark:text-slate-100 dark:hover:text-white dark:shadow-none lg:h-8">
                               Editar
                             </DialogTrigger>
                           </div>
