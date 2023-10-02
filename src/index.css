@@ -99,7 +99,7 @@ input[type="number"] {
 /* cell */
 
 .MuiDataGrid-cell {
-  @apply border-none text-slate-500 hover:text-[#007f96] dark:text-[#e6f2f5] dark:hover:text-white;
+  @apply border-none text-foreground hover:text-[#007f96] dark:text-[#e6f2f5] dark:hover:text-white;
 }
 
 /* checkbox */
@@ -131,7 +131,7 @@ input[type="number"] {
 @layer base {
   :root {
     --background: 0 0% 99%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 222 90% 15%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
@@ -140,7 +140,7 @@ input[type="number"] {
     --popover-foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 317 10% 45%;
+    --card-foreground: 250 20% 45%;
 
     --border: 219 30% 70%;
     --input-bg: 0 0% 100%;
@@ -152,7 +152,7 @@ input[type="number"] {
     --secondary: 0 0% 100%;
     --secondary-foreground: 222.2 84% 4.9%;
 
-    --accent: 0 0% 100%%;
+    --accent: 0 0% 0%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
