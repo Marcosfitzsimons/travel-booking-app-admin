@@ -105,7 +105,7 @@ const SideBar = () => {
           </div>
           <div className="flex flex-col">
             <p className="text-accent uppercase pb-1 font-bold text-sm dark:text-white">
-              Ventas
+              Ganancias
             </p>
             <ul className="flex flex-col">
               {salesItems.map((item) => (
