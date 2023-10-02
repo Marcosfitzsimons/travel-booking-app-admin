@@ -25,7 +25,7 @@ import NewPublication from "./pages/NewPublication";
 import SingleSpecialTrip from "./pages/SingleSpecialTrip";
 import NewSpecialTrip from "./pages/NewSpecialTrip";
 import { Map, Users } from "lucide-react";
-import Overview from "./pages/Overview";
+import YearlyIncomes from "./pages/YearlyIncomes";
 import useAuth from "./hooks/useAuth";
 import PersistLogin from "./components/PersistLogin";
 import Dashboard from "./pages/Dashboard";
@@ -48,7 +48,7 @@ function App() {
   };
 
   return (
-    <div className="w-full flex">
+    <div className="w-full flex text-foreground">
       <SideBar />
       <div
         className={`flex-[6] min-w-[330px] px-2 lg:px-10 lg:pr-20 ${
@@ -70,12 +70,12 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-                <Route path="overview">
+                <Route path="yearly">
                   <Route
                     index
                     element={
                       <ProtectedRoute>
-                        <Overview />
+                        <YearlyIncomes />
                       </ProtectedRoute>
                     }
                   />
@@ -163,14 +163,6 @@ function App() {
                         </ProtectedRoute>
                       }
                     />
-                    {/* <Route
-                    path=":id"
-                    element={
-                      <ProtectedRoute>
-                        
-                      </ProtectedRoute>
-                    }
-                  /> */}
                   </Route>
                 </Route>
                 <Route path="special-trips">
