@@ -121,16 +121,10 @@ const totalYearlyIncome = (incomes: MonthlyIncome[]) => {
 };
 
 const getTopMonthlyIncomes = (incomes: MonthlyIncome[]) => {
-
-  const sortedIncomes = incomes.toSorted(
-    (a, b) => b.totalIncomes - a.totalIncomes
-  );
-
-  const topFiveIncomes = sortedIncomes.slice(0, 9);
-
-  return topFiveIncomes;
+  const sortedIncomes = incomes.slice().sort((a: MonthlyIncome, b: MonthlyIncome) => b.totalIncomes - a.totalIncomes);
+  const topIncomes = sortedIncomes.slice(0, 9); 
+  return topIncomes;
 };
-
 
 export {
     totalIncome,
