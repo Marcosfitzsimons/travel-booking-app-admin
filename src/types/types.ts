@@ -31,6 +31,11 @@ export type Trip = {
   passengers?: any[];
 }
 
+export type MonthlyIncome = {
+  month: number;
+  totalIncomes: number;
+}
+
 export type PredefinedTrip = {
   name: string;
   from: string;

@@ -1,11 +1,4 @@
-import {
-  CalendarRange,
-  GanttChartSquare,
-  LineChart,
-  Map,
-  Newspaper,
-  Users,
-} from "lucide-react";
+import { BarChart3, LineChart, Map, Newspaper, Users } from "lucide-react";
 
 export const listItems = [
   {
@@ -35,12 +28,12 @@ export const listItems = [
 ];
 
 export const salesItems = [
-  // {
-  //   id: 6,
-  //   linkTo: "/overview",
-  //   text: "Resumen general",
-  //   icon: <GanttChartSquare className="absolute left-2 h-5 w-5 text-accent " />,
-  // },
+  {
+    id: 6,
+    linkTo: "/yearly",
+    text: "Resumen anual",
+    icon: <BarChart3 className="absolute left-2 h-5 w-5 text-accent " />,
+  },
   {
     id: 7,
     linkTo: "/monthly",

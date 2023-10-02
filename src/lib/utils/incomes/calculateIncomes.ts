@@ -1,4 +1,5 @@
 import { Income } from "@/context/AuthContext";
+import { MonthlyIncome } from "@/types/types";
 import moment from "moment";
 
 const totalIncome = (incomes: Income[]) => {
@@ -90,11 +91,55 @@ const getRecentIncomesFormatted = (incomes: Income[]) => {
   return incomesFormatted;
 }
 
+const convertNumberToSpanishMonth = (month: number) => {
+  const months: { [key: string]: string } = {
+    1: "Enero",
+    2: "Febrero",
+    3: "Marzo",
+    4: "Abril",
+    5: "Mayo",
+    6: "Junio",
+    7: "Julio",
+    8: "Agosto",
+    9: "Septiembre",
+    10: "Octubre",
+    11: "Noviembre",
+    12: "Diciembre",
+  };
+
+  return months[month] || "Invalid Month";
+};
+
+const totalYearlyIncome = (incomes: MonthlyIncome[]) => {
+  let totalIncome = 0;
+  if (incomes?.length > 0) {
+    incomes?.forEach((income) => {
+      totalIncome += income.totalIncomes;
+    });
+  }
+  return totalIncome;
+};
+
+const getTopMonthlyIncomes = (incomes: MonthlyIncome[]) => {
+
+  const sortedIncomes = incomes.toSorted(
+    (a, b) => b.totalIncomes - a.totalIncomes
+  );
+
+  const topFiveIncomes = sortedIncomes.slice(0, 9);
+
+  return topFiveIncomes;
+};
+
+
 export {
     totalIncome,
     totalTripIncomes,
     totalSpecialTripIncomes,
     getTopFiveIncomes,
     getLowestFiveIncomes,
-    getRecentIncomesFormatted
+    getRecentIncomesFormatted,
+    convertNumberToSpanishMonth,
+    totalYearlyIncome,
+    getTopMonthlyIncomes
 }

@@ -11,6 +11,9 @@ import { useEffect, useState } from "react";
 
 const Dashboard = () => {
   const [monthValue, setMonthValue] = useState(() => new Date().getMonth() + 1);
+  const [currentYear, setCurrentYear] = useState(() =>
+    new Date().getFullYear()
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
@@ -28,14 +31,14 @@ const Dashboard = () => {
       const existingIncomes = incomes.find((income) => {
         const incomeDate = new Date(income.date);
         return (
-          incomeDate.getFullYear() === 2023 &&
+          incomeDate.getFullYear() === currentYear &&
           incomeDate.getMonth() === monthValue - 1
         );
       });
 
       if (!existingIncomes) {
         const response = await axiosPrivate.get(
-          `${baseUrl}/monthly-incomes/2023/${monthValue}`
+          `${baseUrl}/monthly-incomes/${currentYear}/${monthValue}`
         );
         setIncomes(response.data);
       }
@@ -70,8 +73,8 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <section className="flex flex-col gap-10">
-      <div className="flex flex-col gap-6">
+    <section className="flex flex-col gap-14">
+      <div className="flex flex-col gap-10">
         <Breadcrumb>
           <p className="flex items-center gap-1 text-card-foreground">
             <LayoutGrid className="w-5 h-5 text-accent" />

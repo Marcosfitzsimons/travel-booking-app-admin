@@ -40,7 +40,7 @@ const Incomes = ({ incomes, error, isLoading }: IncomesProps) => {
           >
             <p className="rounded-lg bg-card p-1 border flex gap-1 shadow-input sm:px-3 dark:shadow-none">
               <BadgeDollarSign className="hidden sm:flex shrink-0 w-5 h-5 self-center" />
-              Ganancias totales mes seleccionado
+              Ganancias acumuladas este mes
               <span className="text-[#3d8f78] dark:text-[rgba(75,270,200,1)] font-semibold">
                 ${totalIncome(incomes)}
               </span>
@@ -80,7 +80,7 @@ const Incomes = ({ incomes, error, isLoading }: IncomesProps) => {
         </div>
         <div className="self-end">
           <GorgeousBoxBorder>
-            <p className="rounded-lg bg-card px-3 py-1 border flex items-center gap-1 shadow-input dark:shadow-none">
+            <p className="rounded-lg bg-card px-6 py-1 border flex items-center gap-1 shadow-input dark:shadow-none">
               <CalendarDays className="w-5 h-5 relative bottom-[1px]" />
               {currentMonthName}
             </p>

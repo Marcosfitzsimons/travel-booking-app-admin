@@ -1,5 +1,5 @@
 import { Income } from '@/context/AuthContext';
-import { Publication, PublicationInput, TripInput, UserProfileData } from './types';
+import { MonthlyIncome, Publication, PublicationInput, TripInput, UserProfileData } from './types';
 import { Column } from './types';
 import { Trip, User } from './types'
 export interface NewTripProps {
@@ -17,6 +17,12 @@ export interface IncomeStatisticsProps {
     error: boolean;
     loading: boolean;
     incomes: Income[]
+}
+
+export interface TopMonthlyIncomesProps {
+  incomes: MonthlyIncome[];
+  loading: boolean;
+  error: boolean;
 }
 
 export interface RecentIncomesProps {

@@ -23,8 +23,8 @@ const RecentIncomes = ({ incomes, loading, error }: RecentIncomesProps) => {
           linkTo={"/trips"}
         />
       </div>
-      <h2 className="flex items-center gap-1 font-semibold text-lg">
-        <History className="w-5 h-5 text-accent" />
+      <h2 className="flex items-center gap-1 font-semibold text-lg lg:text-xl">
+        <History className="w-5 h-5 text-accent lg:w-6 lg:h-6" />
         Ingresos acumulados en últimos viajes
       </h2>
       <ul className="flex flex-col gap-2">

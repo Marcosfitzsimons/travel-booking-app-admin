@@ -110,8 +110,8 @@ const MonthlyIncomes = () => {
   }, [monthlyIncomes]);
 
   return (
-    <section className="flex flex-col gap-10">
-      <div className="flex flex-col gap-6">
+    <section className="flex flex-col gap-14">
+      <div className="flex flex-col gap-10">
         <Breadcrumb>
           <p className="flex items-center gap-1 text-card-foreground">
             <LineChart className="h-5 w-5 text-accent" />
@@ -133,7 +133,7 @@ const MonthlyIncomes = () => {
               >
                 <p className="rounded-lg bg-card p-1 border flex gap-1 shadow-input sm:px-3 dark:shadow-none">
                   <BadgeDollarSign className="hidden sm:flex shrink-0 w-5 h-5 self-center" />
-                  Ganancias totales mes seleccionado
+                  Ganancias acumuladas mes seleccionado
                   <span className="text-[#3d8f78] dark:text-[rgba(75,270,200,1)] font-semibold">
                     ${totalIncomes}
                   </span>
@@ -219,7 +219,7 @@ const MonthlyIncomes = () => {
         <div className="relative bottom-8 w-full max-w-md mx-auto flex flex-col gap-2 2xl:basis-[30%] ">
           <IncomeStatistics
             icon={
-              <TrendingUp className="w-5 h-5 text-[#3d8f78] dark:text-[rgba(75,270,200,1)]" />
+              <TrendingUp className="w-5 h-5 text-[#3d8f78] lg:w-6 lg:h-6 dark:text-[rgba(75,270,200,1)]" />
             }
             title="Viajes con mayores ingresos"
             incomes={getTopFiveIncomes(monthlyIncomes)}
@@ -227,7 +227,9 @@ const MonthlyIncomes = () => {
             loading={isLoading}
           />
           <IncomeStatistics
-            icon={<TrendingDown className="w-5 h-5 text-destructive" />}
+            icon={
+              <TrendingDown className="w-5 h-5 text-destructive lg:w-6 lg:h-6" />
+            }
             title="Viajes con menores ingresos"
             incomes={getLowestFiveIncomes(monthlyIncomes)}
             error={error}

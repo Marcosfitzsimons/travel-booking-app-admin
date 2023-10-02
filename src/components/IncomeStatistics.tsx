@@ -12,7 +12,7 @@ const IncomeStatistics = ({
 }: IncomeStatisticsProps) => {
   return (
     <div className="w-full flex flex-col gap-2">
-      <h2 className="flex items-center gap-1 font-semibold text-lg">
+      <h2 className="flex items-center gap-1 font-semibold text-lg lg:text-xl">
         {icon}
         {title}
       </h2>
