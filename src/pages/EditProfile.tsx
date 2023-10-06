@@ -116,10 +116,10 @@ const EditProfile = () => {
           "https://api.cloudinary.com/v1_1/dioqjddko/image/upload",
           imgData
         );
-        const { url } = uploadRes.data;
+        const { secure_url } = uploadRes.data;
 
         await axiosPrivate.put(`/users/admin/${user?._id}`, {
-          userData: { ...data, image: url },
+          userData: { ...data, image: secure_url },
         });
 
         setIsLoading(false);
