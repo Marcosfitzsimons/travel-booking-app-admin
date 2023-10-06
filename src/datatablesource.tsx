@@ -2,7 +2,6 @@ import { Clock, User } from "lucide-react";
 import moment from "moment";
 import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
 import TodayDate from "./components/TodayDate";
-import GorgeousBoxBorder from "./components/GorgeousBoxBorder";
 
 const formatDate = (date: string) => {
   const momentDate = moment.utc(date, "YYYY-MM-DDTHH:mm:ss.SSSZ");
@@ -17,7 +16,7 @@ moment.locale("es", {
   weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
 });
 
-const todayDate = moment().format("ddd DD/MM");
+const getTodayDate = moment().format("ddd DD/MM");
 
 export const userColumns = [
   {
@@ -87,20 +86,12 @@ export const tripColumns = [
     width: 140,
     renderCell: (params: any) => {
       const formattedDate = formatDate(params.row.date);
-      const isToday = formattedDate === todayDate;
+      const isToday = formattedDate === getTodayDate;
 
       return (
         <div className="flex items-center gap-1">
           <p>{formattedDate}</p>
-          {params.row.date && isToday ? (
-            <GorgeousBoxBorder>
-              <span className="h-7 px-2 flex items-center text-green-900 bg-green-300/30 border border-green-800/80 select-none font-medium rounded-lg dark:bg-[#75f5a8]/20 dark:border-[#a0eebf] dark:text-white">
-                HOY
-              </span>
-            </GorgeousBoxBorder>
-          ) : (
-            ""
-          )}
+          {params.row.date && isToday ? <TodayDate /> : ""}
         </div>
       );
     },
@@ -177,20 +168,12 @@ export const specialTripColumns = [
     width: 140,
     renderCell: (params: any) => {
       const formattedDate = formatDate(params.row.date);
-      const isToday = formattedDate === todayDate;
+      const isToday = formattedDate === getTodayDate;
 
       return (
         <div className="flex items-center gap-1">
           <p>{formattedDate}</p>
-          {params.row.date && isToday ? (
-            <GorgeousBoxBorder>
-              <span className="h-7 px-2 flex items-center text-green-900 bg-green-300/30 border border-green-800/80 select-none font-medium rounded-lg dark:bg-[#75f5a8]/20 dark:border-[#a0eebf] dark:text-white">
-                HOY
-              </span>
-            </GorgeousBoxBorder>
-          ) : (
-            ""
-          )}
+          {params.row.date && isToday ? <TodayDate /> : ""}
         </div>
       );
     },
