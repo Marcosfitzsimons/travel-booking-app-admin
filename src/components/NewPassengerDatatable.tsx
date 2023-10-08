@@ -137,8 +137,18 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
                 </div>
               </DialogTrigger>
               <DialogContent>
+                <div className="absolute top-[0.75rem] left-2.5 sm:left-4 flex flex-col gap-[3px] transition-transform ">
+                  <span className="w-8 h-[4px] bg-red-700 rounded-full " />
+                  <span className="w-4 h-[4px] bg-red-700 rounded-full " />
+                  <span className="w-2 h-[4px] bg-red-700 rounded-full " />
+                </div>
+                <div className="absolute bottom-[0.75rem] right-2.5 sm:right-4 flex flex-col rotate-180 gap-[3px] transition-transform ">
+                  <span className="w-8 h-[4px] bg-red-700 rounded-full " />
+                  <span className="w-4 h-[4px] bg-red-700 rounded-full " />
+                  <span className="w-2 h-[4px] bg-red-700 rounded-full " />
+                </div>
                 <DialogHeader>
-                  <DialogTitle className="text-center">
+                  <DialogTitle className="text-center lg:text-xl">
                     Agregar pasajero al viaje
                   </DialogTitle>
                 </DialogHeader>
@@ -164,7 +174,7 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
                   </div>
                   <div className="flex flex-col w-full overflow-hidden gap-2 max-w-sm items-start px-2">
                     <div className="w-full flex flex-col gap-1">
-                      <Separator className="w-8 self-center my-2 bg-border " />
+                      <Separator className="w-2 self-center my-2 bg-border " />
                       <h5 className="text-center w-full font-medium dark:text-white">
                         Datos personales
                       </h5>
@@ -189,7 +199,7 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
                     </div>
 
                     <div className="w-full flex flex-col gap-1 ">
-                      <Separator className="w-8 self-center my-2 bg-border  " />
+                      <Separator className="w-2 self-center my-2 bg-border  " />
                       <h5 className="text-center w-full font-medium dark:text-white">
                         Domicilios
                       </h5>
@@ -263,7 +273,7 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
         <Error />
       ) : (
         <>
-          <div className="my-3">
+          <div className="mb-2">
             <SearchUserInput list={list} setFilteredList={setFilteredList} />
           </div>
           {filteredList.length > 0 ? (

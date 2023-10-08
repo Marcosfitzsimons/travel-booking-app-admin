@@ -105,7 +105,7 @@ const PredefinedTrips = () => {
   }, []);
 
   return (
-    <section className="flex flex-col gap-3 mb-6">
+    <section className="flex flex-col gap-5 mb-6">
       <div className="flex flex-col gap-6">
         <div className="self-start">
           <BackButton linkTo="/trips" />
@@ -119,9 +119,7 @@ const PredefinedTrips = () => {
           </p>
         </Breadcrumb>
       </div>
-      <div className="flex flex-col gap-3 mb-2">
-        <SectionTitle>Viajes fijos</SectionTitle>
-      </div>
+      <SectionTitle>Viajes fijos</SectionTitle>
       {error ? (
         <Error />
       ) : (

@@ -20,6 +20,7 @@ import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import Error from "@/components/Error";
 import GorgeousBorder from "@/components/GorgeousBorder";
+import GorgeousBoxBorder from "@/components/GorgeousBoxBorder";
 
 const INITIAL_STATES = {
   _id: "",
@@ -249,7 +250,7 @@ const SingleTrip = () => {
   }, []);
 
   return (
-    <section className="flex flex-col gap-3 w-full max-w-[1400px]">
+    <section className="flex flex-col gap-5 w-full max-w-[1400px]">
       <div className="self-start">
         <BackButton linkTo="/trips" />
       </div>
@@ -261,7 +262,7 @@ const SingleTrip = () => {
           {loading ? (
             <Loading />
           ) : (
-            <div className="w-full flex flex-col gap-3">
+            <div className="w-full flex flex-col gap-5">
               <TripCard
                 setIsDialogOpen={setIsDialogOpen}
                 isDialogOpen={isDialogOpen}
@@ -276,9 +277,10 @@ const SingleTrip = () => {
                 handleSubmit={handleSubmit}
                 isSubmitted={isSubmitted}
                 startDate={startDate}
+                passengers={passengers}
                 setDepartureTimeValue={setDepartureTimeValue}
               />
-              <Separator className="self-center w-2 my-4" />
+              <Separator className="self-center w-2 mt-1" />
               <div className="flex flex-col gap-2">
                 <div className="w-full flex flex-col gap-2">
                   <h3 className="text-center font-bold text-xl uppercase dark:text-white lg:text-3xl">
@@ -287,7 +289,7 @@ const SingleTrip = () => {
 
                   <div className="flex flex-col item-center gap-1 md:flex-row md:justify-between">
                     <div className="flex items-center justify-center gap-1 text-sm order-2 md:text-base md:order-1 md:self-end">
-                      <GorgeousBorder>
+                      <GorgeousBoxBorder>
                         <article className="flex items-center gap-4 bg-card py-4 px-8 border shadow-input rounded-lg dark:shadow-none">
                           <div className="">
                             <Users className="text-accent h-8 w-8 shrink-0 " />
@@ -304,14 +306,16 @@ const SingleTrip = () => {
                             </p>
                           </div>
                         </article>
-                      </GorgeousBorder>
+                      </GorgeousBoxBorder>
                     </div>
                     <div className="flex items-center justify-center relative md:order-2 md:self-end">
                       <div className="flex items-center relative">
                         {isMaxCapacity ? (
-                          <p className="px-4 py-4 font-medium flex flex-col items-center justify-center select-none gap-2 rounded-lg bg-card border shadow-input dark:shadow-none">
-                            <span>¡Combi completa!</span>
-                          </p>
+                          <GorgeousBoxBorder>
+                            <p className="px-4 py-4 font-medium flex flex-col items-center justify-center select-none gap-2 rounded-lg bg-card border shadow-input dark:shadow-none">
+                              <span>¡Combi completa!</span>
+                            </p>
+                          </GorgeousBoxBorder>
                         ) : (
                           <div className="flex flex-col gap-2 md:flex-row md:items-center ">
                             <DialogAnonPassenger

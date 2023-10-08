@@ -38,7 +38,7 @@ const Header = () => {
       console.log(err);
     }
   };
-
+  // Change the logo and theme-toggle to aside component
   return (
     <header className="bg-transparent">
       <div

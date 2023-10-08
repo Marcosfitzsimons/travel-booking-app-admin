@@ -12,7 +12,7 @@ const List = ({ icon, title, columns, linkText }: ListProps) => {
   const path = location.pathname.split("/")[1];
 
   return (
-    <section className="flex flex-col gap-6">
+    <section className="flex flex-col gap-5">
       <Breadcrumb>
         <p className="flex items-center gap-1 text-card-foreground">
           {icon}

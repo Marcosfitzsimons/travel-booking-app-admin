@@ -73,8 +73,8 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <section className="flex flex-col gap-14">
-      <div className="flex flex-col gap-10">
+    <section className="flex flex-col gap-10">
+      <div className="flex flex-col gap-5">
         <Breadcrumb>
           <p className="flex items-center gap-1 text-card-foreground">
             <LayoutGrid className="w-5 h-5 text-accent" />
@@ -85,7 +85,7 @@ const Dashboard = () => {
         </Breadcrumb>
         <SectionTitle>Panel de Control</SectionTitle>
       </div>
-      <div className="w-full flex flex-col gap-12 mb-6 max-w-[1400px] 2xl:flex-row 2xl:justify-between">
+      <div className="w-full flex flex-col gap-10 mb-5 max-w-[1400px] 2xl:flex-row 2xl:justify-between">
         <Incomes incomes={incomes} isLoading={isLoading} error={error} />
         <RecentIncomes incomes={incomes} loading={isLoading} error={error} />
       </div>

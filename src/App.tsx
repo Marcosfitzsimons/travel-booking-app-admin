@@ -56,7 +56,7 @@ function App() {
         }`}
       >
         <Header />
-        <main className="pt-6 py-2">
+        <main className="py-2">
           <Routes>
             <Route path="*" element={<NotFound />} />
             <Route path="/">

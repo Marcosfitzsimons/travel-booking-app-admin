@@ -83,7 +83,7 @@ export const tripColumns = [
   {
     field: "date",
     headerName: "Fecha",
-    width: 140,
+    width: 150,
     renderCell: (params: any) => {
       const formattedDate = formatDate(params.row.date);
       const isToday = formattedDate === getTodayDate;
@@ -165,7 +165,7 @@ export const specialTripColumns = [
   {
     field: "date",
     headerName: "Fecha",
-    width: 140,
+    width: 150,
     renderCell: (params: any) => {
       const formattedDate = formatDate(params.row.date);
       const isToday = formattedDate === getTodayDate;

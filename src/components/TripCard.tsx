@@ -29,6 +29,7 @@ import TripTime from "./TripTime";
 import GorgeousBorder from "./GorgeousBorder";
 import TripDate from "./TripDate";
 import TodayDate from "./TodayDate";
+import { Passenger } from "@/types/types";
 
 type Trip = {
   _id: string;
@@ -57,6 +58,7 @@ type TripCardProps = {
   handleSubmit: any;
   setStartDate: any;
   startDate: any;
+  passengers: Passenger[];
   setArrivalTimeValue: any;
 };
 
@@ -72,11 +74,13 @@ const TripCard = ({
   setStartDate,
   startDate,
   handleSubmit,
+  passengers,
   isDialogOpen,
   setIsDialogOpen,
   errors,
 }: TripCardProps) => {
   const todayDate = moment().locale("es").format("ddd DD/MM");
+  const isMaxCapacity = data?.maxCapacity === passengers.length;
 
   moment.locale("es", {
     weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
@@ -115,7 +119,7 @@ const TripCard = ({
               <div className="flex flex-col mt-2 sm:gap-2">
                 <h3 className="font-bold text-lg lg:text-xl">{data.name}</h3>
                 <h4 className="text-sm font-light text-card-foreground">
-                  Información acerca del viaje:
+                  Información acerca del viaje
                 </h4>
               </div>
               <GorgeousBorder>
@@ -157,11 +161,22 @@ const TripCard = ({
                 open={isDialogOpen}
                 onOpenChange={() => setIsDialogOpen(!isDialogOpen)}
               >
-                <div className="lg:self-end">
-                  <div className="mt-2 relative w-full after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
-                    <DialogTrigger className="relative w-full rounded-lg px-5 py-1.5 lg:py-0 bg-primary text-slate-100 hover:text-white shadow-input dark:text-slate-100 dark:hover:text-white dark:shadow-none lg:h-8">
-                      Editar
-                    </DialogTrigger>
+                <div
+                  className={`mt-2 w-full flex flex-col gap-3 lg:flex-row lg:items-center ${
+                    isMaxCapacity ? "lg:justify-between" : "lg:justify-end"
+                  }`}
+                >
+                  {isMaxCapacity ? (
+                    <p className="font-medium self-center">¡Combi completa!</p>
+                  ) : (
+                    ""
+                  )}
+                  <div className="">
+                    <div className=" relative w-full after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
+                      <DialogTrigger className="relative w-full rounded-lg px-5 py-1.5 lg:py-0 bg-primary text-slate-100 hover:text-white shadow-input dark:text-slate-100 dark:hover:text-white dark:shadow-none lg:h-8">
+                        Editar
+                      </DialogTrigger>
+                    </div>
                   </div>
                 </div>
                 <DialogContent

@@ -11,7 +11,7 @@ export interface AuthContextType {
   setAuth: Dispatch<SetStateAction<AuthObject>>;
   persist: boolean;
   setPersist: Dispatch<SetStateAction<boolean>>;
-  setIncomes: any;
+  setIncomes: Dispatch<SetStateAction<Income[]>>;
 }
 
 type UserData = {

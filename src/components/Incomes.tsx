@@ -31,9 +31,9 @@ const Incomes = ({ incomes, error, isLoading }: IncomesProps) => {
   const currentMonthName = months[currentDate];
 
   return (
-    <div className="relative w-full flex flex-col gap-2 2xl:basis-[70%]">
-      <div className="flex flex-col items-center gap-3">
-        <div className="lg:absolute lg:left-0 lg:-top-4">
+    <div className="relative w-full flex flex-col gap-2 lg:gap-6 2xl:basis-[70%]">
+      <div className="flex flex-col items-center gap-1 lg:flex-row lg:justify-between">
+        <div className="self-start relative top-0.5">
           <GorgeousBoxBorder
             className="relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
           after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"
@@ -78,7 +78,7 @@ const Incomes = ({ incomes, error, isLoading }: IncomesProps) => {
             )}
           </GorgeousBoxBorder>
         </div>
-        <div className="self-end">
+        <div className="self-end lg:absolute lg:right-0 lg:top-4">
           <GorgeousBoxBorder>
             <p className="rounded-lg bg-card px-6 py-1 border flex items-center gap-1 shadow-input dark:shadow-none">
               <CalendarDays className="w-5 h-5 relative bottom-[1px]" />
