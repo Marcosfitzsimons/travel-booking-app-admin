@@ -15,6 +15,7 @@ const Dashboard = () => {
     new Date().getFullYear()
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [noIncomes, setNoIncomes] = useState(false);
   const [error, setError] = useState(false);
 
   const { setIncomes, incomes, setAuth } = useAuth();
@@ -53,18 +54,32 @@ const Dashboard = () => {
       setError(true);
       setIsLoading(false);
       const errorMsg = err.response?.data?.msg;
-      toast({
-        variant: "destructive",
-        title: (
-          <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-            cargar información
-          </div>
-        ) as any,
-        description: errorMsg
-          ? errorMsg
-          : "Ha ocurrido un error al cargar información. Por favor, intentar más tarde",
-      });
+      if (errorMsg === "No se han encontrado ingresos") {
+        setNoIncomes(true);
+        toast({
+          variant: "destructive",
+          title: (
+            <div className="flex gap-1">
+              {<X className="h-5 w-5 text-destructive shrink-0" />} No hay
+              ingresos disponibles
+            </div>
+          ) as any,
+          description: "No se han registrado ingresos hasta el momento",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: (
+            <div className="flex gap-1">
+              {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
+              cargar información
+            </div>
+          ) as any,
+          description: errorMsg
+            ? errorMsg
+            : "Ha ocurrido un error al cargar información. Por favor, intentar más tarde",
+        });
+      }
     }
   };
 
@@ -86,7 +101,13 @@ const Dashboard = () => {
         <SectionTitle>Panel de Control</SectionTitle>
       </div>
       <div className="w-full flex flex-col gap-10 mb-5 max-w-[1400px] 2xl:flex-row 2xl:justify-between">
-        <Incomes incomes={incomes} isLoading={isLoading} error={error} />
+        {noIncomes ? (
+          <p className="w-full 2xl:basis-[70%]">
+            No se han registrado ingresos hasta el momento
+          </p>
+        ) : (
+          <Incomes incomes={incomes} isLoading={isLoading} error={error} />
+        )}
         <RecentIncomes incomes={incomes} loading={isLoading} error={error} />
       </div>
     </section>
