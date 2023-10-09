@@ -85,15 +85,15 @@ const Login = () => {
           className="h-52 bg-gradient-to-t from-neutral-800 to-blue-lagoon-50 dark:from-blue-lagoon-200 dark:to-[#0d0f12] lg:hidden"
         />
         <div className="w-full max-w-md">
-          <h2 className="text-3xl uppercase py-2 font-medium text-center lg:text-start lg:px-3 dark:text-white">
+          <h2 className="text-3xl uppercase py-2 font-medium text-center lg:text-start dark:text-white">
             Panel de Administrador
           </h2>
-          <p className="text-center lg:text-start lg:px-3 dark:text-white">
+          <p className="text-center lg:text-start text-card-foreground">
             Entrá para administrar tu aplicación
           </p>
           <form
             onSubmit={handleSubmit(handleOnSubmit)}
-            className="relative w-full mt-6 p-3 py-6 flex flex-col gap-3 items-center lg:max-w-sm"
+            className="relative w-full py-6 flex flex-col gap-3 items-center lg:max-w-sm"
           >
             <div className="grid w-full items-center gap-2">
               <Label htmlFor="emailOrUsername">Email o nombre de usuario</Label>
