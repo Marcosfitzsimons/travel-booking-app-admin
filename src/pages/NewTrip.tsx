@@ -17,7 +17,7 @@ const NewTrip = ({ inputs, title }: NewTripProps) => {
           <Map className="w-5 h-5 text-accent" />
           Viajes semanales
           <ChevronsRight className="w-5 h-5" />
-          Crear viaje nuevo
+          Crear viaje
         </p>
       </Breadcrumb>
       <SectionTitle>{title}</SectionTitle>

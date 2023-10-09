@@ -116,7 +116,7 @@ function App() {
                     path="new"
                     element={
                       <ProtectedRoute>
-                        <NewUser title="Crear usuario nuevo" />
+                        <NewUser title="Crear nuevo usuario" />
                       </ProtectedRoute>
                     }
                   />
@@ -149,7 +149,7 @@ function App() {
                       <ProtectedRoute>
                         <NewTrip
                           inputs={tripInputs}
-                          title="Crear viaje semanal nuevo"
+                          title="Crear nuevo viaje semanal"
                         />
                       </ProtectedRoute>
                     }
@@ -193,7 +193,7 @@ function App() {
                       <ProtectedRoute>
                         <NewSpecialTrip
                           inputs={specialTripInputs}
-                          title="Crear viaje particular nuevo"
+                          title="Crear nuevo viaje particular"
                         />
                       </ProtectedRoute>
                     }
@@ -235,7 +235,7 @@ function App() {
                       <ProtectedRoute>
                         <NewPublication
                           inputs={publicationInputs}
-                          title="Crear publicación"
+                          title="Crear nueva publicación"
                         />
                       </ProtectedRoute>
                     }

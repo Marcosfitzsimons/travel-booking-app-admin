@@ -126,8 +126,8 @@ const MonthlyIncomes = () => {
   }, [monthlyIncomes]);
 
   return (
-    <section className="flex flex-col gap-14">
-      <div className="flex flex-col gap-10">
+    <section className="flex flex-col gap-16">
+      <div className="flex flex-col gap-5">
         <Breadcrumb>
           <p className="flex items-center gap-1 text-card-foreground">
             <LineChart className="h-5 w-5 text-accent" />
@@ -136,7 +136,7 @@ const MonthlyIncomes = () => {
             Resumen mensual
           </p>
         </Breadcrumb>
-        <SectionTitle>Resumen de ganancias mensuales</SectionTitle>
+        <SectionTitle>Resumen ganancias mensuales</SectionTitle>
       </div>
 
       <div className="relative w-full flex flex-col gap-12 mb-6 max-w-[1400px] 2xl:flex-row 2xl:justify-between">

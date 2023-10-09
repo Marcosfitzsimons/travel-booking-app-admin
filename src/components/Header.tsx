@@ -46,7 +46,7 @@ const Header = () => {
           !user ? "lg:justify-start lg:gap-3" : "justify-between"
         } py-2 flex items-center justify-between z-50 lg:py-[12.5px]`}
       >
-        <div className="flex items-center gap-2 lg:absolute lg:left-12 lg:top-5">
+        <div className="flex items-center gap-2 lg:absolute lg:left-9 2xl:left-10 lg:top-5">
           <Logo />
           <Separator orientation="vertical" className="h-2 ml-2" />
           <ThemeToggle />

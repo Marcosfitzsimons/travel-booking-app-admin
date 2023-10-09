@@ -37,7 +37,6 @@ const YearlyIncomes = () => {
     setError(false);
     try {
       const response = await axiosPrivate.get(`${baseUrl}/${currentYear}`);
-      console.log(response.data);
       setYearlyIncomes(response.data);
       setIsLoading(false);
     } catch (err: any) {
@@ -71,15 +70,17 @@ const YearlyIncomes = () => {
 
   return (
     <section className="flex flex-col gap-10">
-      <Breadcrumb>
-        <p className="flex items-center gap-1 text-card-foreground">
-          <BarChart3 className="h-5 w-5 text-accent" />
-          Ganancias
-          <ChevronsRight className="w-5 h-5" />
-          Resumen anual
-        </p>
-      </Breadcrumb>
-      <SectionTitle>Resumen de ganancias anuales</SectionTitle>
+      <div className="flex flex-col gap-5">
+        <Breadcrumb>
+          <p className="flex items-center gap-1 text-card-foreground">
+            <BarChart3 className="h-5 w-5 text-accent" />
+            Ganancias
+            <ChevronsRight className="w-5 h-5" />
+            Resumen anual
+          </p>
+        </Breadcrumb>
+        <SectionTitle>Resumen ganancias anuales</SectionTitle>
+      </div>
       <div className="relative w-full flex flex-col gap-12 mb-6 max-w-[1400px] 2xl:flex-row 2xl:justify-between">
         <div className="relative w-full flex flex-col gap-2 2xl:basis-[70%]">
           <div className="flex flex-col items-center gap-3">

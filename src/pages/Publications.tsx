@@ -22,7 +22,7 @@ const PublicationsDatatable = () => {
   }, [data]);
 
   return (
-    <section className="flex flex-col gap-6">
+    <section className="flex flex-col gap-5">
       <Breadcrumb>
         <p className="flex items-center gap-1 text-card-foreground">
           <Newspaper className="w-5 h-5 text-accent" />
@@ -61,7 +61,7 @@ const PublicationsDatatable = () => {
               <div className="col-start-1 col-end-3">
                 <Loading />
               </div>
-            ) : (
+            ) : list.length > 0 ? (
               list.map((publication) => (
                 <PublicationCard
                   key={publication._id}
@@ -70,6 +70,8 @@ const PublicationsDatatable = () => {
                   item={publication}
                 />
               ))
+            ) : (
+              <p>No se encontraron publicaciones hasta el momento</p>
             )}
           </div>
         )}

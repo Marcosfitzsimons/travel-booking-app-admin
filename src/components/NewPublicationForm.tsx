@@ -13,6 +13,7 @@ import { NewPublicationFormProps } from "@/types/props";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import axios from "@/api/axios";
+import GorgeousBorder from "./GorgeousBorder";
 
 const NewTripForm = ({ inputs }: NewPublicationFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -118,7 +119,7 @@ const NewTripForm = ({ inputs }: NewPublicationFormProps) => {
   return (
     <form
       onSubmit={handleSubmit(handleOnSubmit)}
-      className="relative w-full flex flex-col gap-3 py-6"
+      className="relative w-full flex flex-col gap-3 py-6 lg:pb-3"
     >
       <div className="w-full flex flex-col gap-4 items-center">
         <div className="w-full flex flex-col gap-4 sm:flex-row">
@@ -208,14 +209,11 @@ const NewTripForm = ({ inputs }: NewPublicationFormProps) => {
 
         <div className="grid w-full items-center gap-2">
           <Label htmlFor="description">Descripción</Label>
-          <div
-            className="w-full relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
-          after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"
-          >
+          <GorgeousBorder>
             <Textarea id="description" />
-          </div>
+          </GorgeousBorder>
         </div>
-        <div className="w-full mt-2 lg:w-[10rem]">
+        <div className="w-full mt-2 lg:w-[10rem] lg:self-end">
           <DefaultButton loading={isLoading}>
             {isLoading ? "Creando..." : "Crear publicación"}
           </DefaultButton>

@@ -3,6 +3,8 @@ import BackButton from "../components/BackButton";
 import NewPublicationForm from "../components/NewPublicationForm";
 import SectionTitle from "../components/SectionTitle";
 import GorgeousBoxBorder from "@/components/GorgeousBoxBorder";
+import { ChevronsRight, Newspaper } from "lucide-react";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const NewPublication = ({ inputs, title }: NewPublicationProps) => {
   return (
@@ -10,7 +12,14 @@ const NewPublication = ({ inputs, title }: NewPublicationProps) => {
       <div className="self-start">
         <BackButton linkTo="/publications" />
       </div>
-
+      <Breadcrumb>
+        <p className="flex items-center gap-1 text-card-foreground">
+          <Newspaper className="w-5 h-5 text-accent" />
+          Publicaciones
+          <ChevronsRight className="w-5 h-5" />
+          Crear nueva publicación
+        </p>
+      </Breadcrumb>
       <SectionTitle>{title}</SectionTitle>
 
       <GorgeousBoxBorder className="w-full self-center max-w-xl lg:max-w-3xl lg:self-start">
