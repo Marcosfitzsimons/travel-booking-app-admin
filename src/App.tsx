@@ -61,7 +61,6 @@ function App() {
             <Route path="/">
               <Route path="login" element={<Login />} />
               <Route element={<PersistLogin />}>
-                <Route path="*" element={<NotFound />} />
                 <Route
                   index
                   element={
@@ -257,6 +256,7 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+                <Route path="*" element={<NotFound />} />
               </Route>
             </Route>
           </Routes>
