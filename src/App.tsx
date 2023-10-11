@@ -58,10 +58,10 @@ function App() {
         <Header />
         <main className="py-2">
           <Routes>
-            <Route path="*" element={<NotFound />} />
             <Route path="/">
               <Route path="login" element={<Login />} />
               <Route element={<PersistLogin />}>
+                <Route path="*" element={<NotFound />} />
                 <Route
                   index
                   element={
