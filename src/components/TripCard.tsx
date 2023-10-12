@@ -90,11 +90,11 @@ const TripCard = ({
     const maxCapacity = parseInt(value, 10);
 
     if (isNaN(maxCapacity)) {
-      return "Por favor, ingresa un número válido.";
+      return "Por favor, ingresa un número válido";
     }
 
     if (maxCapacity < data.passengers.length) {
-      return "La capacidad máxima debe ser mayor o igual al número actual de pasajeros.";
+      return "La capacidad máxima debe ser mayor o igual al número actual de pasajeros";
     }
 
     return true;
