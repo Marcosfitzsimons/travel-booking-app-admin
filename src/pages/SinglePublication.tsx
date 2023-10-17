@@ -121,7 +121,7 @@ const SinglePublication = () => {
 
         userDataToUpdate = {
           ...userDataToUpdate,
-          image: uploadRes.data.url,
+          image: uploadRes.data.secure_url,
         };
       }
 

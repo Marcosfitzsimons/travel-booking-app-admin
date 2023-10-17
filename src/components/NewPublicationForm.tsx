@@ -74,11 +74,11 @@ const NewTripForm = ({ inputs }: NewPublicationFormProps) => {
           "https://api.cloudinary.com/v1_1/dioqjddko/image/upload",
           imgData
         );
-        const { url } = uploadRes.data;
+        const { secure_url } = uploadRes.data;
 
         await axiosPrivate.post(`/publications`, {
           ...data,
-          image: url,
+          image: secure_url,
         });
         setIsLoading(false);
         toast({

@@ -97,11 +97,11 @@ const NewUserForm = () => {
           "https://api.cloudinary.com/v1_1/dioqjddko/image/upload",
           imgData
         );
-        const { url } = uploadRes.data;
+        const { secure_url } = uploadRes.data;
 
         await axiosPrivate.post(`/auth/register`, {
           ...data,
-          image: url,
+          image: secure_url,
           addressCapital: addressCapitalValue,
         });
         setIsLoading(false);
