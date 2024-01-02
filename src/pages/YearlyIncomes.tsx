@@ -83,8 +83,8 @@ const YearlyIncomes = () => {
       </div>
       <div className="relative w-full flex flex-col gap-12 mb-6 max-w-[1400px] 2xl:flex-row 2xl:justify-between">
         <div className="relative w-full flex flex-col gap-2 2xl:basis-[70%]">
-          <div className="flex flex-col items-center gap-3">
-            <div className="lg:absolute lg:left-0 lg:-top-0">
+          <div className="flex flex-col items-center gap-1 lg:flex-row lg:justify-between">
+            <div className="self-end">
               <GorgeousBoxBorder
                 className="relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
           after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"

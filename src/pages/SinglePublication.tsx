@@ -13,7 +13,7 @@ import logo from "../assets/fabebus-logo.jpg";
 import { Button } from "@/components/ui/button";
 import { Check, Download, Image, Loader2, Upload, User, X } from "lucide-react";
 import { convertToArgentineTimezone } from "@/lib/utils/convertToArgentineTimezone";
-import { Publication, PublicationFormData } from "@/types/types";
+import { PublicationFormData } from "@/types/types";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import {

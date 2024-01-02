@@ -35,6 +35,7 @@ import {
   totalTripIncomes,
 } from "@/lib/utils/incomes/calculateIncomes";
 import IncomeStatistics from "@/components/IncomeStatistics";
+import { currentYear } from "@/lib/utils/getCurrentYear";
 
 const MonthlyIncomes = () => {
   const [monthlyIncomes, setMonthlyIncomes] = useState<Income[]>([]);
@@ -60,7 +61,7 @@ const MonthlyIncomes = () => {
       const existingIncomes = monthlyIncomes.find((income) => {
         const incomeDate = new Date(income.date);
         return (
-          incomeDate.getFullYear() === 2023 &&
+          incomeDate.getFullYear() === currentYear &&
           incomeDate.getMonth() === monthValue - 1
         );
       });
@@ -68,7 +69,7 @@ const MonthlyIncomes = () => {
       if (!existingIncomes) {
         console.log("Fetching incomes...");
         const response = await axiosPrivate.get(
-          `${baseUrl}/monthly-incomes/2023/${monthValue}`
+          `${baseUrl}/monthly-incomes/${currentYear}/${monthValue}`
         );
         setMonthlyIncomes(response.data);
       }
@@ -146,8 +147,8 @@ const MonthlyIncomes = () => {
           </p>
         ) : (
           <div className="relative w-full flex flex-col gap-2 2xl:basis-[70%]">
-            <div className="flex flex-col items-center gap-3">
-              <div className="lg:absolute lg:left-0 lg:-top-4">
+            <div className="flex flex-col items-center gap-1 lg:flex-row lg:justify-between">
+              <div className="self-end">
                 <GorgeousBoxBorder
                   className="relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
           after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"
@@ -159,40 +160,8 @@ const MonthlyIncomes = () => {
                       ${totalIncomes}
                     </span>
                   </p>
-                  {totalIncomes === 0 ? (
-                    ""
-                  ) : (
-                    <div className="hidden xl:flex xl:absolute xl:rounded-lg xl:-right-[295px] xl:-top-1 xl:py-5 xl:w-[280px] xl:border-l">
-                      <Separator className="w-4 h-[1px] bg-border absolute -left-4" />
-                      <div className="absolute -top-3 left-3">
-                        <Separator className="absolute -left-2 top-3 w-2 h-[1px] bg-border" />
-                        <GorgeousBoxBorder>
-                          <span className="flex items-center gap-1 shadow-input bg-card border px-3 rounded-lg dark:shadow-none">
-                            <BadgeDollarSign className="w-4 h-4" />
-                            Viajes semanales{" "}
-                            <span className="text-[#3d8f78] dark:text-[rgba(75,270,200,1)] font-semibold">
-                              ${tripsIncomes}
-                            </span>
-                          </span>
-                        </GorgeousBoxBorder>
-                      </div>
-                      <div className="absolute -bottom-3 left-3">
-                        <Separator className="absolute -left-2 top-[13px] w-2 h-[1px] bg-border" />
-                        <GorgeousBoxBorder>
-                          <span className="flex items-center gap-1 bg-card shadow-input border px-3 rounded-lg dark:shadow-none">
-                            <BadgeDollarSign className="w-4 h-4" />
-                            Viajes particulares{" "}
-                            <span className="text-[#3d8f78] dark:text-[rgba(75,270,200,1)] font-semibold">
-                              ${specialTripsIncomes}
-                            </span>
-                          </span>
-                        </GorgeousBoxBorder>
-                      </div>
-                    </div>
-                  )}
                 </GorgeousBoxBorder>
               </div>
-
               <div className="self-end">
                 <Select
                   value={monthValue.toString()}
