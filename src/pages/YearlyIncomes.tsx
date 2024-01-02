@@ -16,12 +16,10 @@ import {
   totalYearlyIncome,
 } from "@/lib/utils/incomes/calculateIncomes";
 import TopMonthlyIncomes from "@/components/TopMonthlyIncomes";
+import { currentYear } from "@/lib/utils/getCurrentYear";
 
 const YearlyIncomes = () => {
   const [yearlyIncomes, setYearlyIncomes] = useState([]);
-  const [currentYear, setCurrentYear] = useState(() =>
-    new Date().getFullYear()
-  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
