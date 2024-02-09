@@ -144,7 +144,7 @@ const SideBar = () => {
                 <LogOut className="absolute left-2 h-5 w-5 text-accent " />
                 <button
                   onClick={handleLogOut}
-                  className="w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40 dark:hover:text-white "
+                  className="w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start hover:bg-zinc-200/40 dark:hover:bg-white/20 dark:hover:text-white"
                 >
                   Salir
                 </button>
