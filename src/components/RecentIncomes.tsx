@@ -9,7 +9,7 @@ import { getRecentIncomesFormatted } from "@/lib/utils/incomes/calculateIncomes"
 
 const RecentIncomes = ({ incomes, loading, error }: RecentIncomesProps) => {
   const [recentIncomes, setRecentIncomes] = useState<Income[]>([]);
-
+  console.log(recentIncomes);
   useEffect(() => {
     setRecentIncomes(getRecentIncomesFormatted(incomes));
   }, [incomes]);
@@ -43,9 +43,20 @@ const RecentIncomes = ({ incomes, loading, error }: RecentIncomesProps) => {
                         <BadgeDollarSign className="shrink-0 mx-2" />
                         <div className="flex flex-col">
                           <h3 className="font-semibold">{inc.name}</h3>
-                          <p className="text-sm text-card-foreground">
-                            {inc.date}
-                          </p>
+                          <div className="flex items-center gap-1">
+                            <p className="text-sm text-card-foreground">
+                              {inc.date}
+                            </p>
+                            {inc.incomes ? (
+                              <span className="bg-[rgb(82,182,152)] text-xs rounded-full px-2 font-semibold text-white select-none">
+                                Viaje semanal
+                              </span>
+                            ) : (
+                              <span className="text-xs rounded-full px-2 bg-[#06b6d4] font-semibold text-white select-none dark:bg-[#0e7490]">
+                                Viaje particular
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <span className="text-[#3d8f78] dark:text-[rgba(75,270,200,1)] font-semibold">
