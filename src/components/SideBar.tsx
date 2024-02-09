@@ -4,9 +4,6 @@ import useAuth from "../hooks/useAuth";
 import useLogout from "@/hooks/useLogOut";
 import { useEffect, useState } from "react";
 import { listItems, salesItems } from "@/navbarsource";
-import Logo from "./Logo";
-import { Separator } from "./ui/separator";
-import ThemeToggle from "./ThemeToggle";
 
 const SideBar = () => {
   const [active, setIsActive] = useState(1);
@@ -40,7 +37,7 @@ const SideBar = () => {
       case "publications":
         setIsActive(5);
         break;
-      case "overview":
+      case "yearly":
         setIsActive(6);
         break;
       case "monthly":
@@ -70,9 +67,9 @@ const SideBar = () => {
               <LayoutGrid className="absolute left-2 w-5 h-5 text-accent" />
               <Link
                 to="/"
-                className={`w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40 dark:hover:text-white ${
+                className={`w-full pl-8 z-20 py-1 px-2 flex items-center gap-1 rounded-lg text-start hover:bg-zinc-200/40 dark:hover:bg-white/20 dark:hover:text-white ${
                   active === 1
-                    ? "border-l-2 border-l-accent rounded-l-none bg-hover/40 font-semibold"
+                    ? "border-l-2 border-l-accent rounded-l-none bg-zinc-200/40 font-semibold dark:bg-white/20 dark:text-white"
                     : ""
                 }`}
               >
@@ -91,9 +88,9 @@ const SideBar = () => {
                   {item.icon}
                   <Link
                     to={item.linkTo}
-                    className={`w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40 dark:hover:text-white ${
+                    className={`w-full pl-8 z-20 py-1 px-2 flex items-center gap-1 rounded-lg text-start hover:bg-zinc-200/40 dark:hover:bg-white/20 dark:hover:text-white ${
                       active === item.id
-                        ? "border-l-2 border-l-accent rounded-l-none bg-hover/40 font-semibold"
+                        ? "border-l-2 border-l-accent rounded-l-none bg-zinc-200/40 font-semibold dark:bg-white/20 dark:text-white"
                         : ""
                     }`}
                   >
@@ -113,9 +110,9 @@ const SideBar = () => {
                   {item.icon}
                   <Link
                     to={item.linkTo}
-                    className={`w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40 dark:hover:text-white ${
+                    className={`w-full pl-8 z-20 py-1 px-2 flex items-center gap-1 rounded-lg text-start hover:bg-zinc-200/40 dark:hover:bg-white/20 dark:hover:text-white ${
                       active === item.id
-                        ? "border-l-2 border-l-accent rounded-l-none bg-hover/40 font-semibold"
+                        ? "border-l-2 border-l-accent rounded-l-none bg-zinc-200/40 font-semibold dark:bg-white/20 dark:text-white"
                         : ""
                     }`}
                   >
@@ -130,17 +127,15 @@ const SideBar = () => {
               Admin
             </p>
             <ul className="flex flex-col">
-              <li
-                className={`relative flex items-center gap-2 ${
-                  active === 8
-                    ? "border-l-2 border-l-accent rounded-l-none bg-hover/40 font-semibold"
-                    : ""
-                }`}
-              >
+              <li className={`relative flex items-center gap-2`}>
                 <User className="absolute left-2 h-5 w-5 text-accent " />
                 <Link
                   to="/mi-perfil"
-                  className="w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40  dark:hover:text-white "
+                  className={`w-full pl-8 z-20 py-1 px-2 flex items-center gap-1 rounded-lg text-start hover:bg-zinc-200/40 dark:hover:bg-white/20 dark:hover:text-white ${
+                    active === 8
+                      ? "border-l-2 border-l-accent rounded-l-none bg-zinc-200/40 font-semibold dark:bg-white/20 dark:text-white"
+                      : ""
+                  }`}
                 >
                   Perfil
                 </Link>
@@ -149,7 +144,7 @@ const SideBar = () => {
                 <LogOut className="absolute left-2 h-5 w-5 text-accent " />
                 <button
                   onClick={handleLogOut}
-                  className="w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40  dark:hover:text-white "
+                  className="w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start bg-transparent hover:bg-hover/40 dark:hover:text-white "
                 >
                   Salir
                 </button>
