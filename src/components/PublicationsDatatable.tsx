@@ -1,16 +1,18 @@
-import { ChevronsRight, Newspaper, Plus } from "lucide-react";
+import { Newspaper, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import useFetch from "../hooks/useFetch";
-import PublicationCard from "../components/PublicationCard";
-import SectionTitle from "../components/SectionTitle";
-import Loading from "../components/Loading";
+import PublicationCard from "./PublicationCard";
+import Loading from "./Loading";
 import ActionButton from "@/components/ActionButton";
 import TotalCountCard from "@/components/TotalCountCard";
 import { Publication } from "@/types/types";
-import Breadcrumb from "@/components/Breadcrumb";
 import Error from "@/components/Error";
+import { DataTableProps } from "@/types/props";
 
-const PublicationsDatatable = () => {
+const PublicationsDatatable = <TData, TValue>({
+  columns,
+  linkText,
+}: DataTableProps<TData, TValue>) => {
   const [list, setList] = useState<Publication[]>([]);
 
   const baseUrl = `/publications`;
@@ -23,15 +25,6 @@ const PublicationsDatatable = () => {
 
   return (
     <section className="flex flex-col gap-5">
-      <Breadcrumb>
-        <p className="flex items-center gap-1 text-card-foreground">
-          <Newspaper className="w-5 h-5 text-accent" />
-          Listas
-          <ChevronsRight className="w-5 h-5" />
-          Publicaciones
-        </p>
-      </Breadcrumb>
-      <SectionTitle>Publicaciones destacadas</SectionTitle>
       <div className="w-full max-w-[1400px]">
         <div className="">
           <div className="relative w-full flex flex-col items-center gap-2 md:pt-5">
@@ -44,10 +37,10 @@ const PublicationsDatatable = () => {
             </div>
             <div className="md:self-end">
               <ActionButton
-                text="Agregar publicación"
+                text={linkText}
                 linkTo="/publications/new"
                 icon={
-                  <Plus className="absolute cursor-pointer left-[13px] top-[7.3px] h-[18px] w-[18px] md:top-[4px] md:left-[8px] md:h-6 md:w-6" />
+                  <Plus className="absolute cursor-pointer left-[13px] top-[7.3px] h-[17px] w-[17px] md:top-[4px] md:left-[8px] md:h-6 md:w-6" />
                 }
               />
             </div>
