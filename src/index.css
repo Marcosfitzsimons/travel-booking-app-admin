@@ -25,17 +25,6 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-/* date picker */
-
-.react-datepicker__header {
-  background-color: white;
-  border-bottom: 1px solid #f5f5f5;
-}
-
-.react-datepicker__triangle {
-  display: none;
-}
-
 /* react-time-picker */
 
 .react-time-picker__wrapper {
@@ -56,74 +45,6 @@ input[type="number"] {
 .dark .react-time-picker__inputGroup__amPm {
   background-color: hsl(0, 0%, 11%);
   color: white;
-}
-
-/* material ui data grid */
-
-/* main */
-
-.MuiDataGrid-main,
-.css-204u17-MuiDataGrid-main {
-  @apply rounded-md rounded-b-none;
-  font-family: "Nunito", sans-serif;
-}
-
-.MuiDataGrid-root,
-.MuiDataGrid-root--densityStandard,
-.MuiDataGrid-withBorderColor,
-.css-10i7yl7-MuiDataGrid-root {
-  @apply text-black md:text-[15px] dark:text-white;
-}
-
-.MuiDataGrid-withBorderColor {
-  @apply border-border dark:border-border;
-}
-
-/* header */
-
-.MuiDataGrid-columnHeaders,
-.css-1iyq7zh-MuiDataGrid-columnHeaders {
-  @apply text-black bg-slate-50 dark:bg-card/90 dark:text-white;
-}
-
-/* row */
-
-.MuiDataGrid-row {
-  @apply max-h-20 h-20 bg-[#fdfdfd] transition-all even:bg-gray-50 dark:even:bg-[#202020] dark:bg-[#2e2e2e];
-}
-
-.MuiDataGrid-row:hover {
-  @apply even:hover:bg-black/5 odd:hover:bg-black/5 dark:even:hover:bg-white/20 dark:odd:hover:bg-white/20;
-}
-
-/* cell */
-
-.MuiDataGrid-cell {
-  @apply border-none text-foreground hover:text-[#007f96] dark:text-[#e6f2f5] dark:hover:text-white;
-}
-
-/* checkbox */
-
-.MuiDataGrid-checkboxInput .MuiSvgIcon-root {
-  @apply text-slate-500 dark:text-[#e6f2f5];
-}
-
-/* footer */
-
-.MuiDataGrid-footerContainer,
-.css-wop1k0-MuiDataGrid-footerContainer {
-  @apply bg-slate-50 rounded-md rounded-t-none dark:bg-card/50;
-}
-
-.MuiTablePagination-actions {
-  @apply cursor-pointer;
-}
-
-.MuiDataGrid-footerContainer,
-.MuiSvgIcon-root,
-.MuiTablePagination-root,
-.css-levciy-MuiTablePagination-displayedRows {
-  @apply text-black dark:text-white;
 }
 
 @tailwind utilities;
@@ -172,7 +93,7 @@ input[type="number"] {
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 75.1%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 0 0% 11%;
     --popover-foreground: 210 40% 98%;
 
     --card: 0 0% 15%;
