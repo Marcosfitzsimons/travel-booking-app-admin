@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import SectionTitle from "../components/SectionTitle";
 import Loading from "../components/Loading";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import { ChevronsRight, Mail, Phone, User, X } from "lucide-react";
 import DefaultButton from "../components/DefaultButton";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
@@ -12,6 +11,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import Error from "@/components/Error";
 import DataBox from "@/components/DataBox";
 import ChangePasswordDialog from "@/components/ChangePasswordDialog";
+import { Icons } from "@/components/icons";
 
 const INITIAL_STATES = {
   _id: "",
@@ -58,8 +58,8 @@ const Profile = () => {
           variant: "destructive",
           title: (
             <div className="flex gap-1">
-              {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-              cargar información
+              {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}{" "}
+              Error al cargar información
             </div>
           ) as any,
           description: errorMsg
@@ -72,14 +72,9 @@ const Profile = () => {
   }, []);
 
   return (
-    <section className="flex flex-col gap-6">
-      <Breadcrumb>
-        <p className="flex items-center gap-1 text-card-foreground">
-          <User className="w-5 h-5 text-accent" />
-          Admin
-          <ChevronsRight className="w-5 h-5" />
-          Mi perfil
-        </p>
+    <section className="flex flex-col gap-5">
+      <Breadcrumb page="Admin" icon={<Icons.user className="w-5 h-5" />}>
+        Mi perfil
       </Breadcrumb>
       <SectionTitle>Mi perfil</SectionTitle>
       {error ? (
@@ -97,7 +92,7 @@ const Profile = () => {
                   alt="avatar"
                 />
                 <AvatarFallback>
-                  <User className="w-12 h-12" />
+                  <Icons.user className="w-12 h-12" />
                 </AvatarFallback>
               </Avatar>
 
@@ -111,7 +106,7 @@ const Profile = () => {
               <ul className="flex flex-col w-full overflow-hidden gap-2 max-w-sm items-start p-4">
                 <DataBox
                   text="Email"
-                  icon={<Mail className="h-5 w-5 text-accent shrink-0" />}
+                  icon={<Icons.mail className="h-5 w-5 text-accent shrink-0" />}
                 >
                   {data?.email}
                 </DataBox>

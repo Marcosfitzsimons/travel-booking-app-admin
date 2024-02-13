@@ -18,7 +18,7 @@ export type InputValidation = {
 }
 
 export type Trip = {
-  _id?: string;
+  _id: string;
   name: string;
   date: string;
   from: string;
@@ -29,6 +29,17 @@ export type Trip = {
   price: number | undefined;
   available?: boolean;
   passengers?: any[];
+}
+
+export type TripPayload = {
+  name: string;
+  date: Date | undefined;
+  from: string;
+  to: string;
+  departureTime: string;
+  arrivalTime: string;
+  maxCapacity: number | undefined;
+  price: number | undefined;
 }
 
 export type MonthlyIncome = {
@@ -121,6 +132,19 @@ export type UserProfileData = {
   status?: string;
 }
 
+export type UserTrips = {
+  id: string;
+  name: string;
+  date: string;
+  from: string;
+  to: string;
+  departureTime: string;
+  arrivalTime: string;
+  maxCapacity: number;
+  price: number;
+  available: boolean;
+};
+
 export type Publication = {
   _id: string;
   title: string;
@@ -159,7 +183,7 @@ export type Passenger = {
 
 export type NewSpecialTrip = {
   name: string;
-  date: Date | null;
+  date: Date | undefined;
   from: string;
   departureTime: string; // or number
   maxCapacity: number;
@@ -177,18 +201,6 @@ export type SpecialPassenger = {
   _id?: string;
   fullName?: string;
   dni?: number | undefined;
-};
-
-export type Column = {
-  field: string;
-  headerName: string;
-  width?: number;
-  flex?: number;
-  renderCell?: (params: any) => any;
-}
-
-export type ExtendedColumn = Column & {
-  renderCell?: (params: any) => JSX.Element;
 };
 
 export type ChangePasswordData = {

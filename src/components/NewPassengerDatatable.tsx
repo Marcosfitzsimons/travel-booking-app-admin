@@ -1,7 +1,8 @@
-import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import {
   Check,
+  ChevronLeft,
+  ChevronRight,
   Crop,
   Fingerprint,
   Loader2,
@@ -9,10 +10,10 @@ import {
   Milestone,
   Phone,
   Plus,
-  User,
+  User as UserIcon,
   X,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useFetch from "../hooks/useFetch";
 import {
   Dialog,
@@ -27,96 +28,48 @@ import { useToast } from "../hooks/ui/use-toast";
 import SearchUserInput from "./SearchUserInput";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
-import { getRowHeight } from "@/lib/utils/getRowHeight";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 import { UserDataTableProps } from "@/types/props";
 import Error from "./Error";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./ui/table";
+import GorgeousBoxBorder from "./GorgeousBoxBorder";
+import { User } from "@/types/types";
 
-type MyRowType = {
-  _id: string;
-};
-
-const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
+const NewPassengerDatatable = <TData, TValue>({
+  columns,
+  tripId,
+}: UserDataTableProps<TData, TValue>) => {
   const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState(false);
-  const [list, setList] = useState([]);
-  const [filteredList, setFilteredList] = useState([]);
-
-  const axiosPrivate = useAxiosPrivate();
-
-  const { toast } = useToast();
-
-  const navigate = useNavigate();
-
-  const { setAuth } = useAuth();
+  const [filtering, setFiltering] = useState("");
 
   const baseUrl = `/users`;
 
   const { data, error } = useFetch(baseUrl);
 
-  const handleAddPassenger = async (userId: string, setIsDialogOpen: any) => {
-    setLoading(true);
-    setErr(false);
-    toast({
-      variant: "loading",
-      description: (
-        <div className="flex gap-1">
-          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
-          Creando pasajero...
-        </div>
-      ),
-    });
-    try {
-      await axiosPrivate.post(`/passengers/${userId}/${tripId}`, {
-        userId,
-      });
-      setLoading(false);
-      setIsDialogOpen(false);
-      toast({
-        description: (
-          <div className="flex gap-1">
-            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Pasajero ha
-            sido creado con éxito
-          </div>
-        ),
-      });
-      setTimeout(() => {
-        navigate(`/trips/${tripId}`);
-      }, 100);
-    } catch (err: any) {
-      if (err.response?.status === 403) {
-        setAuth({ user: null });
-        setTimeout(() => {
-          navigate("/login");
-        }, 100);
-      }
-      const errorMsg = err.response?.data?.msg;
-      setLoading(false);
-      setErr(true);
-      setIsDialogOpen(false);
-      toast({
-        variant: "destructive",
-        title: (
-          <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al crear
-            pasajero
-          </div>
-        ) as any,
-        description: errorMsg
-          ? errorMsg
-          : "Ha ocurrido un error al crear pasajero. Por favor, intentar más tarde",
-      });
-    }
-  };
-
-  const actionColumn = [
+  const actionColumn: ColumnDef<TData, TValue>[] = [
     {
-      field: "action",
-      headerName: "Acción",
-      width: 120,
-      renderCell: (params: any) => {
+      id: "action",
+      header: "Acción",
+      cell: ({ row }) => {
         const [isDialogOpen, setIsDialogOpen] = useState(false);
+        const user = row.original as User;
+        console.log(user);
         return (
           <div className="flex items-center gap-2">
             <Dialog
@@ -156,20 +109,20 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
                   <Avatar className="w-32 h-32">
                     <AvatarImage
                       className="origin-center hover:origin-bottom hover:scale-105 transition-all duration-200 z-90 align-middle"
-                      src={params.row.image}
+                      src={user.image}
                       alt="avatar"
                     />
                     <AvatarFallback>
-                      <User className="w-12 h-12" />
+                      <UserIcon className="w-12 h-12" />
                     </AvatarFallback>
                   </Avatar>
 
                   <div className="flex flex-col items-center">
                     <h3 className="font-medium text-xl dark:text-white ">
-                      {params.row.fullName}
+                      {user.fullName}
                     </h3>
                     <h4 className="text-[#737373] dark:text-slate-500">
-                      @{params.row.username}
+                      @{user.username}
                     </h4>
                   </div>
                   <div className="flex flex-col w-full overflow-hidden gap-2 max-w-sm items-start px-2">
@@ -183,17 +136,17 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
                         <li className="flex items-center gap-1">
                           <Mail className="h-4 w-4 text-accent shrink-0 " />
                           <span className="font-medium">Email:</span>
-                          {params.row.email}
+                          {user.email}
                         </li>
                         <li className="flex items-center gap-1">
                           <Phone className="h-4 w-4 text-accent " />
                           <span className="font-medium">Celular:</span>{" "}
-                          {params.row.phone}
+                          {user.phone}
                         </li>
                         <li className="flex items-center gap-1 shrink-0">
                           <Fingerprint className="w-4 h-4 text-accent  shrink-0" />
                           <span className="font-medium shrink-0">DNI:</span>
-                          <span className="shrink-0">{params.row.dni}</span>
+                          <span className="shrink-0">{user.dni}</span>
                         </li>
                       </ul>
                     </div>
@@ -213,7 +166,7 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
                             <span className="font-medium dark:text-white">
                               Dirreción:
                             </span>
-                            <p>{`${params.row.addressCda.street} ${params.row.addressCda.streetNumber}`}</p>
+                            <p>{`${user.addressCda.street} ${user.addressCda.streetNumber}`}</p>
                           </div>
                           <div className="flex flex-col gap-[2px]">
                             <div className="flex items-center gap-1">
@@ -223,7 +176,7 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
                               </span>
                             </div>
                             <span className="">
-                              {params.row.addressCda.crossStreets}
+                              {user.addressCda.crossStreets}
                             </span>
                           </div>
                         </div>
@@ -237,7 +190,7 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
                             <span className="font-medium dark:text-white">
                               Dirreción:
                             </span>{" "}
-                            <p>{params.row.addressCapital}</p>
+                            <p>{user.addressCapital}</p>
                           </div>
                         </div>
                       </div>
@@ -248,7 +201,7 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
                     <DefaultButton
                       loading={loading}
                       onClick={() =>
-                        handleAddPassenger(params.row._id, setIsDialogOpen)
+                        handleAddPassenger(user._id, setIsDialogOpen)
                       }
                     >
                       Agregar pasajero
@@ -263,111 +216,178 @@ const NewPassengerDatatable = ({ columns, tripId }: UserDataTableProps) => {
     },
   ];
 
-  useEffect(() => {
-    setList(data);
-  }, [data]);
+  const table = useReactTable({
+    data,
+    columns: actionColumn.concat(columns),
+    getPaginationRowModel: getPaginationRowModel(),
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      globalFilter: filtering,
+    },
+    initialState: {
+      pagination: {
+        pageSize: 8,
+      },
+    },
+    onGlobalFilterChange: setFiltering,
+  });
+
+  const axiosPrivate = useAxiosPrivate();
+
+  const { toast } = useToast();
+
+  const navigate = useNavigate();
+
+  const { setAuth } = useAuth();
+
+  const handleAddPassenger = async (userId: string, setIsDialogOpen: any) => {
+    setLoading(true);
+    toast({
+      variant: "loading",
+      description: (
+        <div className="flex gap-1">
+          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Creando pasajero...
+        </div>
+      ),
+    });
+    try {
+      await axiosPrivate.post(`/passengers/${userId}/${tripId}`, {
+        userId,
+      });
+      setLoading(false);
+      setIsDialogOpen(false);
+      toast({
+        description: (
+          <div className="flex gap-1">
+            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Pasajero ha
+            sido creado con éxito
+          </div>
+        ),
+      });
+      setTimeout(() => {
+        navigate(`/trips/${tripId}`);
+      }, 100);
+    } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
+      const errorMsg = err.response?.data?.msg;
+      setLoading(false);
+      setIsDialogOpen(false);
+      toast({
+        variant: "destructive",
+        title: (
+          <div className="flex gap-1">
+            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al crear
+            pasajero
+          </div>
+        ) as any,
+        description: errorMsg
+          ? errorMsg
+          : "Ha ocurrido un error al crear pasajero. Por favor, intentar más tarde",
+      });
+    }
+  };
 
   return (
     <div className="h-[650px] w-full max-w-[1400px]">
       {error ? (
         <Error />
       ) : (
-        <>
-          <div className="mb-2">
-            <SearchUserInput list={list} setFilteredList={setFilteredList} />
+        <div>
+          <div className="my-3">
+            <SearchUserInput filter={filtering} setFilter={setFiltering} />
           </div>
-          {filteredList.length > 0 ? (
-            <DataGrid<MyRowType>
-              rows={filteredList}
-              columns={actionColumn.concat(columns)}
-              checkboxSelection
-              hideFooterSelectedRowCount
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 9,
-                  },
-                },
-              }}
-              pageSizeOptions={[9]}
-              getRowId={(row) => row._id}
-              sx={{
-                borderRadius: "7px",
-                "&>.MuiDataGrid-main": {
-                  "&>.MuiDataGrid-columnHeaders": {
-                    borderBottom: "none",
-                  },
-
-                  "& div div div div >.MuiDataGrid-cell": {
-                    borderBottom: "none",
-                  },
-                },
-                "&>.MuiDataGrid-footerContainer": {
-                  borderTop: "none",
-                },
-              }}
-              getRowHeight={getRowHeight}
-              slots={{
-                noRowsOverlay: () => (
-                  <div className="h-full flex justify-center items-center">
-                    Cargando usuarios...
-                  </div>
-                ),
-                noResultsOverlay: () => (
-                  <div className="h-full flex justify-center items-center">
-                    No se encontraron usuarios
-                  </div>
-                ),
-              }}
-              className="max-w-[1400px]"
-            />
-          ) : (
-            <DataGrid<MyRowType>
-              rows={list}
-              columns={actionColumn.concat(columns)}
-              checkboxSelection
-              hideFooterSelectedRowCount
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 9,
-                  },
-                },
-              }}
-              pageSizeOptions={[9]}
-              getRowId={(row) => row._id}
-              sx={{
-                borderRadius: "7px",
-                "&>.MuiDataGrid-main": {
-                  "&>.MuiDataGrid-columnHeaders": {
-                    borderBottom: "none",
-                  },
-
-                  "& div div div div >.MuiDataGrid-cell": {
-                    borderBottom: "none",
-                  },
-                },
-                "&>.MuiDataGrid-footerContainer": {
-                  borderTop: "none",
-                },
-              }}
-              slots={{
-                noRowsOverlay: () => (
-                  <div className="h-full flex justify-center items-center">
-                    Cargando usuarios...
-                  </div>
-                ),
-                noResultsOverlay: () => (
-                  <div className="h-full flex justify-center items-center">
-                    No se encontraron usuarios
-                  </div>
-                ),
-              }}
-              getRowHeight={getRowHeight}
-              className="max-w-[1400px]"
-            />
-          )}
-        </>
+          <GorgeousBoxBorder>
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead key={header.id} className="font-bold">
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && "selected"}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="w-full h-24 text-center"
+                    >
+                      {loading
+                        ? "Cargando usuarios..."
+                        : "No se han encontrado usuarios."}
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </GorgeousBoxBorder>
+          <div className="flex items-center justify-end space-x-2">
+            <div className="flex items-center justify-end space-x-2 py-2">
+              <div className="flex items-center relative after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-400/10 focus-within:after:shadow-black/40 dark:after:shadow-slate-200/20 after:transition dark:focus-within:after:shadow-slate-300/60 dark:before:ring-slate-800/40 dark:before:border-slate-300/60">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                  className="text-xs h-7 rounded-lg"
+                >
+                  <ChevronLeft className="w-3 aspect-square mr-1" />
+                  Anterior
+                </Button>
+              </div>
+              <p className="text-xs">
+                Página {table.getState().pagination.pageIndex + 1} de{" "}
+                {table.getPageCount()}
+              </p>
+              <div className="flex items-center relative after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-400/10 focus-within:after:shadow-black/40 dark:after:shadow-slate-200/20 after:transition dark:focus-within:after:shadow-slate-300/60 dark:before:ring-slate-800/40 dark:before:border-slate-300/60">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                  className="text-xs h-7 rounded-lg"
+                >
+                  Siguiente
+                  <ChevronRight className="w-3 aspect-square ml-1" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

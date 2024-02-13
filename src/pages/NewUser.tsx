@@ -1,10 +1,10 @@
-import { ChevronsRight, UserPlus, Users } from "lucide-react";
 import BackButton from "../components/BackButton";
 import NewUserForm from "../components/NewUserForm";
 import SectionTitle from "../components/SectionTitle";
 import { NewUserProps } from "@/types/props";
 import GorgeousBoxBorder from "@/components/GorgeousBoxBorder";
 import Breadcrumb from "@/components/Breadcrumb";
+import { Icons } from "@/components/icons";
 
 const NewUser = ({ title }: NewUserProps) => {
   return (
@@ -12,13 +12,8 @@ const NewUser = ({ title }: NewUserProps) => {
       <div className="self-start">
         <BackButton linkTo="/users" />
       </div>
-      <Breadcrumb>
-        <p className="flex items-center gap-1 text-card-foreground">
-          <Users className="w-5 h-5 text-accent" />
-          Usuarios
-          <ChevronsRight className="w-5 h-5" />
-          Crear usuario
-        </p>
+      <Breadcrumb page="Usuarios" icon={<Icons.users className="w-5 h-5" />}>
+        Crear usuario
       </Breadcrumb>
       <SectionTitle>{title}</SectionTitle>
 

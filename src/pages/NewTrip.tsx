@@ -3,8 +3,8 @@ import NewTripForm from "../components/NewTripForm";
 import SectionTitle from "../components/SectionTitle";
 import { NewTripProps } from "@/types/props";
 import GorgeousBoxBorder from "@/components/GorgeousBoxBorder";
-import { ChevronsRight, Map } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
+import { Icons } from "@/components/icons";
 
 const NewTrip = ({ inputs, title }: NewTripProps) => {
   return (
@@ -12,13 +12,11 @@ const NewTrip = ({ inputs, title }: NewTripProps) => {
       <div className="self-start">
         <BackButton linkTo="/trips" />
       </div>
-      <Breadcrumb>
-        <p className="flex items-center gap-1 text-card-foreground">
-          <Map className="w-5 h-5 text-accent" />
-          Viajes semanales
-          <ChevronsRight className="w-5 h-5" />
-          Crear viaje
-        </p>
+      <Breadcrumb
+        page="Viajes semanales"
+        icon={<Icons.map className="w-5 h-5" />}
+      >
+        Crear viaje
       </Breadcrumb>
       <SectionTitle>{title}</SectionTitle>
       <GorgeousBoxBorder className="w-full max-w-md self-center lg:max-w-3xl lg:self-start">

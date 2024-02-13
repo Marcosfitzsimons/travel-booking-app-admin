@@ -90,13 +90,11 @@ const Dashboard = () => {
   return (
     <section className="flex flex-col gap-10">
       <div className="flex flex-col gap-5">
-        <Breadcrumb>
-          <p className="flex items-center gap-1 text-card-foreground">
-            <LayoutGrid className="w-5 h-5 text-accent" />
-            Inicio
-            <ChevronsRight className="w-5 h-5" />
-            Panel de Control
-          </p>
+        <Breadcrumb
+          page="Inicio"
+          icon={<LayoutGrid className="w-5 h-5 text-muted-foreground" />}
+        >
+          Panel de Control
         </Breadcrumb>
         <SectionTitle>Panel de Control</SectionTitle>
       </div>

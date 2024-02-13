@@ -9,7 +9,6 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import GorgeousBorder from "@/components/GorgeousBorder";
 import Loading from "@/components/Loading";
 import GorgeousBoxBorder from "@/components/GorgeousBoxBorder";
-import { BarChart3 } from "lucide-react";
 import YearlyChart from "@/components/YearlyChart";
 import {
   getTopMonthlyIncomes,
@@ -17,6 +16,7 @@ import {
 } from "@/lib/utils/incomes/calculateIncomes";
 import TopMonthlyIncomes from "@/components/TopMonthlyIncomes";
 import { currentYear } from "@/lib/utils/getCurrentYear";
+import { Icons } from "@/components/icons";
 
 const YearlyIncomes = () => {
   const [yearlyIncomes, setYearlyIncomes] = useState([]);
@@ -69,13 +69,11 @@ const YearlyIncomes = () => {
   return (
     <section className="flex flex-col gap-10">
       <div className="flex flex-col gap-5">
-        <Breadcrumb>
-          <p className="flex items-center gap-1 text-card-foreground">
-            <BarChart3 className="h-5 w-5 text-accent" />
-            Ganancias
-            <ChevronsRight className="w-5 h-5" />
-            Resumen anual
-          </p>
+        <Breadcrumb
+          page="Ganancias"
+          icon={<Icons.barChart3 className="h-5 w-5" />}
+        >
+          Resumen anual
         </Breadcrumb>
         <SectionTitle>Resumen ganancias anuales</SectionTitle>
       </div>

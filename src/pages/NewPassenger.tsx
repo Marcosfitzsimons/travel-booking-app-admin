@@ -4,7 +4,10 @@ import { useParams } from "react-router-dom";
 import NewPassengerDatatable from "../components/NewPassengerDatatable";
 import { NewPassengerProps } from "@/types/props";
 
-const NewPassenger = ({ title, columns }: NewPassengerProps) => {
+const NewPassenger = <TData, TValue>({
+  title,
+  columns,
+}: NewPassengerProps<TData, TValue>) => {
   let { id: tripId } = useParams();
 
   return (

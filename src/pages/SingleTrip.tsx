@@ -5,7 +5,6 @@ import "moment/locale/es";
 import { passengerColumns } from "../datatablesource";
 import BackButton from "../components/BackButton";
 import PassengersDatatable from "../components/PassengersDatatable";
-import { Check, Loader2, UserPlus, Users, X } from "lucide-react";
 import SectionTitle from "../components/SectionTitle";
 import Loading from "../components/Loading";
 import { useForm } from "react-hook-form";
@@ -19,13 +18,14 @@ import { Passenger, Trip } from "@/types/types";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import Error from "@/components/Error";
-import GorgeousBorder from "@/components/GorgeousBorder";
 import GorgeousBoxBorder from "@/components/GorgeousBoxBorder";
+import { Icons } from "@/components/icons";
+import { convertToArgDate } from "@/lib/utils/convertToArgDate";
 
 const INITIAL_STATES = {
   _id: "",
   name: "",
-  date: null,
+  date: "",
   from: "",
   available: true,
   departureTime: "",
@@ -46,7 +46,7 @@ const SingleTrip = () => {
   const [arrivalTimeValue, setArrivalTimeValue] = useState("");
   const [err, setErr] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [startDate, setStartDate] = useState<any>(null);
+  const [date, setDate] = useState<Date | undefined>(undefined);
 
   const isMaxCapacity = passengers.length === tripData.maxCapacity;
   const passengersCount = `${passengers.length} / ${tripData.maxCapacity}`;
@@ -79,14 +79,15 @@ const SingleTrip = () => {
     if (
       !isDirty &&
       tripData.arrivalTime === arrivalTimeValue &&
-      tripData.departureTime === departureTimeValue
+      tripData.departureTime === departureTimeValue &&
+      tripData.date === convertToArgDate(date)
     ) {
       return toast({
         variant: "destructive",
         description: (
           <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Es necesario
-            realizar cambios antes de enviar
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />} Es
+            necesario realizar cambios antes de enviar
           </div>
         ),
       });
@@ -96,7 +97,7 @@ const SingleTrip = () => {
       variant: "loading",
       description: (
         <div className="flex gap-1">
-          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          <Icons.spinner className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
           Editando viaje...
         </div>
       ),
@@ -104,19 +105,18 @@ const SingleTrip = () => {
     try {
       const res = await axiosPrivate.put(`/trips/${id}`, {
         ...data,
-        date: startDate,
+        date: date,
         departureTime: departureTimeValue,
         arrivalTime: arrivalTimeValue,
       });
       setIsSubmitted(false);
-      formatDate(res.data.date);
-      setTripData({ ...res.data, date: formatDate(res.data.date) });
+      setTripData({ ...res.data, date: convertToArgDate(res.data.date) });
       setIsDialogOpen(false);
       toast({
         description: (
           <div className="flex gap-1">
-            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Viaje ha
-            sido editado con éxito
+            {<Icons.check className="h-5 w-5 text-green-600 shrink-0" />} Viaje
+            ha sido editado con éxito
           </div>
         ),
       });
@@ -145,7 +145,7 @@ const SingleTrip = () => {
       variant: "loading",
       description: (
         <div className="flex gap-1">
-          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          <Icons.spinner className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
           Cancelando lugar...
         </div>
       ),
@@ -155,7 +155,7 @@ const SingleTrip = () => {
       toast({
         description: (
           <div className="flex gap-1">
-            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Lugar
+            {<Icons.check className="h-5 w-5 text-green-600 shrink-0" />} Lugar
             cancelado con éxito
           </div>
         ),
@@ -180,8 +180,8 @@ const SingleTrip = () => {
         variant: "destructive",
         title: (
           <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-            cancelar lugar
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}{" "}
+            Error al cancelar lugar
           </div>
         ) as any,
         description: errorMsg
@@ -191,15 +191,6 @@ const SingleTrip = () => {
     }
   };
 
-  const formatDate = (date: string) => {
-    const momentDate = moment.utc(date);
-    const timezone = "America/Argentina/Buenos_Aires";
-    const timezone_date = momentDate.tz(timezone);
-    const formatted_date = timezone_date.format("ddd DD/MM");
-    // with more info: const formatted_date = timezone_date.format("ddd  DD/MM/YYYY HH:mm:ss [GMT]Z (z)");
-    return formatted_date;
-  };
-
   const fetchData = async () => {
     setLoading(true);
     setErr(false);
@@ -207,12 +198,12 @@ const SingleTrip = () => {
       const res = await axiosPrivate.get(`/trips/${user?._id}/${id}`);
       setLoading(false);
       setPassengers(res.data.passengers);
-      const formattedDate = formatDate(res.data.date);
+      const formattedDate = convertToArgDate(res.data.date);
       setTripData({ ...res.data, date: formattedDate });
       const tripData = { ...res.data };
       setDepartureTimeValue(tripData.departureTime);
       setArrivalTimeValue(tripData.arrivalTime);
-      setStartDate(convertToDatePickerFormat(res.data.date));
+      setDate(convertToDatePickerFormat(res.data.date));
       reset({
         name: tripData.name,
         from: tripData.from,
@@ -234,8 +225,8 @@ const SingleTrip = () => {
         variant: "destructive",
         title: (
           <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-            cargar información
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}{" "}
+            Error al cargar información
           </div>
         ) as any,
         description: errorMsg
@@ -272,11 +263,11 @@ const SingleTrip = () => {
                 departureTimeValue={departureTimeValue}
                 arrivalTimeValue={arrivalTimeValue}
                 setArrivalTimeValue={setArrivalTimeValue}
-                setStartDate={setStartDate}
+                setDate={setDate}
                 errors={errors}
                 handleSubmit={handleSubmit}
                 isSubmitted={isSubmitted}
-                startDate={startDate}
+                date={date}
                 passengers={passengers}
                 setDepartureTimeValue={setDepartureTimeValue}
               />
@@ -292,7 +283,7 @@ const SingleTrip = () => {
                       <GorgeousBoxBorder>
                         <article className="flex items-center gap-4 bg-card py-4 px-8 border shadow-input rounded-lg dark:shadow-none">
                           <div className="">
-                            <Users className="text-accent h-8 w-8 shrink-0 " />
+                            <Icons.users className="text-accent h-8 w-8 shrink-0 " />
                           </div>
                           <div className="flex flex-col">
                             <h4 className="text-card-foreground">Pasajeros</h4>
@@ -332,7 +323,7 @@ const SingleTrip = () => {
                               text="Agregar pasajero"
                               linkTo={`/passengers/newPassenger/${id}`}
                               icon={
-                                <UserPlus className="absolute cursor-pointer left-3 top-[5px] h-5 w-5" />
+                                <Icons.userPlus className="absolute cursor-pointer left-3 top-[5px] h-5 w-5" />
                               }
                             />
                           </div>
@@ -341,21 +332,14 @@ const SingleTrip = () => {
                     </div>
                   </div>
                 </div>
-
-                {passengers && passengers.length > 0 ? (
-                  <PassengersDatatable
-                    tripPassengers={passengers}
-                    columns={passengerColumns}
-                    tripId={id}
-                    handleDelete={handleDelete}
-                    setPassengers={setPassengers}
-                    loading={isLoading}
-                  />
-                ) : (
-                  <div className="mx-auto my-3">
-                    <p>El viaje no tiene pasajeros por el momento</p>
-                  </div>
-                )}
+                <PassengersDatatable
+                  tripPassengers={passengers}
+                  columns={passengerColumns}
+                  tripId={id}
+                  handleDelete={handleDelete}
+                  setPassengers={setPassengers}
+                  loading={isLoading}
+                />
               </div>
             </div>
           )}

@@ -4,7 +4,7 @@ import GorgeousBoxBorder from "./GorgeousBoxBorder";
 const TotalCountCard = ({ icon, title, value }: TotalCountCardProps) => {
   return (
     <GorgeousBoxBorder>
-      <article className="flex items-center gap-4 bg-card py-4 px-8 border shadow-input rounded-lg dark:shadow-none">
+      <article className="flex items-center gap-4 bg-input-bg py-4 px-8 border border-slate-400/60 shadow-input rounded-lg dark:border-slate-800  dark:shadow-none">
         <div className="">{icon}</div>
         <div className="flex flex-col">
           <h4 className="text-card-foreground">{title}</h4>

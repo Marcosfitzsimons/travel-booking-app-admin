@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import { Check, CheckCircle, Edit, Loader2, Trash2, X } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,16 +12,33 @@ import {
 } from "./ui/alert-dialog";
 import { useToast } from "../hooks/ui/use-toast";
 import TrashButtonDatatable from "./TrashButtonDatatable";
-import { getRowHeight } from "@/lib/utils/getRowHeight";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 import { Passenger } from "@/types/types";
 import GorgeousBorder from "./GorgeousBorder";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { Icons } from "./icons";
+import { Button } from "./ui/button";
+import {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  Table,
+  TableRow,
+} from "./ui/table";
+import GorgeousBoxBorder from "./GorgeousBoxBorder";
 
 type DataTableProps = {
-  columns: any;
+  columns: ColumnDef<Passenger>[];
   tripPassengers: any;
   tripId: string | undefined;
   handleDelete: any;
@@ -44,82 +59,14 @@ const PassengersDatable = ({
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  const { toast } = useToast();
-  const axiosPrivate = useAxiosPrivate();
-  const navigate = useNavigate();
-
-  const { setAuth } = useAuth();
-
-  const handleIsPaid = async (passengerId: string) => {
-    setIsLoading(true);
-    toast({
-      variant: "loading",
-      description: (
-        <div className="flex gap-1">
-          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
-          Actualizando estado del pago...
-        </div>
-      ),
-    });
-    try {
-      const res = await axiosPrivate.put(
-        `/passengers/paid/${passengerId}/${tripId}`,
-        {
-          isPaid: optionSelected === "paid",
-        }
-      );
-      const updatedPassenger = res.data.updatedPassenger;
-      setPassengers((prevPassengers: Passenger[]) =>
-        prevPassengers.map((passenger) =>
-          passenger._id === updatedPassenger._id
-            ? { ...passenger, isPaid: updatedPassenger.isPaid }
-            : passenger
-        )
-      );
-      setIsLoading(false);
-      toast({
-        description: (
-          <div className="flex gap-1">
-            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Estado del
-            pago actualizado con éxito
-          </div>
-        ),
-      });
-    } catch (err: any) {
-      if (err.response?.status === 403) {
-        setAuth({ user: null });
-        setTimeout(() => {
-          navigate("/login");
-        }, 100);
-      }
-      setIsLoading(false);
-      toast({
-        variant: "destructive",
-        title: (
-          <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-            actualizar estado del pago
-          </div>
-        ) as any,
-        description: err.response?.data?.msg
-          ? err.response?.data?.msg
-          : "Ha ocurrido un error al actualizar estado del pago. Por favor, intentar más tarde",
-      });
-    }
-  };
-
-  const handleValueChange = (optionSeletected: "paid" | "unpaid") => {
-    if (optionSeletected) {
-      setOptionSelected(optionSeletected);
-    }
-  };
-
-  const actionColumn = [
+  const actionColumn: ColumnDef<Passenger>[] = [
     {
-      field: "action",
-      headerName: "Acción",
-      width: 130,
-      renderCell: (params: any) => {
+      accessorKey: "action",
+      header: "Acción",
+      cell: ({ row }) => {
+        const passenger = row.original;
+        const passengerIsUser = passenger.createdBy;
+        const id = passengerIsUser ? passengerIsUser._id : row.original._id;
         return (
           <div className="flex items-center">
             <AlertDialog>
@@ -127,7 +74,7 @@ const PassengersDatable = ({
                 <AlertDialogTrigger disabled={loading} className="z-50">
                   <TrashButtonDatatable
                     icon={
-                      <Trash2 className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />
+                      <Icons.trash className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />
                     }
                     text="Borrar"
                   />
@@ -147,13 +94,7 @@ const PassengersDatable = ({
                   </AlertDialogCancel>
                   <AlertDialogAction
                     disabled={isLoading}
-                    onClick={() =>
-                      handleDelete(
-                        params.row.createdBy
-                          ? params.row.createdBy?._id
-                          : params.row._id
-                      )
-                    }
+                    onClick={() => handleDelete(id)}
                     className="w-full md:w-auto"
                   >
                     Si, borrar pasajero
@@ -166,21 +107,21 @@ const PassengersDatable = ({
       },
     },
     {
-      field: "isPaid",
-      headerName: "Estado pago",
-      width: 150,
-      renderCell: (params: any) => {
+      accessorKey: "isPaid",
+      header: "Estado del pago",
+      cell: ({ row }) => {
+        const passenger = row.original;
         return (
           <div className="flex flex-col items-start w-32">
-            {params.row.isPaid ? (
+            {passenger.isPaid ? (
               <span className="flex items-center gap-[3px] font-medium">
                 PAGO{" "}
-                <Check className="w-4 h-4 relative bottom-[1px] text-green-600 lg:w-5 lg:h-5" />
+                <Icons.check className="w-4 h-4 relative bottom-[1px] text-green-600 lg:w-5 lg:h-5" />
               </span>
             ) : (
               <span className="flex items-center gap-[3px]">
                 NO PAGO{" "}
-                <X className="w-4 h-4 relative bottom-[1px] text-red-600 lg:w-5 lg:h-5" />
+                <Icons.close className="w-4 h-4 relative bottom-[1px] text-red-600 lg:w-5 lg:h-5" />
               </span>
             )}
             <AlertDialog>
@@ -189,7 +130,7 @@ const PassengersDatable = ({
                   disabled={isLoading}
                   className="text-sm h-auto w-auto pl-[33px] py-1 px-3 z-20 rounded-lg bg-white dark:bg-black/80 dark:text-slate-100 dark:hover:text-white"
                 >
-                  <Edit className="absolute cursor-pointer left-3.5 top-[5px] h-[15px] w-[15px]" />
+                  <Icons.edit className="absolute cursor-pointer left-3.5 top-[5px] h-[15px] w-[15px]" />
                   Editar
                 </AlertDialogTrigger>
               </div>
@@ -230,7 +171,7 @@ const PassengersDatable = ({
                           `}
                       >
                         PAGO{" "}
-                        <Check className="w-4 h-4 relative bottom-[1px] text-green-600 lg:w-5 lg:h-5" />
+                        <Icons.check className="w-4 h-4 relative bottom-[1px] text-green-600 lg:w-5 lg:h-5" />
                       </ToggleGroup.Item>
                     </GorgeousBorder>
                     <GorgeousBorder>
@@ -245,7 +186,7 @@ const PassengersDatable = ({
                             `}
                       >
                         NO PAGO{" "}
-                        <X className="w-4 h-4 relative bottom-[1px] text-red-600 lg:w-5 lg:h-5" />
+                        <Icons.close className="w-4 h-4 relative bottom-[1px] text-red-600 lg:w-5 lg:h-5" />
                       </ToggleGroup.Item>
                     </GorgeousBorder>
                   </ToggleGroup.Root>
@@ -255,15 +196,15 @@ const PassengersDatable = ({
                   <AlertDialogAction
                     onClick={() => {
                       if (
-                        (params.row.isPaid && optionSelected === "paid") ||
-                        (!params.row.isPaid && optionSelected === "unpaid")
+                        (passenger.isPaid && optionSelected === "paid") ||
+                        (!passenger.isPaid && optionSelected === "unpaid")
                       ) {
                         return toast({
                           variant: "destructive",
                           title: (
                             <div className="flex gap-1">
                               {
-                                <X className="h-5 w-5 text-destructive shrink-0" />
+                                <Icons.close className="h-5 w-5 text-destructive shrink-0" />
                               }{" "}
                               Error al actualizar estado del pago
                             </div>
@@ -272,7 +213,7 @@ const PassengersDatable = ({
                             "El estado del pago ya tiene ese valor. Debes cambiarlo para que se actualice",
                         });
                       }
-                      handleIsPaid(params.row._id);
+                      handleIsPaid(String(passenger._id));
                     }}
                   >
                     Guardar cambios
@@ -286,50 +227,174 @@ const PassengersDatable = ({
     },
   ];
 
-  return (
-    <div
-      className={`${
-        tripPassengers.length > 0 ? "h-[650px] max-w-[1400px]" : ""
-      } w-full`}
-    >
-      {tripPassengers.length > 0 ? (
-        <DataGrid
-          rows={tripPassengers}
-          columns={actionColumn.concat(columns)}
-          checkboxSelection
-          getRowHeight={getRowHeight}
-          hideFooterSelectedRowCount
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 9,
-              },
-            },
-          }}
-          pageSizeOptions={[9]}
-          getRowId={(row) => row._id}
-          sx={{
-            borderRadius: "7px",
-            "&>.MuiDataGrid-main": {
-              "&>.MuiDataGrid-columnHeaders": {
-                borderBottom: "none",
-              },
+  const table = useReactTable({
+    data: tripPassengers,
+    columns: actionColumn.concat(columns),
+    getPaginationRowModel: getPaginationRowModel(),
+    getCoreRowModel: getCoreRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 8,
+      },
+    },
+  });
 
-              "& div div div div >.MuiDataGrid-cell": {
-                borderBottom: "none",
-              },
-            },
-            "&>.MuiDataGrid-footerContainer": {
-              borderTop: "none",
-            },
-          }}
-          className="max-w-[1400px]"
-        />
-      ) : (
-        <div className="mx-auto flex flex-col items-center gap-3">
-          <p>El viaje no tiene pasajeros por el momento</p>
+  const { toast } = useToast();
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
+
+  const { setAuth } = useAuth();
+
+  const handleIsPaid = async (passengerId: string) => {
+    setIsLoading(true);
+    toast({
+      variant: "loading",
+      description: (
+        <div className="flex gap-1">
+          <Icons.spinner className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          Actualizando estado del pago...
         </div>
-      )}
+      ),
+    });
+    try {
+      const res = await axiosPrivate.put(
+        `/passengers/paid/${passengerId}/${tripId}`,
+        {
+          isPaid: optionSelected === "paid",
+        }
+      );
+      const updatedPassenger = res.data.updatedPassenger;
+      setPassengers((prevPassengers: Passenger[]) =>
+        prevPassengers.map((passenger) =>
+          passenger._id === updatedPassenger._id
+            ? { ...passenger, isPaid: updatedPassenger.isPaid }
+            : passenger
+        )
+      );
+      setIsLoading(false);
+      toast({
+        description: (
+          <div className="flex gap-1">
+            {<Icons.check className="h-5 w-5 text-green-600 shrink-0" />} Estado
+            del pago actualizado con éxito
+          </div>
+        ),
+      });
+    } catch (err: any) {
+      if (err.response?.status === 403) {
+        setAuth({ user: null });
+        setTimeout(() => {
+          navigate("/login");
+        }, 100);
+      }
+      setIsLoading(false);
+      toast({
+        variant: "destructive",
+        title: (
+          <div className="flex gap-1">
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}{" "}
+            Error al actualizar estado del pago
+          </div>
+        ) as any,
+        description: err.response?.data?.msg
+          ? err.response?.data?.msg
+          : "Ha ocurrido un error al actualizar estado del pago. Por favor, intentar más tarde",
+      });
+    }
+  };
+
+  const handleValueChange = (optionSeletected: "paid" | "unpaid") => {
+    if (optionSeletected) {
+      setOptionSelected(optionSeletected);
+    }
+  };
+
+  return (
+    <div className="h-[650px] max-w-[1400px] w-full">
+      <>
+        <GorgeousBoxBorder>
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id} className="font-bold">
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={actionColumn.concat(columns).length}
+                    className="w-full h-24 text-center"
+                  >
+                    {loading && tripPassengers.length > 0
+                      ? "Cargando pasajeros..."
+                      : "El viaje no tiene pasajeros por el momento."}
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </GorgeousBoxBorder>
+        <div className="flex items-center justify-end space-x-2 py-2">
+          <div className="flex items-center relative after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-400/10 focus-within:after:shadow-black/40 dark:after:shadow-slate-400/20 after:transition dark:focus-within:after:shadow-slate-400/60">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+              className="text-xs h-7 rounded-lg"
+            >
+              <Icons.chevronLeft className="w-3 aspect-square mr-1" />
+              Anterior
+            </Button>
+          </div>
+          <p className="text-xs">
+            Página {table.getState().pagination.pageIndex + 1} de{" "}
+            {table.getPageCount()}
+          </p>
+          <div className="flex items-center relative after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-400/10 focus-within:after:shadow-black/40 dark:after:shadow-slate-400/20 after:transition dark:focus-within:after:shadow-slate-400/60">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+              className="text-xs h-7 rounded-lg"
+            >
+              Siguiente
+              <Icons.chevronRight className="w-3 aspect-square ml-1" />
+            </Button>
+          </div>
+        </div>
+      </>
     </div>
   );
 };

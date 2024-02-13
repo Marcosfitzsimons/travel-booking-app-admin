@@ -63,16 +63,17 @@ const SideBar = () => {
             <p className="text-accent uppercase pb-1 font-bold text-sm dark:text-white">
               Inicio
             </p>
-            <div className="relative flex items-center gap-2">
-              <LayoutGrid className="absolute left-2 w-5 h-5 text-accent" />
+
+            <div>
               <Link
                 to="/"
-                className={`w-full pl-8 z-20 py-1 px-2 flex items-center gap-1 rounded-lg text-start hover:bg-zinc-200/40 dark:hover:bg-white/20 dark:hover:text-white ${
+                className={`w-full py-1 px-2 flex items-center gap-1 rounded-lg text-start hover:bg-slate-100 dark:hover:bg-white/20 dark:hover:text-white ${
                   active === 1
-                    ? "border-l-2 border-l-accent rounded-l-none bg-zinc-200/40 font-semibold dark:bg-white/20 dark:text-white"
+                    ? "border-l-2 border-l-accent rounded-l-none bg-slate-100 font-semibold dark:bg-white/20 dark:text-white"
                     : ""
                 }`}
               >
+                <LayoutGrid className="h-5 w-5 mr-1" />
                 Panel de Control
               </Link>
             </div>
@@ -84,16 +85,16 @@ const SideBar = () => {
 
             <ul className="flex flex-col">
               {listItems.map((item) => (
-                <li className="relative flex items-center gap-2" key={item.id}>
-                  {item.icon}
+                <li key={item.id}>
                   <Link
                     to={item.linkTo}
-                    className={`w-full pl-8 z-20 py-1 px-2 flex items-center gap-1 rounded-lg text-start hover:bg-zinc-200/40 dark:hover:bg-white/20 dark:hover:text-white ${
+                    className={`w-full py-1 px-2 flex items-center gap-1 rounded-lg text-start hover:bg-slate-100 dark:hover:bg-white/20 dark:hover:text-white ${
                       active === item.id
-                        ? "border-l-2 border-l-accent rounded-l-none bg-zinc-200/40 font-semibold dark:bg-white/20 dark:text-white"
+                        ? "border-l-2 border-l-accent rounded-l-none bg-slate-100 font-semibold dark:bg-white/20 dark:text-white"
                         : ""
                     }`}
                   >
+                    {item.icon}
                     {item.text}
                   </Link>
                 </li>
@@ -106,16 +107,16 @@ const SideBar = () => {
             </p>
             <ul className="flex flex-col">
               {salesItems.map((item) => (
-                <li className="relative flex items-center gap-2" key={item.id}>
-                  {item.icon}
+                <li key={item.id}>
                   <Link
                     to={item.linkTo}
-                    className={`w-full pl-8 z-20 py-1 px-2 flex items-center gap-1 rounded-lg text-start hover:bg-zinc-200/40 dark:hover:bg-white/20 dark:hover:text-white ${
+                    className={`w-full py-1 px-2 flex items-center gap-1 rounded-lg text-start hover:bg-slate-100 dark:hover:bg-white/20 dark:hover:text-white ${
                       active === item.id
-                        ? "border-l-2 border-l-accent rounded-l-none bg-zinc-200/40 font-semibold dark:bg-white/20 dark:text-white"
+                        ? "border-l-2 border-l-accent rounded-l-none bg-slate-100 font-semibold dark:bg-white/20 dark:text-white"
                         : ""
                     }`}
                   >
+                    {item.icon}
                     {item.text}
                   </Link>
                 </li>
@@ -127,28 +128,26 @@ const SideBar = () => {
               Admin
             </p>
             <ul className="flex flex-col">
-              <li className={`relative flex items-center gap-2`}>
-                <User className="absolute left-2 h-5 w-5 text-accent " />
+              <li>
                 <Link
                   to="/mi-perfil"
-                  className={`w-full pl-8 z-20 py-1 px-2 flex items-center gap-1 rounded-lg text-start hover:bg-zinc-200/40 dark:hover:bg-white/20 dark:hover:text-white ${
+                  className={`w-full py-1 px-2 flex items-center gap-1 rounded-lg text-start hover:bg-slate-100 dark:hover:bg-white/20 dark:hover:text-white ${
                     active === 8
-                      ? "border-l-2 border-l-accent rounded-l-none bg-zinc-200/40 font-semibold dark:bg-white/20 dark:text-white"
+                      ? "border-l-2 border-l-accent rounded-l-none bg-slate-100 font-semibold dark:bg-white/20 dark:text-white"
                       : ""
                   }`}
                 >
+                  <User className="h-5 w-5 mr-1" />
                   Perfil
                 </Link>
               </li>
-              <li className="relative flex items-center gap-2">
-                <LogOut className="absolute left-2 h-5 w-5 text-accent " />
-                <button
-                  onClick={handleLogOut}
-                  className="w-full pl-8 z-20 rounded-lg py-1 px-2 flex items-center gap-1 text-start hover:bg-zinc-200/40 dark:hover:bg-white/20 dark:hover:text-white"
-                >
-                  Salir
-                </button>
-              </li>
+              <button
+                onClick={handleLogOut}
+                className="w-full rounded-lg py-1 px-2 flex items-center gap-1 text-start hover:bg-slate-100 dark:hover:bg-white/20 dark:hover:text-white"
+              >
+                <LogOut className="mr-1 h-5 w-5 " />
+                Salir
+              </button>
             </ul>
           </div>
         </nav>

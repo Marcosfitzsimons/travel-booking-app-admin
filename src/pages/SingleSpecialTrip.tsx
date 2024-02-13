@@ -5,17 +5,6 @@ import "moment/locale/es";
 import { specialPassengerColumns } from "../datatablesource";
 import BackButton from "../components/BackButton";
 import SpecialPassengersDatatable from "../components/SpecialPassengersDatatable";
-import {
-  Check,
-  DollarSign,
-  HelpingHand,
-  Loader2,
-  MapPin,
-  Milestone,
-  UserMinus2,
-  Users,
-  X,
-} from "lucide-react";
 import SectionTitle from "../components/SectionTitle";
 import Loading from "../components/Loading";
 import DefaultButton from "../components/DefaultButton";
@@ -33,7 +22,6 @@ import { Input } from "../components/ui/input";
 import { useForm } from "react-hook-form";
 import { useToast } from "../hooks/ui/use-toast";
 import DatePickerContainer from "../components/DatePickerContainer";
-import Logo from "../components/Logo";
 import TimePickerContainer from "../components/TimePickerContainer";
 import { Separator } from "../components/ui/separator";
 import { convertToDatePickerFormat } from "@/lib/utils/convertToDatePickerFormat";
@@ -48,6 +36,9 @@ import TripDate from "@/components/TripDate";
 import TodayDate from "@/components/TodayDate";
 import GorgeousBorder from "@/components/GorgeousBorder";
 import GorgeousBoxBorder from "@/components/GorgeousBoxBorder";
+import { validateMaxCapacity } from "@/lib/utils/validateMaxCapacity";
+import { Icons } from "@/components/icons";
+import { convertToArgDate } from "@/lib/utils/convertToArgDate";
 
 const INITIAL_STATES = {
   _id: "",
@@ -64,7 +55,7 @@ const INITIAL_STATES = {
 const SingleSpecialTrip = () => {
   const [tripData, setTripData] = useState(INITIAL_STATES);
   const [passengers, setPassengers] = useState<any[]>([]);
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -95,7 +86,7 @@ const SingleSpecialTrip = () => {
     defaultValues: {
       name: "",
       from: "",
-      date: null,
+      date: undefined,
       to: "",
       departureTime: "",
       price: "",
@@ -103,23 +94,18 @@ const SingleSpecialTrip = () => {
     },
   });
 
-  const formatDate = (date: string) => {
-    const momentDate = moment.utc(date);
-    const timezone = "America/Argentina/Buenos_Aires";
-    const timezone_date = momentDate.tz(timezone);
-    const formatted_date = timezone_date.format("ddd DD/MM");
-    // with more info: const formatted_date = timezone_date.format("ddd  DD/MM/YYYY HH:mm:ss [GMT]Z (z)");
-    return formatted_date;
-  };
-
   const handleOnSubmit = async (data: SpecialTrip) => {
-    if (!isDirty && tripData.departureTime === departureTimeValue) {
+    if (
+      !isDirty &&
+      tripData.departureTime === departureTimeValue &&
+      tripData.date === convertToArgDate(date)
+    ) {
       return toast({
         variant: "destructive",
         description: (
           <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Es necesario
-            realizar cambios antes de enviar
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />} Es
+            necesario realizar cambios antes de enviar
           </div>
         ),
       });
@@ -129,7 +115,7 @@ const SingleSpecialTrip = () => {
       variant: "loading",
       description: (
         <div className="flex gap-1">
-          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          <Icons.spinner className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
           Editando viaje...
         </div>
       ),
@@ -137,18 +123,17 @@ const SingleSpecialTrip = () => {
     try {
       const res = await axiosPrivate.put(`/special-trips/${id}`, {
         ...data,
-        date: startDate,
+        date: date,
         departureTime: departureTimeValue,
       });
       setIsSubmitted(false);
       setIsDialogOpen(false);
-      formatDate(res.data.date);
-      setTripData({ ...res.data, date: formatDate(res.data.date) });
+      setTripData({ ...res.data, date: convertToArgDate(res.data.date) });
       toast({
         description: (
           <div className="flex gap-1">
-            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Viaje ha
-            sido editado con éxito
+            {<Icons.check className="h-5 w-5 text-green-600 shrink-0" />} Viaje
+            ha sido editado con éxito
           </div>
         ),
       });
@@ -165,8 +150,8 @@ const SingleSpecialTrip = () => {
         variant: "destructive",
         title: (
           <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-            editar viaje
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}{" "}
+            Error al editar viaje
           </div>
         ) as any,
         description: errorMsg
@@ -182,7 +167,7 @@ const SingleSpecialTrip = () => {
       variant: "loading",
       description: (
         <div className="flex gap-1">
-          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          <Icons.spinner className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
           Cancelando lugar...
         </div>
       ),
@@ -192,7 +177,7 @@ const SingleSpecialTrip = () => {
       toast({
         description: (
           <div className="flex gap-1">
-            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Lugar
+            {<Icons.check className="h-5 w-5 text-green-600 shrink-0" />} Lugar
             cancelado con éxito
           </div>
         ),
@@ -212,8 +197,8 @@ const SingleSpecialTrip = () => {
         variant: "destructive",
         title: (
           <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-            cancelar lugar
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}{" "}
+            Error al cancelar lugar
           </div>
         ) as any,
         description: errorMsg
@@ -228,10 +213,9 @@ const SingleSpecialTrip = () => {
     setError(false);
     try {
       const res = await axiosPrivate.get(`/special-trips/${id}`);
-      formatDate(res.data.date);
       setLoading(false);
       setPassengers(res.data.passengers);
-      setTripData({ ...res.data, date: formatDate(res.data.date) });
+      setTripData({ ...res.data, date: convertToArgDate(res.data.date) });
       const tripData = { ...res.data };
       reset({
         name: tripData.name,
@@ -241,7 +225,7 @@ const SingleSpecialTrip = () => {
         maxCapacity: tripData.maxCapacity,
       });
       setDepartureTimeValue(tripData.departureTime);
-      setStartDate(convertToDatePickerFormat(res.data.date));
+      setDate(convertToDatePickerFormat(res.data.date));
     } catch (err: any) {
       if (err.response?.status === 403) {
         setAuth({ user: null });
@@ -256,8 +240,8 @@ const SingleSpecialTrip = () => {
         variant: "destructive",
         title: (
           <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-            cargar información
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}{" "}
+            Error al cargar información
           </div>
         ) as any,
         description: errorMsg
@@ -313,7 +297,7 @@ const SingleSpecialTrip = () => {
                             <div className="flex flex-col overflow-auto pb-2">
                               <TripCardDataBox
                                 icon={
-                                  <MapPin className="h-5 w-5 text-accent shrink-0" />
+                                  <Icons.mapPin className="h-5 w-5 text-accent shrink-0" />
                                 }
                                 text="Salida"
                               >
@@ -327,7 +311,7 @@ const SingleSpecialTrip = () => {
                               </TripCardDataBox>
                               <TripCardDataBox
                                 icon={
-                                  <MapPin className="h-5 w-5 text-accent shrink-0" />
+                                  <Icons.mapPin className="h-5 w-5 text-accent shrink-0" />
                                 }
                                 text="Destino"
                               >
@@ -339,7 +323,7 @@ const SingleSpecialTrip = () => {
                                 <div className="basis-1/2">
                                   <TripCardDataBox
                                     icon={
-                                      <DollarSign className="h-5 w-5 text-accent shrink-0" />
+                                      <Icons.dollarSign className="h-5 w-5 text-accent shrink-0" />
                                     }
                                     text="Precio"
                                   >
@@ -349,7 +333,7 @@ const SingleSpecialTrip = () => {
                                 <div className="basis-1/2">
                                   <TripCardDataBox
                                     icon={
-                                      <Users className="h-5 w-5 text-accent shrink-0" />
+                                      <Icons.users className="h-5 w-5 text-accent shrink-0" />
                                     }
                                     text="Capacidad máxima"
                                   >
@@ -415,7 +399,7 @@ const SingleSpecialTrip = () => {
                                 <div className="grid w-full max-w-2xl items-center gap-2">
                                   <Label htmlFor="name">Nombre del viaje</Label>
                                   <div className="relative flex items-center">
-                                    <HelpingHand className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                                    <Icons.helpingHand className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
                                     <Input
                                       type="text"
                                       id="name"
@@ -449,9 +433,10 @@ const SingleSpecialTrip = () => {
                                   <div className="grid w-full items-center gap-2">
                                     <Label htmlFor="date">Fecha</Label>
                                     <DatePickerContainer
-                                      setStartDate={setStartDate}
-                                      id="date"
-                                      startDate={startDate}
+                                      isModal={true}
+                                      setDate={setDate}
+                                      isForm={true}
+                                      date={date}
                                     />
                                   </div>
 
@@ -472,7 +457,7 @@ const SingleSpecialTrip = () => {
                                   <div className="grid w-full max-w-md items-center gap-2">
                                     <Label htmlFor="from">Desde</Label>
                                     <div className="relative flex items-center">
-                                      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                                      <Icons.milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
                                       <Input
                                         type="text"
                                         id="from"
@@ -506,7 +491,7 @@ const SingleSpecialTrip = () => {
                                   <div className="grid w-full max-w-md items-center gap-2">
                                     <Label htmlFor="to">Hasta</Label>
                                     <div className="relative flex items-center">
-                                      <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                                      <Icons.milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
                                       <Input
                                         type="text"
                                         id="to"
@@ -543,7 +528,7 @@ const SingleSpecialTrip = () => {
                                   <div className="grid w-full items-center gap-2">
                                     <Label htmlFor="price">Precio</Label>
                                     <div className="relative flex items-center">
-                                      <DollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                                      <Icons.dollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
                                       <Input
                                         type="number"
                                         id="price"
@@ -569,17 +554,19 @@ const SingleSpecialTrip = () => {
                                       Capacidad máxima
                                     </Label>
                                     <div className="relative flex items-center">
-                                      <UserMinus2 className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                                      <Icons.userMinus className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
                                       <Input
                                         type="number"
                                         id="maxCapacity"
                                         className="pl-8"
                                         {...register("maxCapacity", {
-                                          required: {
-                                            value: true,
-                                            message:
-                                              "Por favor, ingresar capacidad máxima del viaje.",
-                                          },
+                                          required:
+                                            "Por favor, ingresar capacidad máxima del viaje.",
+                                          validate: (value: string) =>
+                                            validateMaxCapacity(
+                                              value,
+                                              passengers.length
+                                            ),
                                         })}
                                       />
                                     </div>
@@ -618,7 +605,7 @@ const SingleSpecialTrip = () => {
                       <GorgeousBoxBorder>
                         <article className="flex items-center gap-4 bg-card py-4 px-8 border shadow-input rounded-lg dark:shadow-none">
                           <div className="">
-                            <Users className="text-accent h-8 w-8 shrink-0 " />
+                            <Icons.users className="text-accent h-8 w-8 shrink-0 " />
                           </div>
                           <div className="flex flex-col">
                             <h4 className="text-card-foreground">Pasajeros</h4>
@@ -653,18 +640,12 @@ const SingleSpecialTrip = () => {
                   </div>
                 </div>
 
-                {tripData.passengers && tripData.passengers.length > 0 ? (
-                  <SpecialPassengersDatatable
-                    isLoading={isLoading}
-                    tripPassengers={passengers}
-                    columns={specialPassengerColumns}
-                    handleDelete={handleDelete}
-                  />
-                ) : (
-                  <div className="mx-auto my-3">
-                    <p>El viaje no tiene pasajeros por el momento</p>
-                  </div>
-                )}
+                <SpecialPassengersDatatable
+                  isLoading={isLoading}
+                  tripPassengers={passengers}
+                  columns={specialPassengerColumns}
+                  handleDelete={handleDelete}
+                />
               </div>
             </div>
           )}

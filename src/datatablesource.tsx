@@ -1,7 +1,17 @@
-import { Clock, User } from "lucide-react";
+import { Clock, User as UserIcon } from "lucide-react";
 import moment from "moment";
 import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
 import TodayDate from "./components/TodayDate";
+import {
+  Passenger,
+  Publication,
+  SpecialPassenger,
+  SpecialTrip,
+  Trip,
+  User,
+} from "./types/types";
+import { ColumnDef } from "@tanstack/react-table";
+import { convertToArgentineTimezone } from "./lib/utils/convertToArgentineTimezone";
 
 const formatDate = (date: string) => {
   const momentDate = moment.utc(date, "YYYY-MM-DDTHH:mm:ss.SSSZ");
@@ -18,57 +28,55 @@ moment.locale("es", {
 
 const getTodayDate = moment().format("ddd DD/MM");
 
-export const userColumns = [
+export const userColumns: ColumnDef<User>[] = [
   {
-    field: "user",
-    headerName: "Nombre completo",
-    width: 230,
-    renderCell: (params: any) => {
+    accessorKey: "fullName",
+    header: "Nombre completo",
+    cell: ({ row }) => {
+      const user = row.original as User;
       return (
         <div className="flex items-center gap-2">
           <Avatar className="w-10 h-10">
             <AvatarImage
               className="origin-center hover:origin-bottom hover:scale-105 transition-all duration-200 z-90 align-middle"
-              src={params.row.image || ""}
+              src={user.image || ""}
               alt="avatar"
             />
             <AvatarFallback>
-              <User className="w-10 h-10" />
+              <UserIcon className="w-10 h-10" />
             </AvatarFallback>
           </Avatar>
-          {params.row.fullName}
+          {user.fullName}
         </div>
       );
     },
   },
   {
-    field: "phone",
-    headerName: "Celular",
-    width: 180,
+    accessorKey: "phone",
+    header: "Celular",
+    enableGlobalFilter: false,
   },
   {
-    field: "dni",
-    headerName: "DNI",
-    width: 180,
+    accessorKey: "dni",
+    header: "DNI",
+    enableGlobalFilter: false,
   },
   {
-    field: "username",
-    headerName: "Usuario",
-    width: 160,
+    accessorKey: "username",
+    header: "Usuario",
   },
   {
-    field: "email",
-    headerName: "Email",
-    flex: 1,
+    accessorKey: "email",
+    header: "Email",
   },
   {
-    field: "isActive",
-    headerName: "Estado cuenta",
-    width: 120,
-    renderCell: (params: any) => {
+    accessorKey: "status",
+    enableGlobalFilter: false,
+    header: "Estado cuenta",
+    cell: ({ row }) => {
       return (
         <div className="flex items-center gap-2">
-          {params.row.status === "Active" ? (
+          {row.getValue("status") === "Active" ? (
             <p className="text-green-600">Activa</p>
           ) : (
             <p className="text-red-600">Pendiente</p>
@@ -79,155 +87,230 @@ export const userColumns = [
   },
 ];
 
-export const tripColumns = [
+export const tripColumns: ColumnDef<Trip>[] = [
   {
-    field: "date",
-    headerName: "Fecha",
-    width: 150,
-    renderCell: (params: any) => {
-      const formattedDate = formatDate(params.row.date);
+    accessorKey: "date",
+    header: "Fecha",
+    cell: ({ row }) => {
+      const date = row.getValue("date") as string;
+      const formattedDate = formatDate(date);
       const isToday = formattedDate === getTodayDate;
 
       return (
         <div className="flex items-center gap-1">
           <p>{formattedDate}</p>
-          {params.row.date && isToday ? <TodayDate /> : ""}
+          {date && isToday ? <TodayDate /> : ""}
         </div>
       );
     },
   },
-  { field: "name", headerName: "Nombre", flex: 1 },
+  { accessorKey: "name", header: "Nombre" },
   {
-    field: "from",
-    headerName: "Salida",
-    flex: 1,
-    renderCell: (params: any) => {
+    accessorKey: "from",
+    header: "Salida",
+    cell: ({ row }) => {
+      const trip = row.original;
       return (
         <div className="flex flex-col gap-[2px]">
-          {params.row.from}
+          {trip.from}
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4 text-accent shrink-0" />
-            {params.row.departureTime}
+            {trip.departureTime}
           </div>
         </div>
       );
     },
   },
   {
-    field: "to",
-    headerName: "Llegada",
-    flex: 1,
-    renderCell: (params: any) => {
+    accessorKey: "to",
+    header: "Llegada",
+    cell: ({ row }) => {
+      const trip = row.original;
       return (
         <div className="flex flex-col gap-[2px]">
-          {params.row.to}
+          {trip.to}
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4 text-accent shrink-0" />
-            {params.row.arrivalTime}
+            {trip.arrivalTime}
           </div>
         </div>
       );
     },
   },
-
   {
-    field: "price",
-    headerName: "Precio",
-    width: 120,
-    renderCell: (params: any) => {
-      return <div className="">${params.row.price}</div>;
+    accessorKey: "price",
+    header: "Precio",
+    cell: ({ row }) => {
+      const price = row.getValue("price") as number;
+      return <div className="">${price}</div>;
     },
   },
   {
-    field: "passengers",
-    headerName: "Pasajeros",
-    width: 120,
-    renderCell: (params: any) => {
-      return params.row.passengers ? (
-        <div className="">{params.row.passengers.length}</div>
+    accessorKey: "passengers",
+    header: "Pasajeros",
+    cell: ({ row }) => {
+      const passengers = row.getValue("passengers") as Passenger[];
+      return passengers ? (
+        <div className="">{passengers.length}</div>
       ) : (
-        "-"
+        <span>0</span>
       );
     },
   },
-
   {
-    field: "maxCapacity",
-    headerName: "Cap. máxima",
-    width: 120,
-    renderCell: (params: any) => {
-      return <div className="">{params.row.maxCapacity}</div>;
+    accessorKey: "maxCapacity",
+    header: "Cap. Máxima",
+    cell: ({ row }) => {
+      const maxCapacity = row.getValue("maxCapacity") as number;
+      return <div className="">{maxCapacity}</div>;
     },
   },
 ];
 
-export const specialTripColumns = [
+export const userTripsColumns: ColumnDef<UserTrips>[] = [
   {
-    field: "date",
-    headerName: "Fecha",
-    width: 150,
-    renderCell: (params: any) => {
-      const formattedDate = formatDate(params.row.date);
+    accessorKey: "date",
+    header: "Fecha",
+    cell: ({ row }) => {
+      const date = row.getValue("date") as string;
+      const formattedDate = formatDate(date);
       const isToday = formattedDate === getTodayDate;
 
       return (
         <div className="flex items-center gap-1">
           <p>{formattedDate}</p>
-          {params.row.date && isToday ? <TodayDate /> : ""}
+          {date && isToday ? <TodayDate /> : ""}
         </div>
       );
     },
   },
-  { field: "name", headerName: "Nombre", flex: 1 },
+  { accessorKey: "name", header: "Nombre" },
   {
-    field: "from",
-    headerName: "Salida",
-    flex: 1,
-    renderCell: (params: any) => {
+    accessorKey: "from",
+    header: "Salida",
+    cell: ({ row }) => {
+      const trip = row.original;
       return (
         <div className="flex flex-col gap-[2px]">
-          {params.row.from}
+          {trip.from}
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4 text-accent shrink-0" />
-            {params.row.departureTime}
+            {trip.departureTime}
           </div>
         </div>
       );
     },
   },
   {
-    field: "price",
-    headerName: "Precio",
-    width: 120,
-    renderCell: (params: any) => {
-      return <div className="">${params.row.price}</div>;
+    accessorKey: "to",
+    header: "Llegada",
+    cell: ({ row }) => {
+      const trip = row.original;
+      return (
+        <div className="flex flex-col gap-[2px]">
+          {trip.to}
+          <div className="flex items-center gap-1">
+            <Clock className="h-4 w-4 text-accent shrink-0" />
+            {trip.arrivalTime}
+          </div>
+        </div>
+      );
     },
   },
   {
-    field: "passengers",
-    headerName: "Pasajeros",
-    width: 120,
-    renderCell: (params: any) => {
-      return <div className="">{params.row.passengers.length}</div>;
-    },
-  },
-  {
-    field: "maxCapacity",
-    headerName: "Cap. máxima",
-    width: 120,
-    renderCell: (params: any) => {
-      return <div className="mx-auto">{params.row.maxCapacity}</div>;
+    accessorKey: "price",
+    header: "Precio",
+    cell: ({ row }) => {
+      const price = row.getValue("price") as number;
+      return <div className="">${price}</div>;
     },
   },
 ];
 
-export const passengerColumns = [
+export type UserTrips = {
+  id: string;
+  name: string;
+  date: string;
+  from: string;
+  to: string;
+  departureTime: string;
+  arrivalTime: string;
+  maxCapacity: number;
+  price: number;
+  available: boolean;
+};
+
+export const specialTripColumns: ColumnDef<SpecialTrip>[] = [
   {
-    field: "user",
-    headerName: "Nombre completo",
-    flex: 1,
-    renderCell: (params: any) => {
-      const isPassenger = params.row.createdBy;
+    accessorKey: "date",
+    header: "Fecha",
+    cell: ({ row }) => {
+      const date = row.getValue("date") as string;
+      const formattedDate = formatDate(date);
+      const isToday = formattedDate === getTodayDate;
+
+      return (
+        <div className="flex items-center gap-1">
+          <p>{formattedDate}</p>
+          {date && isToday ? <TodayDate /> : ""}
+        </div>
+      );
+    },
+  },
+  { accessorKey: "name", header: "Nombre" },
+  {
+    accessorKey: "from",
+    header: "Salida",
+    cell: ({ row }) => {
+      const specialTrip = row.original;
+      return (
+        <div className="flex flex-col gap-[2px]">
+          {specialTrip.from}
+          <div className="flex items-center gap-1">
+            <Clock className="h-4 w-4 text-accent shrink-0" />
+            {specialTrip.departureTime}
+          </div>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "price",
+    header: "Precio",
+    cell: ({ row }) => {
+      const price = row.getValue("price") as number;
+      return <div className="">${price}</div>;
+    },
+  },
+  {
+    accessorKey: "passengers",
+    header: "Pasajeros",
+    cell: ({ row }) => {
+      const passengers = row.getValue("passengers") as Passenger[];
+      return passengers ? (
+        <div className="">{passengers.length}</div>
+      ) : (
+        <span>0</span>
+      );
+    },
+  },
+  {
+    accessorKey: "maxCapacity",
+    header: "Cap. máxima",
+    cell: ({ row }) => {
+      const maxCapacity = row.getValue("maxCapacity") as number;
+      return <div className="mx-auto">{maxCapacity}</div>;
+    },
+  },
+];
+
+export const passengerColumns: ColumnDef<Passenger>[] = [
+  {
+    accessorKey: "user",
+    header: "Nombre completo",
+    cell: ({ row }) => {
+      const passenger = row.original;
+      const isPassenger = passenger.createdBy;
       return (
         <div className="flex items-center gap-2">
           {isPassenger ? (
@@ -235,18 +318,18 @@ export const passengerColumns = [
               <Avatar className="w-10 h-10">
                 <AvatarImage
                   className="origin-center hover:origin-bottom hover:scale-105 transition-all duration-200 z-90 align-middle"
-                  src={params.row.createdBy?.image || ""}
+                  src={passenger.createdBy?.image || ""}
                   alt="avatar"
                 />
                 <AvatarFallback>
-                  <User className="w-10 h-10" />
+                  <UserIcon className="w-10 h-10" />
                 </AvatarFallback>
               </Avatar>
-              <span>{params.row.createdBy.fullName}</span>
+              <span>{passenger.createdBy?.fullName}</span>
             </>
           ) : (
             <span>
-              {params.row.fullName ? params.row.fullName : "Pasajero anónimo"}
+              {passenger.fullName ? passenger.fullName : "Pasajero anónimo"}
             </span>
           )}
         </div>
@@ -254,36 +337,36 @@ export const passengerColumns = [
     },
   },
   {
-    field: "addressCda",
-    headerName: "Dirección (Carmen)",
-    flex: 1,
-    renderCell: (params: any) => {
-      const isPassenger = params.row.createdBy;
+    accessorKey: "addressCda",
+    header: "Dirección (Carmen)",
+    cell: ({ row }) => {
+      const passenger = row.original;
+      const isPassenger = passenger.createdBy;
       return (
         <div className="">
           {isPassenger ? (
             <div className="flex flex-col gap-1">
               <p className="flex items-center gap-1">
-                <span>{params.row.createdBy.addressCda.street}</span>
-                <span>{params.row.createdBy.addressCda.streetNumber}</span>
+                <span>{passenger.createdBy?.addressCda.street}</span>
+                <span>{passenger.createdBy?.addressCda.streetNumber}</span>
               </p>
-              <span>Entre: {params.row.createdBy.addressCda.crossStreets}</span>
+              <span>Entre: {passenger.createdBy?.addressCda.crossStreets}</span>
             </div>
           ) : (
             <div className="flex flex-col gap-1">
               <p className="flex items-center gap-1">
                 <span>
-                  {params.row.addressCda ? params.row.addressCda.street : "-"}
+                  {passenger.addressCda ? passenger.addressCda.street : "-"}
                 </span>
                 <span>
-                  {params.row.addressCda
-                    ? params.row.addressCda.streetNumber
+                  {passenger.addressCda
+                    ? passenger.addressCda.streetNumber
                     : "-"}
                 </span>
               </p>
               <span>
-                {params.row.addressCda
-                  ? `Entre: ${params.row.addressCda.crossStreets}`
+                {passenger.addressCda
+                  ? `Entre: ${passenger.addressCda.crossStreets}`
                   : "-"}
               </span>
             </div>
@@ -293,19 +376,19 @@ export const passengerColumns = [
     },
   },
   {
-    field: "addressCapital",
-    headerName: "Dirección (Capital)",
-    flex: 1,
-    renderCell: (params: any) => {
-      const isPassenger = params.row.createdBy;
+    accessorKey: "addressCapital",
+    header: "Dirección (Capital)",
+    cell: ({ row }) => {
+      const passenger = row.original;
+      const isPassenger = passenger.createdBy;
 
       return (
         <p className="">
           {isPassenger ? (
-            <span>{params.row.createdBy.addressCapital}</span>
+            <span>{passenger.createdBy?.addressCapital}</span>
           ) : (
             <span>
-              {params.row.addressCapital ? params.row.addressCapital : "-"}
+              {passenger.addressCapital ? passenger.addressCapital : "-"}
             </span>
           )}
         </p>
@@ -313,60 +396,111 @@ export const passengerColumns = [
     },
   },
   {
-    field: "phone",
-    headerName: "Celular",
-    width: 150,
-    renderCell: (params: any) => {
-      const isPassenger = params.row.createdBy;
+    accessorKey: "phone",
+    header: "Celular",
+    cell: ({ row }) => {
+      const passenger = row.original;
+      const isPassenger = passenger.createdBy;
       return (
         <p className="">
-          {isPassenger ? <span>{params.row.createdBy.phone}</span> : "-"}
+          {isPassenger ? <span>{passenger.createdBy?.phone}</span> : "-"}
         </p>
       );
     },
   },
   {
-    field: "dni",
-    headerName: "DNI",
-    width: 150,
-    renderCell: (params: any) => {
-      const isPassenger = params.row.createdBy;
+    accessorKey: "dni",
+    header: "DNI",
+    cell: ({ row }) => {
+      const passenger = row.original;
+      const isPassenger = passenger.createdBy;
       return (
         <p className="">
-          {isPassenger ? <span>{params.row.createdBy.dni}</span> : "-"}
+          {isPassenger ? <span>{passenger.createdBy?.dni}</span> : "-"}
         </p>
       );
     },
   },
 ];
 
-export const specialPassengerColumns = [
+export const specialPassengerColumns: ColumnDef<SpecialPassenger>[] = [
   {
-    field: "fullName",
-    headerName: "Nombre completo",
-    width: 230,
-    renderCell: (params: any) => {
+    accessorKey: "fullName",
+    header: "Nombre completo",
+    cell: ({ row }) => {
+      const fullName = row.getValue("fullName") as string;
       return (
         <p className="flex items-center gap-2">
-          {params.row.fullName ? params.row.fullName : "Pasajero anónimo"}
+          {fullName ? fullName : "Pasajero anónimo"}
         </p>
       );
     },
   },
   {
-    field: "dni",
-    headerName: "DNI",
-    width: 130,
-    renderCell: (params: any) => {
-      return <p className="">{params.row.dni ? params.row.dni : "-"}</p>;
+    accessorKey: "dni",
+    header: "DNI",
+    cell: ({ row }) => {
+      const dni = row.getValue("dni") as string;
+      return <p className="">{dni ? dni : "-"}</p>;
     },
   },
   {
-    field: "_id",
-    headerName: "ID",
-    width: 230,
-    renderCell: (params: any) => {
-      return <p className="flex items-center gap-2">{params.row._id}</p>;
+    accessorKey: "_id",
+    header: "ID",
+    cell: ({ row }) => {
+      const _id = row.getValue("_id") as string;
+      return <p className="flex items-center gap-2">{_id}</p>;
+    },
+  },
+];
+
+export const publicationsColumns: ColumnDef<Publication>[] = [
+  {
+    accessorKey: "title",
+    header: "Título",
+  },
+  {
+    accessorKey: "subtitle",
+    header: "Subtítulo",
+  },
+  {
+    accessorKey: "description",
+    header: "Descripción",
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Creado",
+    cell: ({ row }) => {
+      const createdAt = row.getValue("createdAt") as string;
+      const { datePart, timePart } = convertToArgentineTimezone(createdAt);
+      return (
+        <div className="flex items-center gap-2 text-sm">
+          {datePart}{" "}
+          <span className="text-muted-foreground text-xs font-extralight">
+            {timePart}
+          </span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "image",
+    header: "Imagen",
+    cell: ({ row }) => {
+      const publication = row.original as Publication;
+      return (
+        <>
+          {publication.image && (
+            <div className="relative h-24 w-18 ">
+              <img
+                src={publication.image}
+                alt="Imagen de la publicación"
+                className="h-24 w-18"
+              />
+            </div>
+          )}
+        </>
+      );
     },
   },
 ];

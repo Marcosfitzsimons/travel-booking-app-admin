@@ -5,21 +5,21 @@ import SpecialTripsDatatable from "../components/SpecialTripsDatatable";
 import { useLocation } from "react-router-dom";
 import { ListProps } from "@/types/props";
 import Breadcrumb from "@/components/Breadcrumb";
-import { ChevronsRight } from "lucide-react";
+import PublicationsDatatable from "../components/PublicationsDatatable";
 
-const List = ({ icon, title, columns, linkText }: ListProps) => {
+const List = <TData, TValue>({
+  icon,
+  title,
+  columns,
+  linkText,
+}: ListProps<TData, TValue>) => {
   const location = useLocation();
   const path = location.pathname.split("/")[1];
 
   return (
     <section className="flex flex-col gap-5">
-      <Breadcrumb>
-        <p className="flex items-center gap-1 text-card-foreground">
-          {icon}
-          Listas
-          <ChevronsRight className="w-5 h-5" />
-          {title}
-        </p>
+      <Breadcrumb page="Listas" icon={icon}>
+        {title}
       </Breadcrumb>
       <SectionTitle>{title}</SectionTitle>
       {path === "users" ? (
@@ -28,6 +28,8 @@ const List = ({ icon, title, columns, linkText }: ListProps) => {
         <TripsDatatable columns={columns} linkText={linkText} />
       ) : path === "special-trips" ? (
         <SpecialTripsDatatable columns={columns} linkText={linkText} />
+      ) : path === "publications" ? (
+        <PublicationsDatatable columns={columns} linkText={linkText} />
       ) : null}
     </section>
   );

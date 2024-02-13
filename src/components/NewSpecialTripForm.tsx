@@ -15,11 +15,9 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 
 const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const [departureTimeValue, setDepartureTimeValue] = useState("10:00");
   const [isAddPassengers, setIsAddPassengers] = useState(false);
-  const [defaultPassengerCount, setDefaultPassengerCount] = useState(1);
-  const [err, setErr] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const axiosPrivate = useAxiosPrivate();
@@ -38,12 +36,12 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
   } = useForm({
     defaultValues: {
       name: "",
-      date: null,
+      date: undefined,
       from: "",
       departureTime: "07:00",
       price: "",
       maxCapacity: 19,
-      defaultPassengerCount: defaultPassengerCount,
+      defaultPassengerCount: 1,
     },
   });
 
@@ -62,7 +60,7 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
     try {
       await axiosPrivate.post(`/special-trips`, {
         ...data,
-        date: startDate,
+        date: date,
         departureTime: departureTimeValue,
         add_passengers: isAddPassengers,
         default_passenger_count: defaultPassengerCount,
@@ -126,10 +124,7 @@ const NewSpecialTripForm = ({ inputs }: NewTripFormProps) => {
       <div className="w-full flex flex-col gap-2 items-center lg:basis-2/3 lg:grid lg:grid-cols-2 lg:gap-3">
         <div className="grid w-full items-center gap-2">
           <Label htmlFor="date">Fecha</Label>
-          <DatePickerContainer
-            setStartDate={setStartDate}
-            startDate={startDate}
-          />
+          <DatePickerContainer isForm={true} setDate={setDate} date={date} />
         </div>
         <div className="w-full flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
           <div className="grid w-full items-center gap-2 lg:w-[155px]">

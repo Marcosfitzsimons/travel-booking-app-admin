@@ -4,7 +4,7 @@ import { Toaster } from "./components/ui/toaster";
 import Login from "./pages/Login";
 import Header from "./components/Header";
 import SideBar from "./components/SideBar";
-import Publications from "./pages/Publications";
+import Publications from "./components/PublicationsDatatable";
 import NewTrip from "./pages/NewTrip";
 import NewUser from "./pages/NewUser";
 import SingleUser from "./pages/SingleUser";
@@ -14,6 +14,7 @@ import {
   tripColumns,
   userColumns,
   specialTripColumns,
+  publicationsColumns,
 } from "./datatablesource";
 import SingleTrip from "./pages/SingleTrip";
 import NotFound from "./pages/NotFound";
@@ -24,13 +25,14 @@ import SinglePublication from "./pages/SinglePublication";
 import NewPublication from "./pages/NewPublication";
 import SingleSpecialTrip from "./pages/SingleSpecialTrip";
 import NewSpecialTrip from "./pages/NewSpecialTrip";
-import { Map, Users } from "lucide-react";
+import { Map, Newspaper, Users } from "lucide-react";
 import YearlyIncomes from "./pages/YearlyIncomes";
 import useAuth from "./hooks/useAuth";
 import PersistLogin from "./components/PersistLogin";
 import Dashboard from "./pages/Dashboard";
 import PredefinedTrips from "./pages/PredefinedTrips";
 import MonthlyIncomes from "./pages/MonthlyIncomes";
+import { Icons } from "./components/icons";
 
 type Props = {
   children: ReactElement;
@@ -95,7 +97,9 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <List
-                          icon={<Users className="w-5 h-5 text-accent" />}
+                          icon={
+                            <Users className="w-5 h-5 text-muted-foreground" />
+                          }
                           columns={userColumns}
                           title="Usuarios"
                           linkText="Agregar usuario"
@@ -126,7 +130,9 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <List
-                          icon={<Map className="w-5 h-5 text-accent" />}
+                          icon={
+                            <Map className="w-5 h-5 text-muted-foreground" />
+                          }
                           columns={tripColumns}
                           title="Viajes semanales"
                           linkText="Agregar viaje"
@@ -170,7 +176,9 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <List
-                          icon={<Map className="w-5 h-5 text-accent" />}
+                          icon={
+                            <Map className="w-5 h-5 text-muted-foreground" />
+                          }
                           columns={specialTripColumns}
                           title="Viajes particulares"
                           linkText="Agregar viaje particular"
@@ -216,7 +224,14 @@ function App() {
                     index
                     element={
                       <ProtectedRoute>
-                        <Publications />
+                        <List
+                          icon={
+                            <Icons.newspaper className="w-5 h-5 text-muted-foreground" />
+                          }
+                          columns={publicationsColumns}
+                          title="Publicaciones"
+                          linkText="Agregar publicacion"
+                        />
                       </ProtectedRoute>
                     }
                   />

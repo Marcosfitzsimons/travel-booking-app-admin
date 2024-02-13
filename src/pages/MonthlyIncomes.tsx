@@ -1,14 +1,5 @@
 import SectionTitle from "@/components/SectionTitle";
 import Breadcrumb from "@/components/Breadcrumb";
-import {
-  BadgeDollarSign,
-  CalendarDays,
-  ChevronsRight,
-  LineChart,
-  TrendingDown,
-  TrendingUp,
-  X,
-} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/ui/use-toast";
@@ -25,7 +16,6 @@ import {
 import Loading from "@/components/Loading";
 import { Income } from "@/context/AuthContext";
 import GorgeousBorder from "@/components/GorgeousBorder";
-import { Separator } from "@radix-ui/react-separator";
 import GorgeousBoxBorder from "@/components/GorgeousBoxBorder";
 import {
   getLowestFiveIncomes,
@@ -36,6 +26,7 @@ import {
 } from "@/lib/utils/incomes/calculateIncomes";
 import IncomeStatistics from "@/components/IncomeStatistics";
 import { currentYear } from "@/lib/utils/getCurrentYear";
+import { Icons } from "@/components/icons";
 
 const MonthlyIncomes = () => {
   const [monthlyIncomes, setMonthlyIncomes] = useState<Income[]>([]);
@@ -93,8 +84,8 @@ const MonthlyIncomes = () => {
           variant: "destructive",
           title: (
             <div className="flex gap-1">
-              {<X className="h-5 w-5 text-destructive shrink-0" />} No hay
-              ingresos disponibles
+              {<Icons.close className="h-5 w-5 text-destructive shrink-0" />} No
+              hay ingresos disponibles
             </div>
           ) as any,
           description: "No se han registrado ingresos hasta el momento",
@@ -104,8 +95,8 @@ const MonthlyIncomes = () => {
           variant: "destructive",
           title: (
             <div className="flex gap-1">
-              {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-              cargar información
+              {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}{" "}
+              Error al cargar información
             </div>
           ) as any,
           description: errorMsg
@@ -127,15 +118,13 @@ const MonthlyIncomes = () => {
   }, [monthlyIncomes]);
 
   return (
-    <section className="flex flex-col gap-16">
+    <section className="flex flex-col gap-10">
       <div className="flex flex-col gap-5">
-        <Breadcrumb>
-          <p className="flex items-center gap-1 text-card-foreground">
-            <LineChart className="h-5 w-5 text-accent" />
-            Ganancias
-            <ChevronsRight className="w-5 h-5" />
-            Resumen mensual
-          </p>
+        <Breadcrumb
+          page="Ganancias"
+          icon={<Icons.lineChart className="h-5 w-5" />}
+        >
+          Resumen mensual
         </Breadcrumb>
         <SectionTitle>Resumen ganancias mensuales</SectionTitle>
       </div>
@@ -154,7 +143,7 @@ const MonthlyIncomes = () => {
           after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"
                 >
                   <p className="rounded-lg bg-card p-1 border flex gap-1 shadow-input sm:px-3 dark:shadow-none">
-                    <BadgeDollarSign className="hidden sm:flex shrink-0 w-5 h-5 self-center" />
+                    <Icons.badgeDollarSign className="hidden sm:flex shrink-0 w-5 h-5 self-center" />
                     Ganancias acumuladas mes seleccionado
                     <span className="text-[#3d8f78] dark:text-[rgba(75,270,200,1)] font-semibold">
                       ${totalIncomes}
@@ -168,7 +157,7 @@ const MonthlyIncomes = () => {
                   onValueChange={(v) => setMonthValue(Number(v))}
                 >
                   <SelectTrigger className="w-[180px] ">
-                    <CalendarDays className="w-5 h-5 relative bottom-[1px]" />
+                    <Icons.calendar className="w-5 h-5 relative bottom-[1px]" />
                     <SelectValue placeholder="Mes" />
                   </SelectTrigger>
                   <SelectContent>
@@ -207,10 +196,10 @@ const MonthlyIncomes = () => {
             )}
           </div>
         )}
-        <div className="relative bottom-8 w-full max-w-md mx-auto flex flex-col gap-2 2xl:basis-[30%] ">
+        <div className="w-full max-w-md mx-auto flex flex-col gap-2 2xl:basis-[30%] ">
           <IncomeStatistics
             icon={
-              <TrendingUp className="w-5 h-5 text-[#3d8f78] lg:w-6 lg:h-6 dark:text-[rgba(75,270,200,1)]" />
+              <Icons.trendingUp className="w-5 h-5 text-[#3d8f78] lg:w-6 lg:h-6 dark:text-[rgba(75,270,200,1)]" />
             }
             title="Viajes con mayores ingresos"
             incomes={getTopFiveIncomes(monthlyIncomes)}
@@ -219,7 +208,7 @@ const MonthlyIncomes = () => {
           />
           <IncomeStatistics
             icon={
-              <TrendingDown className="w-5 h-5 text-destructive lg:w-6 lg:h-6" />
+              <Icons.trendingDown className="w-5 h-5 text-destructive lg:w-6 lg:h-6" />
             }
             title="Viajes con menores ingresos"
             incomes={getLowestFiveIncomes(monthlyIncomes)}

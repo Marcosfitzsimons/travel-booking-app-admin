@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Check, Loader2, Trash2, X } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,32 +12,31 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { useToast } from "../hooks/ui/use-toast";
-import { Eye } from "lucide-react";
-import { getRowHeight } from "@/lib/utils/getRowHeight";
 import ActionButtonDatatable from "./ActionButtonDatatable";
 import TrashButtonDatatable from "./TrashButtonDatatable";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
-
-type TripProps = {
-  id: string;
-  name: string;
-  date: string;
-  from: string;
-  to: string;
-  departureTime: string;
-  arrivalTime: string;
-  maxCapacity: number;
-  price: number;
-  available: boolean;
-};
-
-type MyTripsDataTableProps = {
-  columns: any;
-  userId: string;
-  userTrips: TripProps[];
-};
+import { MyTripsDataTableProps } from "@/types/props";
+import { UserTrips } from "@/types/types";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { Icons } from "./icons";
+import { Button } from "./ui/button";
+import {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  Table,
+  TableRow,
+} from "./ui/table";
+import GorgeousBoxBorder from "./GorgeousBoxBorder";
 
 const MyTripsDatatable = ({
   columns,
@@ -46,7 +44,6 @@ const MyTripsDatatable = ({
   userId,
 }: MyTripsDataTableProps) => {
   const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState(false);
   const [list, setList] = useState(userTrips);
 
   const { setAuth } = useAuth();
@@ -58,12 +55,11 @@ const MyTripsDatatable = ({
 
   const handleDelete = async (tripId: string) => {
     setLoading(true);
-    setErr(false);
     toast({
       variant: "loading",
       description: (
         <div className="flex gap-1">
-          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          <Icons.spinner className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
           Eliminando pasajero del viaje...
         </div>
       ),
@@ -73,7 +69,7 @@ const MyTripsDatatable = ({
       toast({
         description: (
           <div className="flex gap-1">
-            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Lugar
+            {<Icons.check className="h-5 w-5 text-green-600 shrink-0" />} Lugar
             cancelado con éxito
           </div>
         ),
@@ -89,13 +85,12 @@ const MyTripsDatatable = ({
       }
       const errorMsg = err.response?.data?.msg;
       setLoading(false);
-      setErr(true);
       toast({
         variant: "destructive",
         title: (
           <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-            eliminar pasajero del viaje
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}{" "}
+            Error al eliminar pasajero del viaje
           </div>
         ) as any,
         description: errorMsg
@@ -105,21 +100,21 @@ const MyTripsDatatable = ({
     }
   };
 
-  const actionColumn = [
+  const actionColumn: ColumnDef<UserTrips>[] = [
     {
-      field: "action",
-      headerName: "Acción",
-      width: 170,
-      renderCell: (params: any) => {
+      accessorKey: "action",
+      header: "Acción",
+      cell: ({ row }) => {
+        const userTrip = row.original;
         return (
           <div className="flex items-center gap-2">
             <div className="relative flex items-center">
               <ActionButtonDatatable
                 text="Ver"
                 icon={
-                  <Eye className="absolute left-[13px] top-[5.5px] h-4 w-4 md:h-[18px] md:w-[18px] md:top-[4.5px] md:left-[11.4px]" />
+                  <Icons.eye className="absolute left-[13px] top-[5.5px] h-4 w-4 md:h-[18px] md:w-[18px] md:top-[4.5px] md:left-[11.4px]" />
                 }
-                linkTo={`/trips/${params.row.id}`}
+                linkTo={`/trips/${userTrip.id}`}
               />
             </div>
             <AlertDialog>
@@ -127,7 +122,7 @@ const MyTripsDatatable = ({
                 <AlertDialogTrigger disabled={loading}>
                   <TrashButtonDatatable
                     icon={
-                      <Trash2 className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />
+                      <Icons.trash className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />
                     }
                     text="Borrar"
                   />
@@ -146,7 +141,7 @@ const MyTripsDatatable = ({
                     No, volver al perfil del usuario
                   </AlertDialogCancel>
                   <AlertDialogAction
-                    onClick={() => handleDelete(params.row.id)}
+                    onClick={() => handleDelete(userTrip.id)}
                     className="w-full md:w-auto"
                   >
                     Si, borrar pasajero
@@ -160,52 +155,102 @@ const MyTripsDatatable = ({
     },
   ];
 
+  const table = useReactTable({
+    data: list,
+    columns: actionColumn.concat(columns),
+    getPaginationRowModel: getPaginationRowModel(),
+    getCoreRowModel: getCoreRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 8,
+      },
+    },
+  });
+
   return (
     <div className="h-[500px] w-full max-w-[1400px]">
-      <DataGrid
-        rows={list}
-        columns={actionColumn.concat(columns)}
-        slots={{
-          noRowsOverlay: () => (
-            <div className="h-full flex justify-center items-center">
-              Cargando viajes...
-            </div>
-          ),
-          noResultsOverlay: () => (
-            <div className="h-full flex justify-center items-center">
-              No se encontraron viajes
-            </div>
-          ),
-        }}
-        getRowHeight={getRowHeight}
-        checkboxSelection
-        hideFooterSelectedRowCount
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 9,
-            },
-          },
-        }}
-        pageSizeOptions={[9]}
-        getRowId={(row) => row.id}
-        sx={{
-          borderRadius: "7px",
-          "&>.MuiDataGrid-main": {
-            "&>.MuiDataGrid-columnHeaders": {
-              borderBottom: "none",
-            },
-
-            "& div div div div >.MuiDataGrid-cell": {
-              borderBottom: "none",
-            },
-          },
-          "&>.MuiDataGrid-footerContainer": {
-            borderTop: "none",
-          },
-        }}
-        className="max-w-[1400px]"
-      />
+      <GorgeousBoxBorder>
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id} className="font-bold">
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={actionColumn.concat(columns).length}
+                  className="w-full h-24 text-center"
+                >
+                  {loading
+                    ? "Cargando viajes del usuario..."
+                    : "El usuario no tiene ningún viaje reservado actualmente."}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </GorgeousBoxBorder>
+      <div className="flex items-center justify-end space-x-2 py-2">
+        <div className="flex items-center relative after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-400/10 focus-within:after:shadow-black/40 dark:after:shadow-slate-400/20 after:transition dark:focus-within:after:shadow-slate-400/60">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+            className="text-xs h-7 rounded-lg"
+          >
+            <Icons.chevronLeft className="w-3 aspect-square mr-1" />
+            Anterior
+          </Button>
+        </div>
+        <p className="text-xs">
+          Página {table.getState().pagination.pageIndex + 1} de{" "}
+          {table.getPageCount()}
+        </p>
+        <div className="flex items-center relative after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-400/10 focus-within:after:shadow-black/40 dark:after:shadow-slate-400/20 after:transition dark:focus-within:after:shadow-slate-400/60">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+            className="text-xs h-7 rounded-lg"
+          >
+            Siguiente
+            <Icons.chevronRight className="w-3 aspect-square ml-1" />
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

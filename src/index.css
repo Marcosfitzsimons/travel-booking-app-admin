@@ -51,7 +51,7 @@ input[type="number"] {
 
 @layer base {
   :root {
-    --background: 0 0% 99%;
+    --background: 0 0% 99.5%;
     --foreground: 222 90% 15%;
 
     --muted: 210 40% 96.1%;
@@ -63,7 +63,7 @@ input[type="number"] {
     --card: 0 0% 100%;
     --card-foreground: 250 20% 45%;
 
-    --border: 219 30% 70%;
+    --border: 240 5.9% 90%;
     --input-bg: 0 0% 100%;
     --input: 214.3 31.8% 91.4%;
 

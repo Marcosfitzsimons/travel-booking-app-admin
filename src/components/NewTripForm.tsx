@@ -11,11 +11,11 @@ import { Separator } from "./ui/separator";
 import { NewTripFormProps } from "@/types/props";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
-import { Trip } from "@/types/types";
+import { TripPayload } from "@/types/types";
 import { Check, Loader2, X } from "lucide-react";
 
 const NewTripForm = ({ inputs }: NewTripFormProps) => {
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const [arrivalTimeValue, setArrivalTimeValue] = useState("10:00");
   const [departureTimeValue, setDepartureTimeValue] = useState("10:00");
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,7 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
   } = useForm({
     defaultValues: {
       name: "",
-      date: "",
+      date: undefined,
       from: "",
       departureTime: "10:00",
       arrivalTime: "10:00",
@@ -43,7 +43,7 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
     },
   });
 
-  const handleOnSubmit = async (data: Trip) => {
+  const handleOnSubmit = async (data: TripPayload) => {
     setLoading(true);
     toast({
       variant: "loading",
@@ -57,7 +57,7 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
     try {
       await axiosPrivate.post(`/trips`, {
         ...data,
-        date: startDate,
+        date: date,
         departureTime: departureTimeValue,
         arrivalTime: arrivalTimeValue,
       });
@@ -103,10 +103,7 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
       <div className="w-full flex flex-col gap-2 items-center lg:basis-2/3 lg:grid lg:grid-cols-2 lg:gap-3">
         <div className="grid w-full items-center gap-2">
           <Label htmlFor="date">Fecha</Label>
-          <DatePickerContainer
-            setStartDate={setStartDate}
-            startDate={startDate}
-          />
+          <DatePickerContainer isForm={true} setDate={setDate} date={date} />
         </div>
         <div className="w-full flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
           <div className="grid w-full items-center gap-2 lg:w-[155px]">
@@ -134,7 +131,7 @@ const NewTripForm = ({ inputs }: NewTripFormProps) => {
                 type={input.type}
                 id={input.id}
                 placeholder={input.placeholder}
-                className="pl-8"
+                className="pl-9"
                 {...register(input.id, input.validation)}
               />
             </div>

@@ -177,10 +177,7 @@ const EditProfile = () => {
       <div className="self-start">
         <BackButton linkTo="/mi-perfil" />
       </div>
-      <SectionTitle>
-        <UserCog className="w-6 h-6 text-accent sm:h-7 sm:w-7" />
-        Editar perfil
-      </SectionTitle>
+      <SectionTitle>Editar perfil</SectionTitle>
       {error ? (
         <Error />
       ) : (

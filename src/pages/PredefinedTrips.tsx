@@ -106,19 +106,9 @@ const PredefinedTrips = () => {
 
   return (
     <section className="flex flex-col gap-5 mb-6">
-      <div className="flex flex-col gap-6">
-        <div className="self-start">
-          <BackButton linkTo="/trips" />
-        </div>
-        <Breadcrumb>
-          <p className="flex items-center gap-1 text-card-foreground">
-            <Map className="w-5 h-5 text-accent" />
-            Viajes semanales
-            <ChevronsRight className="w-5 h-5" />
-            Viajes fijos
-          </p>
-        </Breadcrumb>
-      </div>
+      <Breadcrumb page="Viajes semanales" icon={<Map className="w-5 h-5 " />}>
+        Viajes fijos
+      </Breadcrumb>
       <SectionTitle>Viajes fijos</SectionTitle>
       {error ? (
         <Error />

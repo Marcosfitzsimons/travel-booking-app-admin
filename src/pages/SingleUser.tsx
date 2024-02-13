@@ -3,16 +3,6 @@ import axios from "../api/axios";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import {
-  Check,
-  Fingerprint,
-  Loader2,
-  Mail,
-  Phone,
-  Upload,
-  User,
-  X,
-} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import {
   Dialog,
@@ -32,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import SectionTitle from "../components/SectionTitle";
 import DefaultButton from "../components/DefaultButton";
-import { tripColumns } from "../datatablesource";
+import { userTripsColumns } from "../datatablesource";
 import MyTripsDatatable from "../components/MyTripsDatatable";
 import BackButton from "../components/BackButton";
 import { toast } from "../hooks/ui/use-toast";
@@ -49,6 +39,7 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 import Error from "@/components/Error";
 import GorgeousBoxBorder from "@/components/GorgeousBoxBorder";
+import { Icons } from "@/components/icons";
 
 const INITIAL_STATES = {
   _id: "",
@@ -119,8 +110,8 @@ const SingleUser = () => {
         variant: "destructive",
         title: (
           <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-            actualizar estado de la cuenta
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}{" "}
+            Error al actualizar estado de la cuenta
           </div>
         ) as any,
         description:
@@ -132,7 +123,7 @@ const SingleUser = () => {
       variant: "loading",
       description: (
         <div className="flex gap-1">
-          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          <Icons.spinner className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
           Editando estado de la cuenta...
         </div>
       ),
@@ -153,8 +144,8 @@ const SingleUser = () => {
       toast({
         description: (
           <div className="flex gap-1">
-            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Estado de la
-            cuenta se ha actualizado con éxito
+            {<Icons.check className="h-5 w-5 text-green-600 shrink-0" />} Estado
+            de la cuenta se ha actualizado con éxito
           </div>
         ),
       });
@@ -172,8 +163,8 @@ const SingleUser = () => {
         variant: "destructive",
         title: (
           <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />}Error al
-            guardar los cambios
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}Error
+            al guardar los cambios
           </div>
         ) as any,
         description: errorMsg
@@ -193,8 +184,8 @@ const SingleUser = () => {
         variant: "destructive",
         title: (
           <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />}Ha ocurrido un
-            error
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}Ha
+            ocurrido un error
           </div>
         ) as any,
         description: "Es necesario realizar cambios antes de enviar",
@@ -206,7 +197,7 @@ const SingleUser = () => {
       variant: "loading",
       description: (
         <div className="flex gap-1">
-          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          <Icons.spinner className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
           Editando usuario...
         </div>
       ),
@@ -243,8 +234,8 @@ const SingleUser = () => {
       toast({
         description: (
           <div className="flex gap-1">
-            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Cambios
-            guardados con éxito
+            {<Icons.check className="h-5 w-5 text-green-600 shrink-0" />}{" "}
+            Cambios guardados con éxito
           </div>
         ),
       });
@@ -262,8 +253,8 @@ const SingleUser = () => {
         variant: "destructive",
         title: (
           <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-            editar información
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}{" "}
+            Error al editar información
           </div>
         ) as any,
         description: errorMsg
@@ -309,8 +300,8 @@ const SingleUser = () => {
         variant: "destructive",
         title: (
           <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-            cargar información
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}{" "}
+            Error al cargar información
           </div>
         ) as any,
         description:
@@ -377,7 +368,7 @@ const SingleUser = () => {
                     {isEditStatus && (
                       <GorgeousBoxBorder>
                         <div className="relative shadow-md flex flex-col gap-2 py-3 pl-3 pr-8 rounded-lg animate-in bg-card border dark:shadow-none">
-                          <X
+                          <Icons.close
                             onClick={() => setIsEditStatus(false)}
                             className="absolute right-1.5 top-1.5 text-card-foreground cursor-pointer w-4 h-4"
                           />
@@ -454,7 +445,7 @@ const SingleUser = () => {
                                 alt="avatar"
                               />
                               <AvatarFallback>
-                                <User className="w-12 h-12 dark:text-blue-lagoon-100" />
+                                <Icons.user className="w-12 h-12 dark:text-blue-lagoon-100" />
                               </AvatarFallback>
                             </Avatar>
 
@@ -463,7 +454,7 @@ const SingleUser = () => {
                                 htmlFor="image"
                                 className="flex items-center gap-1 cursor-pointer h-7 px-3 py-2 rounded-lg shadow-sm shadow-blue-lagoon-900/30 border bg-card dark:text-blue-lagoon-100 dark:hover:border-zinc-300"
                               >
-                                <Upload className="w-4 h-4 text-accent shrink-0" />
+                                <Icons.upload className="w-4 h-4 text-accent shrink-0" />
                                 Subir{" "}
                               </Label>
                               <Input
@@ -529,7 +520,7 @@ const SingleUser = () => {
                                       Nombre completo
                                     </Label>
                                     <div className="relative flex items-center">
-                                      <User className="z-30 h-5 w-5 text-accent absolute left-[10px] pb-[2px] shrink-0" />
+                                      <Icons.user className="z-30 h-5 w-5 text-accent absolute left-[10px] pb-[2px] shrink-0" />
                                       <Input
                                         type="text"
                                         id="fullName"
@@ -565,7 +556,7 @@ const SingleUser = () => {
                                   <div className="grid w-full items-center gap-2">
                                     <Label htmlFor="email">Email</Label>
                                     <div className="relative flex items-center">
-                                      <Mail className="z-30 top-[11px] h-[18px] w-[18px] text-accent absolute left-[10px] pb-[2px] shrink-0" />
+                                      <Icons.mail className="z-30 top-[11px] h-[18px] w-[18px] text-accent absolute left-[10px] pb-[2px] shrink-0" />
                                       <Input
                                         className="pl-[32px]"
                                         type="email"
@@ -599,7 +590,7 @@ const SingleUser = () => {
                                   <div className="grid w-full items-center gap-2">
                                     <Label htmlFor="tel">Celular</Label>
                                     <div className="relative flex items-center">
-                                      <Phone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] pb-[2px] shrink-0" />
+                                      <Icons.phone className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] pb-[2px] shrink-0" />
                                       <Input
                                         className="pl-[32px]"
                                         type="tel"
@@ -640,7 +631,7 @@ const SingleUser = () => {
                                   <div className="grid w-full items-center gap-2">
                                     <Label htmlFor="dni">DNI</Label>
                                     <div className="relative flex items-center">
-                                      <Fingerprint className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] pb-[2px] shrink-0" />
+                                      <Icons.fingerprint className="z-30 h-[18px] w-[18px] text-accent absolute left-[10px] pb-[2px] shrink-0" />
                                       <Input
                                         type="number"
                                         id="dni"
@@ -774,7 +765,7 @@ const SingleUser = () => {
                 {userData.myTrips && userData.myTrips.length > 0 ? (
                   <MyTripsDatatable
                     userTrips={userData.myTrips}
-                    columns={tripColumns}
+                    columns={userTripsColumns}
                     userId={userData._id}
                   />
                 ) : (

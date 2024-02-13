@@ -29,38 +29,8 @@ import TripTime from "./TripTime";
 import GorgeousBorder from "./GorgeousBorder";
 import TripDate from "./TripDate";
 import TodayDate from "./TodayDate";
-import { Passenger } from "@/types/types";
-
-type Trip = {
-  _id: string;
-  name: string;
-  date: null | undefined | string;
-  from: string;
-  departureTime: string;
-  to: string;
-  arrivalTime: string;
-  maxCapacity: number | undefined;
-  price: number | undefined;
-  passengers: any[];
-};
-
-type TripCardProps = {
-  data: Trip;
-  register: any;
-  handleOnSubmitEdit: any;
-  departureTimeValue: string;
-  isSubmitted: boolean;
-  arrivalTimeValue: string;
-  errors: any;
-  setDepartureTimeValue: any;
-  setIsDialogOpen: any;
-  isDialogOpen: boolean;
-  handleSubmit: any;
-  setStartDate: any;
-  startDate: any;
-  passengers: Passenger[];
-  setArrivalTimeValue: any;
-};
+import { TripCardProps } from "@/types/props";
+import { validateMaxCapacity } from "@/lib/utils/validateMaxCapacity";
 
 const TripCard = ({
   data,
@@ -71,8 +41,8 @@ const TripCard = ({
   setArrivalTimeValue,
   isSubmitted,
   handleOnSubmitEdit,
-  setStartDate,
-  startDate,
+  setDate,
+  date,
   handleSubmit,
   passengers,
   isDialogOpen,
@@ -85,20 +55,6 @@ const TripCard = ({
   moment.locale("es", {
     weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
   });
-
-  const validateMaxCapacity = async (value: any) => {
-    const maxCapacity = parseInt(value, 10);
-
-    if (isNaN(maxCapacity)) {
-      return "Por favor, ingresa un número válido";
-    }
-
-    if (maxCapacity < data.passengers.length) {
-      return "La capacidad máxima debe ser mayor o igual al número actual de pasajeros";
-    }
-
-    return true;
-  };
 
   return (
     <GorgeousBorder className="w-full max-w-[400px] mx-auto">
@@ -243,9 +199,9 @@ const TripCard = ({
                         <div className="grid w-full items-center gap-2">
                           <Label htmlFor="date">Fecha</Label>
                           <DatePickerContainer
-                            setStartDate={setStartDate}
-                            id="date"
-                            startDate={startDate}
+                            setDate={setDate}
+                            isForm={true}
+                            date={date}
                           />
                         </div>
 
@@ -378,7 +334,8 @@ const TripCard = ({
                               {...register("maxCapacity", {
                                 required:
                                   "Por favor, ingresar capacidad máxima del viaje.",
-                                validate: validateMaxCapacity, // Using the custom validation function
+                                validate: (value: string) =>
+                                  validateMaxCapacity(value, passengers.length), // Using the custom validation function
                               })}
                             />
                           </div>

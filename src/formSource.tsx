@@ -267,7 +267,7 @@ export const tripInputs = [
     name: "price",
     label: "Precio",
     type: "number",
-    placeholder: "2500",
+    placeholder: "10000",
     icon: (
       <DollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px] shrink-0" />
     ),
@@ -281,8 +281,8 @@ export const tripInputs = [
         message: "Precio no puede ser menor a 0",
       },
       max: {
-        value: 10000,
-        message: "Precio no puede ser mayor a 10000",
+        value: 30000,
+        message: "Precio no puede ser mayor a $30.000",
       },
     },
   },
@@ -390,7 +390,7 @@ export const specialTripInputs = [
     name: "price",
     label: "Precio",
     type: "number",
-    placeholder: "2500",
+    placeholder: "10000",
     icon: (
       <DollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px] shrink-0" />
     ),
@@ -404,8 +404,8 @@ export const specialTripInputs = [
         message: "Precio no puede ser menor a 0",
       },
       max: {
-        value: 10000,
-        message: "Precio no puede ser mayor a 10000",
+        value: 30000,
+        message: "Precio no puede ser mayor a $30.000",
       },
     },
   },

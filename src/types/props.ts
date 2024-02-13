@@ -1,7 +1,7 @@
 import { Income } from '@/context/AuthContext';
-import { MonthlyIncome, Publication, PublicationInput, TripInput, UserProfileData } from './types';
-import { Column } from './types';
+import { MonthlyIncome, Passenger, Publication, PublicationInput, TripInput, UserProfileData, UserTrips } from './types';
 import { Trip, User } from './types'
+import { ColumnDef } from '@tanstack/react-table';
 export interface NewTripProps {
   inputs: TripInput[];
   title: string;
@@ -18,6 +18,12 @@ export interface IncomeStatisticsProps {
     loading: boolean;
     incomes: Income[]
 }
+
+export interface MyTripsDataTableProps {
+  columns: ColumnDef<UserTrips>[]
+  userId: string;
+  userTrips: UserTrips[];
+};
 
 export interface TopMonthlyIncomesProps {
   incomes: MonthlyIncome[];
@@ -64,14 +70,14 @@ export interface TripItemProps {
   setItems: any;
 }
 
-export interface DataTableProps  {
-  columns: Column[];
+export interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[]
   linkText: string;
 };
 
-export interface NewPassengerProps {
+export interface NewPassengerProps<TData, TValue> {
   title: string;
-  columns: Column[];
+  columns: ColumnDef<TData, TValue>[]
 };
 
 export interface DataBoxProps {
@@ -83,9 +89,9 @@ export interface OverviewChartProps {
   isDashboard?: boolean;
 };
 
-export interface ListProps {
+export interface ListProps<TData, TValue> {
   title: string;
-  columns: Column[];
+  columns: ColumnDef<TData, TValue>[]
   linkText: string;
   icon: any;
 };
@@ -96,18 +102,14 @@ export interface NewUserProps {
 export interface NewTripFormProps  {
   inputs: TripInput[];
 };
-export interface MyTripsDataTableProps {
-  columns: any;
-  userTrips: Trip[];
-  userData: User;
-};
+
 export interface DialogAnonPassengerProps  {
   id: string | undefined;
   setPassengers: any;
 };
 
-export interface UserDataTableProps  {
-  columns: any;
+export interface UserDataTableProps<TData, TValue>  {
+  columns: ColumnDef<TData, TValue>[];
   tripId: string | undefined;
 };
 
@@ -135,3 +137,34 @@ export interface NewPublicationFormProps {
 export interface UserInfoProps {
   userData: UserProfileData;
 }
+
+export interface SearchUserInputProps {
+  filter: string;
+  setFilter: (value: string) => void;
+};
+
+export interface DatePickerProps {
+  date: Date | undefined;
+  isForm?: boolean,
+  isModal?: boolean,
+  setDate: (date: Date | undefined) => void;
+}
+
+
+export interface TripCardProps {
+  data: Trip;
+  register: any;
+  handleOnSubmitEdit: any;
+  departureTimeValue: string;
+  isSubmitted: boolean;
+  arrivalTimeValue: string;
+  errors: any;
+  setDepartureTimeValue: any;
+  setIsDialogOpen: any;
+  isDialogOpen: boolean;
+  handleSubmit: any;
+  setDate: (date: Date | undefined) => void;
+  date: Date | undefined;
+  passengers: Passenger[];
+  setArrivalTimeValue: any;
+};
