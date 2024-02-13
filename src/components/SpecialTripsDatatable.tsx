@@ -113,7 +113,7 @@ const SpecialTripsDatatable = <TData, TValue>({
   ];
 
   const table = useReactTable({
-    data: date ? filteredList : data,
+    data: date ? filteredList : list,
     columns: actionColumn.concat(columns),
     getPaginationRowModel: getPaginationRowModel(),
     getCoreRowModel: getCoreRowModel(),
