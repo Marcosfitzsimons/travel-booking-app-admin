@@ -537,7 +537,17 @@ const SingleSpecialTrip = () => {
                                           required: {
                                             value: true,
                                             message:
-                                              "Por favor, ingresar precio/persona del viaje.",
+                                              "Por favor, ingresar precio/persona del viaje",
+                                          },
+                                          min: {
+                                            value: 0,
+                                            message:
+                                              "Precio no puede ser menor a 0",
+                                          },
+                                          max: {
+                                            value: 30000,
+                                            message:
+                                              "Precio no puede ser mayor a $30.000",
                                           },
                                         })}
                                       />
