@@ -1,6 +1,6 @@
 import { Income } from '@/context/AuthContext';
 import { MonthlyIncome, Passenger, Publication, PublicationInput, TripInput, UserProfileData, UserTrips } from './types';
-import { Trip, User } from './types'
+import { Trip } from './types'
 import { ColumnDef } from '@tanstack/react-table';
 export interface NewTripProps {
   inputs: TripInput[];
@@ -34,7 +34,11 @@ export interface TopMonthlyIncomesProps {
 export interface RecentIncomesProps {
   incomes: Income[];
   loading: boolean;
-  error: boolean;
+}
+
+export interface RecentIncomesDatatableProps {
+  recentIncomes: Income[]
+  loading: boolean;
 }
 
 export interface DayCardProps {

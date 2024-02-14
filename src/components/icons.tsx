@@ -45,10 +45,16 @@ import {
   Edit,
   Upload,
   Phone,
+  HandCoins,
+  LayoutGrid,
+  History,
 } from "lucide-react";
 
 export const Icons = {
   close: X,
+  layoutGrid: LayoutGrid,
+  handCoins: HandCoins,
+  history: History,
   newspaper: Newspaper,
   phone: Phone,
   calendar: CalendarDays,

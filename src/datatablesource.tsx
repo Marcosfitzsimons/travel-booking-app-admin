@@ -9,9 +9,12 @@ import {
   SpecialTrip,
   Trip,
   User,
+  UserTrips,
 } from "./types/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { convertToArgentineTimezone } from "./lib/utils/convertToArgentineTimezone";
+import { Income } from "./context/AuthContext";
+import { formatNumberWithDot } from "./lib/utils/formatNumberWithDot";
 
 const formatDate = (date: string) => {
   const momentDate = moment.utc(date, "YYYY-MM-DDTHH:mm:ss.SSSZ");
@@ -226,19 +229,6 @@ export const userTripsColumns: ColumnDef<UserTrips>[] = [
     },
   },
 ];
-
-export type UserTrips = {
-  id: string;
-  name: string;
-  date: string;
-  from: string;
-  to: string;
-  departureTime: string;
-  arrivalTime: string;
-  maxCapacity: number;
-  price: number;
-  available: boolean;
-};
 
 export const specialTripColumns: ColumnDef<SpecialTrip>[] = [
   {
@@ -500,6 +490,46 @@ export const publicationsColumns: ColumnDef<Publication>[] = [
             </div>
           )}
         </>
+      );
+    },
+  },
+];
+
+export const recentIncomesColumns: ColumnDef<Income>[] = [
+  {
+    accessorKey: "name",
+    header: "Nombre",
+    cell: ({ row }) => {
+      const inc = row.original;
+      return (
+        <div className="flex flex-col items-start">
+          <p className="font-semibold">{inc.name}</p>
+          {inc.incomes ? (
+            <span className="bg-[rgb(82,182,152)] text-xs rounded-full px-2 font-semibold text-white select-none">
+              Viaje semanal
+            </span>
+          ) : (
+            <span className="text-xs rounded-full px-2 bg-[#06b6d4] font-semibold text-white select-none dark:bg-[#0e7490]">
+              Viaje particular
+            </span>
+          )}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "date",
+    header: "Fecha",
+  },
+  {
+    accessorKey: "income",
+    header: "Ingresos",
+    cell: ({ row }) => {
+      const inc = row.original;
+      return (
+        <p className="text-[#54d8b3] dark:text-[rgba(75,270,200,1)] font-semibold">
+          ${formatNumberWithDot(inc.totalIncomes || 0)}
+        </p>
       );
     },
   },

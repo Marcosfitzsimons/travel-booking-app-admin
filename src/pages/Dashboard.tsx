@@ -2,12 +2,12 @@ import Breadcrumb from "@/components/Breadcrumb";
 import Incomes from "@/components/Incomes";
 import SectionTitle from "@/components/SectionTitle";
 import RecentIncomes from "@/components/RecentIncomes";
-import { ChevronsRight, LayoutGrid, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/ui/use-toast";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { useEffect, useState } from "react";
+import { Icons } from "@/components/icons";
 
 const Dashboard = () => {
   const [monthValue, setMonthValue] = useState(() => new Date().getMonth() + 1);
@@ -60,8 +60,8 @@ const Dashboard = () => {
           variant: "destructive",
           title: (
             <div className="flex gap-1">
-              {<X className="h-5 w-5 text-destructive shrink-0" />} No hay
-              ingresos disponibles
+              {<Icons.close className="h-5 w-5 text-destructive shrink-0" />} No
+              hay ingresos disponibles
             </div>
           ) as any,
           description: "No se han registrado ingresos hasta el momento",
@@ -71,8 +71,8 @@ const Dashboard = () => {
           variant: "destructive",
           title: (
             <div className="flex gap-1">
-              {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-              cargar información
+              {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}{" "}
+              Error al cargar información
             </div>
           ) as any,
           description: errorMsg
@@ -92,13 +92,13 @@ const Dashboard = () => {
       <div className="flex flex-col gap-5">
         <Breadcrumb
           page="Inicio"
-          icon={<LayoutGrid className="w-5 h-5 text-muted-foreground" />}
+          icon={<Icons.layoutGrid className="w-5 h-5 text-muted-foreground" />}
         >
           Panel de Control
         </Breadcrumb>
         <SectionTitle>Panel de Control</SectionTitle>
       </div>
-      <div className="w-full flex flex-col gap-10 mb-5 max-w-[1400px] 2xl:flex-row 2xl:justify-between">
+      <div className="w-full flex flex-col gap-12 mb-5 max-w-[1400px] 2xl:flex-row 2xl:gap-5 2xl:justify-between">
         {noIncomes ? (
           <p className="w-full 2xl:basis-[70%]">
             No se han registrado ingresos hasta el momento
@@ -106,7 +106,7 @@ const Dashboard = () => {
         ) : (
           <Incomes incomes={incomes} isLoading={isLoading} error={error} />
         )}
-        <RecentIncomes incomes={incomes} loading={isLoading} error={error} />
+        <RecentIncomes incomes={incomes} loading={isLoading} />
       </div>
     </section>
   );
