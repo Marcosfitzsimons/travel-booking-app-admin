@@ -80,8 +80,9 @@ const getRecentIncomesFormatted = (incomes: Income[]) => {
     if (a.date > b.date) return -1;
     return 0;
   });
-  // Limit to the first 8 elements
-  const limited = sorted.slice(0, 8);
+  
+  // Limit to the first 6 elements
+  const limited = sorted.slice(0, 6);
 
   const incomesFormatted = limited.map((inc: Income) => ({
     ...inc,
