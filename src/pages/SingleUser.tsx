@@ -23,7 +23,7 @@ import {
 import SectionTitle from "../components/SectionTitle";
 import DefaultButton from "../components/DefaultButton";
 import { userTripsColumns } from "../datatablesource";
-import MyTripsDatatable from "../components/MyTripsDatatable";
+import MyTripsDatatable from "../components/datatables/MyTripsDatatable";
 import BackButton from "../components/BackButton";
 import { toast } from "../hooks/ui/use-toast";
 import { Label } from "../components/ui/label";

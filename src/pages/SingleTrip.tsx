@@ -4,7 +4,7 @@ import moment from "moment-timezone";
 import "moment/locale/es";
 import { passengerColumns } from "../datatablesource";
 import BackButton from "../components/BackButton";
-import PassengersDatatable from "../components/PassengersDatatable";
+import PassengersDatatable from "../components/datatables/PassengersDatatable";
 import SectionTitle from "../components/SectionTitle";
 import Loading from "../components/Loading";
 import { useForm } from "react-hook-form";
@@ -12,7 +12,7 @@ import { useToast } from "../hooks/ui/use-toast";
 import { Separator } from "../components/ui/separator";
 import ActionButton from "@/components/ActionButton";
 import TripCard from "@/components/TripCard";
-import DialogAnonPassenger from "@/components/DialogAnonPassenger";
+import DialogAnonPassenger from "@/components/dialogs/DialogAnonPassenger";
 import { convertToDatePickerFormat } from "@/lib/utils/convertToDatePickerFormat";
 import { Passenger, Trip } from "@/types/types";
 import useAuth from "@/hooks/useAuth";
@@ -323,7 +323,7 @@ const SingleTrip = () => {
                               text="Agregar pasajero"
                               linkTo={`/passengers/newPassenger/${id}`}
                               icon={
-                                <Icons.userPlus className="absolute cursor-pointer left-3 top-[5px] h-5 w-5" />
+                                <Icons.userPlus className="mr-1.5 w-5 h-5" />
                               }
                             />
                           </div>

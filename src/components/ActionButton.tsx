@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import GorgeousBoxBorder from "./GorgeousBoxBorder";
 
 type ActionButtonProps = {
   linkTo: string;
@@ -13,10 +12,10 @@ const ActionButton = ({ linkTo, icon, text }: ActionButtonProps) => {
     <div className="flex items-center self-center">
       <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
         <Button
-          className="h-[32px] px-3.5 pl-[35px] relative bg-teal-800/60 text-white shadow-input hover:text-white
+          className="h-[32px] px-3.5 relative bg-teal-800/60 text-white shadow-input hover:text-white
 dark:text-slate-100 dark:bg-teal-700/60 md:text-base dark:hover:text-white dark:shadow-none"
         >
-          <Link to={linkTo}>
+          <Link to={linkTo} className="flex items-center">
             {icon}
             {text}
           </Link>

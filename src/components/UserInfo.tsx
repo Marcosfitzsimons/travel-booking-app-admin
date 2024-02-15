@@ -2,7 +2,7 @@ import { Crop, Fingerprint, Mail, Milestone, Phone, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Separator } from "./ui/separator";
 import { UserInfoProps } from "@/types/props";
-import ChangePasswordDialog from "./ChangePasswordDialog";
+import ChangePasswordDialog from "./dialogs/ChangePasswordDialog";
 import GorgeousBoxBorder from "./GorgeousBoxBorder";
 
 const UserInfo = ({ userData }: UserInfoProps) => {

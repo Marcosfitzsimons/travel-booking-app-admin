@@ -1,7 +1,7 @@
 import { DayCardProps } from "@/types/props";
 import TripItem from "./TripItem";
 import { translateDayOfWeek } from "@/lib/utils/translateDayOfWeek";
-import NewPredefinedTripDialog from "./NewPredefinedTripDialog";
+import NewPredefinedTripDialog from "./dialogs/NewPredefinedTripDialog";
 import GorgeousBorder from "./GorgeousBorder";
 
 const DayCard = ({

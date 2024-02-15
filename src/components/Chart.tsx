@@ -111,7 +111,7 @@ function Chart({ incomes }: ChartProps) {
   };
 
   return (
-    <div className="h-full bg-card border shadow-input rounded-lg dark:shadow-none">
+    <div className="h-full border border-slate-400/60 shadow-input rounded-lg dark:shadow-none dark:border-slate-800">
       <Line data={data} options={options} />
     </div>
   );

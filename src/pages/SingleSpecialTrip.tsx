@@ -4,7 +4,7 @@ import moment from "moment-timezone";
 import "moment/locale/es";
 import { specialPassengerColumns } from "../datatablesource";
 import BackButton from "../components/BackButton";
-import SpecialPassengersDatatable from "../components/SpecialPassengersDatatable";
+import SpecialPassengersDatatable from "../components/datatables/SpecialPassengersDatatable";
 import SectionTitle from "../components/SectionTitle";
 import Loading from "../components/Loading";
 import DefaultButton from "../components/DefaultButton";
@@ -28,7 +28,7 @@ import { convertToDatePickerFormat } from "@/lib/utils/convertToDatePickerFormat
 import { SpecialTrip } from "@/types/types";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
-import DialogAnonSpecialPassenger from "@/components/DialogAnonSpecialPassenger";
+import DialogAnonSpecialPassenger from "@/components/dialogs/DialogAnonSpecialPassenger";
 import Error from "@/components/Error";
 import TripTime from "@/components/TripTime";
 import TripCardDataBox from "@/components/TripCardDataBox";

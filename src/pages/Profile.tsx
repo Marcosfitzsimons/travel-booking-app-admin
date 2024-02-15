@@ -10,7 +10,7 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import Breadcrumb from "@/components/Breadcrumb";
 import Error from "@/components/Error";
 import DataBox from "@/components/DataBox";
-import ChangePasswordDialog from "@/components/ChangePasswordDialog";
+import ChangePasswordDialog from "@/components/dialogs/ChangePasswordDialog";
 import { Icons } from "@/components/icons";
 
 const INITIAL_STATES = {

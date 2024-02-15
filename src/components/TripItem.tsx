@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import TrashButtonDatatable from "./TrashButtonDatatable";
+import TrashButtonDatatable from "./TrashButton";
 import {
   CalendarDays,
   Check,

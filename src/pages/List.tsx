@@ -1,11 +1,11 @@
 import SectionTitle from "../components/SectionTitle";
-import UsersDatatable from "../components/UsersDatatable";
-import TripsDatatable from "../components/TripsDatatable";
-import SpecialTripsDatatable from "../components/SpecialTripsDatatable";
+import UsersDatatable from "../components/datatables/UsersDatatable";
+import TripsDatatable from "../components/datatables/TripsDatatable";
+import SpecialTripsDatatable from "../components/datatables/SpecialTripsDatatable";
 import { useLocation } from "react-router-dom";
 import { ListProps } from "@/types/props";
 import Breadcrumb from "@/components/Breadcrumb";
-import PublicationsDatatable from "../components/PublicationsDatatable";
+import PublicationsDatatable from "../components/datatables/PublicationsDatatable";
 
 const List = <TData, TValue>({
   icon,

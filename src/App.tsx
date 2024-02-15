@@ -4,7 +4,6 @@ import { Toaster } from "./components/ui/toaster";
 import Login from "./pages/Login";
 import Header from "./components/Header";
 import SideBar from "./components/SideBar";
-import Publications from "./components/PublicationsDatatable";
 import NewTrip from "./pages/NewTrip";
 import NewUser from "./pages/NewUser";
 import SingleUser from "./pages/SingleUser";
@@ -25,7 +24,6 @@ import SinglePublication from "./pages/SinglePublication";
 import NewPublication from "./pages/NewPublication";
 import SingleSpecialTrip from "./pages/SingleSpecialTrip";
 import NewSpecialTrip from "./pages/NewSpecialTrip";
-import { Map, Newspaper, Users } from "lucide-react";
 import YearlyIncomes from "./pages/YearlyIncomes";
 import useAuth from "./hooks/useAuth";
 import PersistLogin from "./components/PersistLogin";
@@ -33,16 +31,14 @@ import Dashboard from "./pages/Dashboard";
 import PredefinedTrips from "./pages/PredefinedTrips";
 import MonthlyIncomes from "./pages/MonthlyIncomes";
 import { Icons } from "./components/icons";
-
-type Props = {
-  children: ReactElement;
-};
+import TripsHistory from "./pages/TripsHistory";
+import { ProtectedRouteProps } from "./types/props";
 
 function App() {
   const { auth } = useAuth();
   const user = auth?.user;
 
-  const ProtectedRoute = ({ children }: Props) => {
+  const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     if (!user) {
       return <Navigate to="/login" />;
     }
@@ -98,7 +94,7 @@ function App() {
                       <ProtectedRoute>
                         <List
                           icon={
-                            <Users className="w-5 h-5 text-muted-foreground" />
+                            <Icons.users className="w-5 h-5 text-muted-foreground" />
                           }
                           columns={userColumns}
                           title="Usuarios"
@@ -131,7 +127,7 @@ function App() {
                       <ProtectedRoute>
                         <List
                           icon={
-                            <Map className="w-5 h-5 text-muted-foreground" />
+                            <Icons.map className="w-5 h-5 text-muted-foreground" />
                           }
                           columns={tripColumns}
                           title="Viajes semanales"
@@ -159,6 +155,17 @@ function App() {
                       </ProtectedRoute>
                     }
                   />
+                  <Route
+                    path="history"
+                    element={
+                      <ProtectedRoute>
+                        <TripsHistory
+                          columns={tripColumns}
+                          title="Historial de viajes semanales"
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
                   <Route path="predefined-trips">
                     <Route
                       index
@@ -177,7 +184,7 @@ function App() {
                       <ProtectedRoute>
                         <List
                           icon={
-                            <Map className="w-5 h-5 text-muted-foreground" />
+                            <Icons.map className="w-5 h-5 text-muted-foreground" />
                           }
                           columns={specialTripColumns}
                           title="Viajes particulares"
@@ -201,6 +208,17 @@ function App() {
                         <NewSpecialTrip
                           inputs={specialTripInputs}
                           title="Crear nuevo viaje particular"
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="history"
+                    element={
+                      <ProtectedRoute>
+                        <TripsHistory
+                          columns={specialTripColumns}
+                          title="Historial de viajes particulares"
                         />
                       </ProtectedRoute>
                     }

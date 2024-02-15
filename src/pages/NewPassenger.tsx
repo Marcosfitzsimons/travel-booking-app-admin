@@ -1,7 +1,7 @@
 import BackButton from "../components/BackButton";
 import SectionTitle from "../components/SectionTitle";
 import { useParams } from "react-router-dom";
-import NewPassengerDatatable from "../components/NewPassengerDatatable";
+import NewPassengerDatatable from "../components/datatables/NewPassengerDatatable";
 import { NewPassengerProps } from "@/types/props";
 
 const NewPassenger = <TData, TValue>({

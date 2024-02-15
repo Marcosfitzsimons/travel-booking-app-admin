@@ -2,6 +2,7 @@ import { Income } from '@/context/AuthContext';
 import { MonthlyIncome, Passenger, Publication, PublicationInput, TripInput, UserProfileData, UserTrips } from './types';
 import { Trip } from './types'
 import { ColumnDef } from '@tanstack/react-table';
+import { ReactElement } from 'react';
 export interface NewTripProps {
   inputs: TripInput[];
   title: string;
@@ -78,6 +79,15 @@ export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   linkText: string;
 };
+
+export interface TravelHistoryProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  title: string;
+}
+
+export interface ProtectedRouteProps {
+  children: ReactElement;
+}
 
 export interface NewPassengerProps<TData, TValue> {
   title: string;
