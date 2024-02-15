@@ -192,6 +192,15 @@ export type NewSpecialTrip = {
   defaultPassengerCount: number;
 };
 
+export type UpdateSpecialTripPayload = {
+  name: string;
+  date: Date | undefined;
+  from: string;
+  departureTime: string;
+  maxCapacity: string;
+  price: string;
+}
+
 export type DayCardType = {
   _id: string;
   dayOfWeek: 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';

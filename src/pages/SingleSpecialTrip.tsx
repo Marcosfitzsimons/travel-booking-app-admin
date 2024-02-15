@@ -25,7 +25,7 @@ import DatePickerContainer from "../components/DatePickerContainer";
 import TimePickerContainer from "../components/TimePickerContainer";
 import { Separator } from "../components/ui/separator";
 import { convertToDatePickerFormat } from "@/lib/utils/convertToDatePickerFormat";
-import { SpecialTrip } from "@/types/types";
+import { SpecialTrip, UpdateSpecialTripPayload } from "@/types/types";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 import DialogAnonSpecialPassenger from "@/components/dialogs/DialogAnonSpecialPassenger";
@@ -94,7 +94,7 @@ const SingleSpecialTrip = () => {
     },
   });
 
-  const handleOnSubmit = async (data: SpecialTrip) => {
+  const handleOnSubmit = async (data: UpdateSpecialTripPayload) => {
     if (
       !isDirty &&
       tripData.departureTime === departureTimeValue &&
