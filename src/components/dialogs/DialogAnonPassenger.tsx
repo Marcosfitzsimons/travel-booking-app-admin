@@ -8,14 +8,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../components/ui/dialog";
-import { Label } from "../components/ui/label";
-import { Input } from "../components/ui/input";
+} from "../ui/dialog";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
 import { Check, Fingerprint, Loader2, User, UserPlus, X } from "lucide-react";
 import { useToast } from "@/hooks/ui/use-toast";
-import { Separator } from "./ui/separator";
-import { Button } from "./ui/button";
-import AddressAutocomplete from "./AddressAutocomplete";
+import { Separator } from "../ui/separator";
+import { Button } from "../ui/button";
+import AddressAutocomplete from "../AddressAutocomplete";
 import { UserInput } from "@/types/types";
 import { Passenger } from "@/types/types";
 import { DialogAnonPassengerProps } from "@/types/props";
@@ -208,8 +208,8 @@ const DialogAnonPassenger = ({
       onOpenChange={() => setIsDialogOpen(!isDialogOpen)}
     >
       <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-100/20 dark:after:shadow-highlight dark:after:shadow-slate-100/30 after:transition focus-within:after:shadow-slate-100 dark:focus-within:after:shadow-slate-100">
-        <DialogTrigger className="px-3.5 w-auto h-8 pl-[35px] z-20 rounded-lg bg-black/80 text-slate-100 hover:text-white dark:text-slate-100 dark:hover:text-white">
-          <UserPlus className="absolute cursor-pointer left-3 top-[5px] h-5 w-5" />
+        <DialogTrigger className="px-3.5 w-auto flex items-center h-8 rounded-lg bg-black/80 text-slate-100 hover:text-white dark:text-slate-100 dark:hover:text-white">
+          <UserPlus className="mr-1.5 w-5 h-5 " />
           Agregar pasajero anónimo
         </DialogTrigger>
       </div>

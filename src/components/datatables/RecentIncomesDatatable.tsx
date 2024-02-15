@@ -5,8 +5,6 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Icons } from "./icons";
-import { Button } from "./ui/button";
 import {
   TableBody,
   TableCell,
@@ -14,8 +12,8 @@ import {
   TableHeader,
   Table,
   TableRow,
-} from "./ui/table";
-import GorgeousBoxBorder from "./GorgeousBoxBorder";
+} from "../ui/table";
+import GorgeousBoxBorder from "../GorgeousBoxBorder";
 import { RecentIncomesDatatableProps } from "@/types/props";
 
 const RecentIncomesDatatable = ({
@@ -88,36 +86,6 @@ const RecentIncomesDatatable = ({
           </TableBody>
         </Table>
       </GorgeousBoxBorder>
-      <div className="flex items-center justify-end space-x-2 py-2">
-        <div className="flex items-center relative after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-400/10 focus-within:after:shadow-black/40 dark:after:shadow-slate-400/20 after:transition dark:focus-within:after:shadow-slate-400/60">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="text-xs h-7 rounded-lg"
-          >
-            <Icons.chevronLeft className="w-3 aspect-square mr-1" />
-            Anterior
-          </Button>
-        </div>
-        <p className="text-xs">
-          Página {table.getState().pagination.pageIndex + 1} de{" "}
-          {table.getPageCount()}
-        </p>
-        <div className="flex items-center relative after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-400/10 focus-within:after:shadow-black/40 dark:after:shadow-slate-400/20 after:transition dark:focus-within:after:shadow-slate-400/60">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="text-xs h-7 rounded-lg"
-          >
-            Siguiente
-            <Icons.chevronRight className="w-3 aspect-square ml-1" />
-          </Button>
-        </div>
-      </div>
     </div>
   );
 };

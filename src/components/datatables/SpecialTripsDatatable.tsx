@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import moment from "moment";
 import "moment-timezone";
-import useFetch from "../hooks/useFetch";
+import useFetch from "../../hooks/useFetch";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,19 +12,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
-import { toast } from "../hooks/ui/use-toast";
-import DatePickerContainer from "./DatePickerContainer";
-import ActionButton from "./ActionButton";
-import ActionButtonDatatable from "./ActionButtonDatatable";
-import TrashButtonDatatable from "./TrashButtonDatatable";
-import TotalCountCard from "./TotalCountCard";
+} from "../ui/alert-dialog";
+import { toast } from "../../hooks/ui/use-toast";
+import DatePickerContainer from "../DatePickerContainer";
+import ActionButton from "../ActionButton";
+import ActionButtonDatatable from "../ActionButtonDatatable";
+import TrashButtonDatatable from "../TrashButton";
+import TotalCountCard from "../TotalCountCard";
 import { Trip } from "@/types/types";
 import { DataTableProps } from "@/types/props";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
-import Error from "./Error";
+import Error from "../Error";
 import {
   ColumnDef,
   flexRender,
@@ -32,7 +32,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import GorgeousBoxBorder from "./GorgeousBoxBorder";
+import GorgeousBoxBorder from "../GorgeousBoxBorder";
 import {
   Table,
   TableBody,
@@ -40,9 +40,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import { Button } from "./ui/button";
-import { Icons } from "./icons";
+} from "../ui/table";
+import { Button } from "../ui/button";
+import { Icons } from "../icons";
 
 const SpecialTripsDatatable = <TData, TValue>({
   columns,
@@ -224,9 +224,7 @@ const SpecialTripsDatatable = <TData, TValue>({
               <div className="flex justify-between items-end">
                 <ActionButton
                   text={linkText}
-                  icon={
-                    <Icons.add className="absolute cursor-pointer left-[13px] top-[7.3px] h-[18px] w-[18px] md:top-[4px] md:left-[8px] md:h-6 md:w-6" />
-                  }
+                  icon={<Icons.add className="mr-1 w-5 h-5" />}
                   linkTo="/special-trips/new"
                 />
               </div>

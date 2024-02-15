@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import moment from "moment";
 import "moment-timezone";
-import useFetch from "../hooks/useFetch";
+import useFetch from "../../hooks/useFetch";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,7 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
+} from "../ui/alert-dialog";
 import {
   ColumnDef,
   flexRender,
@@ -27,23 +27,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import { useToast } from "../hooks/ui/use-toast";
-import DatePickerContainer from "./DatePickerContainer";
-import { Button } from "./ui/button";
-import ActionButton from "./ActionButton";
-import ActionButtonDatatable from "./ActionButtonDatatable";
-import TotalCountCard from "./TotalCountCard";
-import TrashButtonDatatable from "./TrashButtonDatatable";
+} from "../ui/table";
+import { useToast } from "../../hooks/ui/use-toast";
+import DatePickerContainer from "../DatePickerContainer";
+import { Button } from "../ui/button";
+import ActionButton from "../ActionButton";
+import ActionButtonDatatable from "../ActionButtonDatatable";
+import TotalCountCard from "../TotalCountCard";
+import TrashButtonDatatable from "../TrashButton";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import { Trip } from "@/types/types";
 import { DataTableProps } from "@/types/props";
-import Error from "./Error";
-import { Separator } from "./ui/separator";
-import GorgeousBoxBorder from "./GorgeousBoxBorder";
-import { Icons } from "./icons";
+import Error from "../Error";
+import { Separator } from "../ui/separator";
+import GorgeousBoxBorder from "../GorgeousBoxBorder";
+import { Icons } from "../icons";
 
 const TripsDatatable = <TData, TValue>({
   columns,
@@ -222,16 +222,31 @@ const TripsDatatable = <TData, TValue>({
                 value={loading ? "0" : list.length}
               />
             </div>
-            <div className="w-full flex flex-col-reverse gap-3 items-center sm:flex-row sm:items-end sm:justify-between">
+            <div className="w-full flex flex-col-reverse gap-3 items-center md:flex-row md:items-end md:justify-between">
               <DatePickerContainer date={date} setDate={setDate} />
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <div className="flex flex-col items-center gap-2 sm:flex-row sm:items-center">
+                <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight  after:transition after:shadow-slate-400/10 focus-within:after:shadow-black/70 dark:after:shadow-highlight dark:after:shadow-slate-300/20 dark:focus-within:after:shadow-slate-600">
+                  <Button className="h-[32px] p-0 border border-slate-400/60 relative text-black hover:text-muted-foreground bg-card shadow-input dark:text-black dark:shadow-none dark:bg-neutral-100 dark:border-slate-200/80 dark:hover:text-slate-600">
+                    <Link
+                      to="/trips/history"
+                      className="px-3.5 flex items-center gap-1"
+                    >
+                      <Icons.history className="mr-1 w-5 h-5" />
+                      Historial de viajes
+                    </Link>
+                  </Button>
+                </div>
+                <Separator
+                  className="hidden md:flex md:h-2"
+                  orientation="vertical"
+                />
                 <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-white/20  after:transition focus-within:after:shadow-slate-300 dark:after:shadow-highlight dark:after:shadow-white/20  dark:focus-within:after:shadow-slate-300">
                   <Button className="h-[32px] p-0 relative bg-black/90 text-slate-100 hover:text-white shadow-input dark:text-slate-100 dark:hover:text-white dark:bg-black dark:shadow-none">
                     <Link
                       to="/trips/predefined-trips"
                       className="px-3.5 flex items-center gap-1"
                     >
-                      <Icons.map className="w-5 h-5" />
+                      <Icons.map className="mr-1 w-5 h-5" />
                       Administrar viajes fijos
                     </Link>
                   </Button>
@@ -242,9 +257,7 @@ const TripsDatatable = <TData, TValue>({
                 />
                 <ActionButton
                   text={linkText}
-                  icon={
-                    <Icons.add className="absolute cursor-pointer left-[13px] top-[7.3px] h-[18px] w-[18px] md:top-[4px] md:left-[8px] md:h-6 md:w-6" />
-                  }
+                  icon={<Icons.add className="mr-1 w-5 h-5" />}
                   linkTo={"/trips/new"}
                 />
               </div>

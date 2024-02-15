@@ -14,24 +14,24 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-import useFetch from "../hooks/useFetch";
+import useFetch from "../../hooks/useFetch";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import DefaultButton from "./DefaultButton";
-import { useToast } from "../hooks/ui/use-toast";
-import SearchUserInput from "./SearchUserInput";
-import { Separator } from "./ui/separator";
-import { Button } from "./ui/button";
+} from "../ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import DefaultButton from "../DefaultButton";
+import { useToast } from "../../hooks/ui/use-toast";
+import SearchUserInput from "../SearchUserInput";
+import { Separator } from "../ui/separator";
+import { Button } from "../ui/button";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 import { UserDataTableProps } from "@/types/props";
-import Error from "./Error";
+import Error from "../Error";
 import {
   ColumnDef,
   flexRender,
@@ -47,8 +47,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import GorgeousBoxBorder from "./GorgeousBoxBorder";
+} from "../ui/table";
+import GorgeousBoxBorder from "../GorgeousBoxBorder";
 import { User } from "@/types/types";
 
 const NewPassengerDatatable = <TData, TValue>({

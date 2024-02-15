@@ -8,12 +8,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../components/ui/dialog";
-import { Label } from "../components/ui/label";
-import { Input } from "../components/ui/input";
+} from "../ui/dialog";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
 import { Check, Fingerprint, Loader2, User, UserPlus, X } from "lucide-react";
 import { useToast } from "@/hooks/ui/use-toast";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { Passenger } from "@/types/types";
 import { DialogAnonPassengerProps } from "@/types/props";
 import useAuth from "@/hooks/useAuth";

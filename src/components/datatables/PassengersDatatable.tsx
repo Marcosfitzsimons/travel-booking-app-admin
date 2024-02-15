@@ -9,15 +9,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
-import { useToast } from "../hooks/ui/use-toast";
-import TrashButtonDatatable from "./TrashButtonDatatable";
+} from "../ui/alert-dialog";
+import { useToast } from "../../hooks/ui/use-toast";
+import TrashButtonDatatable from "../TrashButton";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 import { Passenger } from "@/types/types";
-import GorgeousBorder from "./GorgeousBorder";
+import GorgeousBorder from "../GorgeousBorder";
 import {
   ColumnDef,
   flexRender,
@@ -25,8 +25,8 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Icons } from "./icons";
-import { Button } from "./ui/button";
+import { Icons } from "../icons";
+import { Button } from "../ui/button";
 import {
   TableBody,
   TableCell,
@@ -34,8 +34,8 @@ import {
   TableHeader,
   Table,
   TableRow,
-} from "./ui/table";
-import GorgeousBoxBorder from "./GorgeousBoxBorder";
+} from "../ui/table";
+import GorgeousBoxBorder from "../GorgeousBoxBorder";
 
 type DataTableProps = {
   columns: ColumnDef<Passenger>[];

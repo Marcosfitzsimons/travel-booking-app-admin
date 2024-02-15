@@ -5,8 +5,8 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Icons } from "./icons";
-import { Button } from "./ui/button";
+import { Icons } from "../icons";
+import { Button } from "../ui/button";
 import {
   TableBody,
   TableCell,
@@ -14,8 +14,8 @@ import {
   TableHeader,
   Table,
   TableRow,
-} from "./ui/table";
-import GorgeousBoxBorder from "./GorgeousBoxBorder";
+} from "../ui/table";
+import GorgeousBoxBorder from "../GorgeousBoxBorder";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,15 +26,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
+} from "../ui/alert-dialog";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
-import TrashButtonDatatable from "./TrashButtonDatatable";
+} from "../ui/dialog";
+import TrashButtonDatatable from "../TrashButton";
 import { SpecialPassenger } from "@/types/types";
 
 type DataTableProps = {

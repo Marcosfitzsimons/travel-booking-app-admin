@@ -1,6 +1,6 @@
 import { Newspaper, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import useFetch from "../hooks/useFetch";
+import useFetch from "../../hooks/useFetch";
 import ActionButton from "@/components/ActionButton";
 import TotalCountCard from "@/components/TotalCountCard";
 import { Publication } from "@/types/types";
@@ -13,8 +13,8 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import ActionButtonDatatable from "./ActionButtonDatatable";
-import { Icons } from "./icons";
+import ActionButtonDatatable from "../ActionButtonDatatable";
+import { Icons } from "../icons";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,8 +25,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
-import TrashButtonDatatable from "./TrashButtonDatatable";
+} from "../ui/alert-dialog";
+import TrashButtonDatatable from "../TrashButton";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/ui/use-toast";
@@ -38,9 +38,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import GorgeousBoxBorder from "./GorgeousBoxBorder";
-import { Button } from "./ui/button";
+} from "../ui/table";
+import GorgeousBoxBorder from "../GorgeousBoxBorder";
+import { Button } from "../ui/button";
 
 const PublicationsDatatable = <TData, TValue>({
   columns,
@@ -194,9 +194,7 @@ const PublicationsDatatable = <TData, TValue>({
               <ActionButton
                 text={linkText}
                 linkTo="/publications/new"
-                icon={
-                  <Icons.add className="absolute cursor-pointer left-[13px] top-[7.3px] h-[17px] w-[17px] md:top-[4px] md:left-[8px] md:h-6 md:w-6" />
-                }
+                icon={<Icons.add className="mr-1 w-5 h-5" />}
               />
             </div>
           </div>

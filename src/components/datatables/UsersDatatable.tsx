@@ -10,7 +10,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import useFetch from "../hooks/useFetch";
+import useFetch from "../../hooks/useFetch";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,19 +21,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
-import SearchUserInput from "./SearchUserInput";
-import { toast } from "../hooks/ui/use-toast";
-import ActionButton from "./ActionButton";
-import ActionButtonDatatable from "./ActionButtonDatatable";
-import TrashButtonDatatable from "./TrashButtonDatatable";
-import TotalCountCard from "./TotalCountCard";
+} from "../ui/alert-dialog";
+import SearchUserInput from "../SearchUserInput";
+import { toast } from "../../hooks/ui/use-toast";
+import ActionButton from "../ActionButton";
+import ActionButtonDatatable from "../ActionButtonDatatable";
+import TrashButtonDatatable from "../TrashButton";
+import TotalCountCard from "../TotalCountCard";
 import { User } from "@/types/types";
 import { DataTableProps } from "@/types/props";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
-import Error from "./Error";
+import Error from "../Error";
 import {
   ColumnDef,
   flexRender,
@@ -49,9 +49,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import { Button } from "./ui/button";
-import GorgeousBoxBorder from "./GorgeousBoxBorder";
+} from "../ui/table";
+import { Button } from "../ui/button";
+import GorgeousBoxBorder from "../GorgeousBoxBorder";
 
 export default function UsersDatatable<TData, TValue>({
   columns,
@@ -208,9 +208,7 @@ export default function UsersDatatable<TData, TValue>({
               </div>
               <ActionButton
                 text={linkText}
-                icon={
-                  <UserPlusIcon className="absolute left-[13px] top-[6px] h-5 w-5" />
-                }
+                icon={<UserPlusIcon className="mr-2 h-5 w-5" />}
                 linkTo={"/users/new"}
               />
             </div>

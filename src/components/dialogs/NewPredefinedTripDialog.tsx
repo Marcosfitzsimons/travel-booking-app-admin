@@ -6,11 +6,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
+} from "../ui/dialog";
 import { useState } from "react";
-import { Label } from "./ui/label";
-import TimePickerContainer from "./TimePickerContainer";
-import { Input } from "./ui/input";
+import { Label } from "../ui/label";
+import TimePickerContainer from "../TimePickerContainer";
+import { Input } from "../ui/input";
 import { DayCardType, PredefinedTrip } from "@/types/types";
 import { useToast } from "@/hooks/ui/use-toast";
 import useAuth from "@/hooks/useAuth";
@@ -28,8 +28,8 @@ import {
 } from "lucide-react";
 import { NewPredefinedTripDialogProps } from "@/types/props";
 import { translateDayOfWeek } from "@/lib/utils/translateDayOfWeek";
-import { Button } from "./ui/button";
-import GorgeousBorder from "./GorgeousBorder";
+import { Button } from "../ui/button";
+import GorgeousBorder from "../GorgeousBorder";
 
 const NewPredefinedTripDialog = ({
   day,

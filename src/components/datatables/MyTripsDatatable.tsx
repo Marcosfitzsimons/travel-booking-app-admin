@@ -9,10 +9,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
-import { useToast } from "../hooks/ui/use-toast";
-import ActionButtonDatatable from "./ActionButtonDatatable";
-import TrashButtonDatatable from "./TrashButtonDatatable";
+} from "../ui/alert-dialog";
+import { useToast } from "../../hooks/ui/use-toast";
+import ActionButtonDatatable from "../ActionButtonDatatable";
+import TrashButton from "../TrashButton";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
@@ -25,8 +25,8 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Icons } from "./icons";
-import { Button } from "./ui/button";
+import { Icons } from "../icons";
+import { Button } from "../ui/button";
 import {
   TableBody,
   TableCell,
@@ -34,8 +34,8 @@ import {
   TableHeader,
   Table,
   TableRow,
-} from "./ui/table";
-import GorgeousBoxBorder from "./GorgeousBoxBorder";
+} from "../ui/table";
+import GorgeousBoxBorder from "../GorgeousBoxBorder";
 
 const MyTripsDatatable = ({
   columns,
@@ -119,7 +119,7 @@ const MyTripsDatatable = ({
             <AlertDialog>
               <div className="relative flex items-center">
                 <AlertDialogTrigger disabled={loading}>
-                  <TrashButtonDatatable
+                  <TrashButton
                     icon={
                       <Icons.trash className="absolute left-1 top-[3px] h-4 w-4 md:h-[18px] md:w-[18px] md:left-0 md:top-[2px]" />
                     }
