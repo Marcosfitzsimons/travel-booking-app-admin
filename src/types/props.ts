@@ -80,9 +80,9 @@ export interface DataTableProps<TData, TValue> {
   linkText: string;
 };
 
-export interface TravelHistoryProps<TData, TValue> {
+export interface TripsHistoryProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  title: string;
+  title?: string;
 }
 
 export interface ProtectedRouteProps {
@@ -161,6 +161,7 @@ export interface DatePickerProps {
   date: Date | undefined;
   isForm?: boolean,
   isModal?: boolean,
+  isHistory?: boolean,
   setDate: (date: Date | undefined) => void;
 }
 

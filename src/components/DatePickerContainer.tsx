@@ -25,6 +25,7 @@ const DatePickerContainer = ({
   setDate,
   isForm,
   isModal,
+  isHistory,
 }: DatePickerProps) => {
   setDefaultLocale("es");
   registerLocale("es", es);
@@ -83,7 +84,7 @@ const DatePickerContainer = ({
           selected={date}
           onSelect={setDate}
           locale={es}
-          disabled={{ before: new Date() }}
+          disabled={isHistory ? false : { before: new Date() }}
           initialFocus
         />
       </PopoverContent>

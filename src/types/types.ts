@@ -68,6 +68,7 @@ export type TripInput = {
 }
 
 export type SpecialTrip = {
+  _id: string;
   name: string;
   date: Date | null | undefined;
   from: string;

@@ -27,7 +27,6 @@ const useFetch = (url: string) => {
             navigate("/login");
           }, 100);
         }
-        console.log(err);
         setError(true);
         setLoading(false);
       }
@@ -49,7 +48,6 @@ const useFetch = (url: string) => {
           navigate("/login");
         }, 100);
       }
-      console.log(err);
       setError(true);
       setLoading(false);
     }

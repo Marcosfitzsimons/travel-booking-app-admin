@@ -19,9 +19,9 @@ import ActionButton from "../ActionButton";
 import ActionButtonDatatable from "../ActionButtonDatatable";
 import TrashButtonDatatable from "../TrashButton";
 import TotalCountCard from "../TotalCountCard";
-import { Trip } from "@/types/types";
+import { SpecialTrip } from "@/types/types";
 import { DataTableProps } from "@/types/props";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 import Error from "../Error";
@@ -43,6 +43,7 @@ import {
 } from "../ui/table";
 import { Button } from "../ui/button";
 import { Icons } from "../icons";
+import { Separator } from "../ui/separator";
 
 const SpecialTripsDatatable = <TData, TValue>({
   columns,
@@ -62,7 +63,7 @@ const SpecialTripsDatatable = <TData, TValue>({
       accessorKey: "action",
       header: "Acción",
       cell: ({ row }) => {
-        const trip = row.original as Trip;
+        const trip = row.original as SpecialTrip;
         return (
           <div className="flex items-center gap-2.5">
             <div className="relative flex items-center">
@@ -142,7 +143,7 @@ const SpecialTripsDatatable = <TData, TValue>({
     try {
       await axiosPrivate.delete(`${baseUrl}/${id}`);
       setIsLoading(false);
-      setList(list.filter((item: Trip) => item._id !== id));
+      setList(list.filter((item: SpecialTrip) => item._id !== id));
       toast({
         description: (
           <div className="flex gap-1">
@@ -180,7 +181,7 @@ const SpecialTripsDatatable = <TData, TValue>({
     let dateSelected: string;
     if (date) {
       dateSelected = moment(date).locale("es").format("ddd DD/MM");
-      filteredTrips = data.filter((trip: Trip) => {
+      filteredTrips = data.filter((trip: SpecialTrip) => {
         moment.locale("es", {
           weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
         });
@@ -221,7 +222,22 @@ const SpecialTripsDatatable = <TData, TValue>({
             </div>
             <div className="w-full flex flex-col-reverse gap-3 items-center sm:flex-row sm:items-end sm:justify-between">
               <DatePickerContainer date={date} setDate={setDate} />
-              <div className="flex justify-between items-end">
+              <div className="flex flex-col items-center gap-2 sm:flex-row sm:items-center">
+                <div className="relative after:absolute after:pointer-events-none after:inset-px after:rounded-[7px] after:shadow-highlight  after:transition after:shadow-slate-400/10 focus-within:after:shadow-black/70 dark:after:shadow-highlight dark:after:shadow-slate-300/20 dark:focus-within:after:shadow-slate-600">
+                  <Button className="h-[32px] p-0 border border-slate-400/60 relative text-black hover:text-muted-foreground bg-card shadow-input dark:text-black dark:shadow-none dark:bg-neutral-100 dark:border-slate-200/80 dark:hover:text-slate-600">
+                    <Link
+                      to="/special-trips/history"
+                      className="px-3.5 flex items-center gap-1"
+                    >
+                      <Icons.history className="mr-1 w-5 h-5" />
+                      Historial de viajes
+                    </Link>
+                  </Button>
+                </div>
+                <Separator
+                  className="hidden md:flex md:h-2"
+                  orientation="vertical"
+                />
                 <ActionButton
                   text={linkText}
                   icon={<Icons.add className="mr-1 w-5 h-5" />}
