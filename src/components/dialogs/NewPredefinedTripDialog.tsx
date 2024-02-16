@@ -16,20 +16,11 @@ import { useToast } from "@/hooks/ui/use-toast";
 import useAuth from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import {
-  CalendarDays,
-  Check,
-  DollarSign,
-  HelpingHand,
-  Loader2,
-  Milestone,
-  UserMinus2,
-  X,
-} from "lucide-react";
 import { NewPredefinedTripDialogProps } from "@/types/props";
 import { translateDayOfWeek } from "@/lib/utils/translateDayOfWeek";
 import { Button } from "../ui/button";
 import GorgeousBorder from "../GorgeousBorder";
+import { Icons } from "../icons";
 
 const NewPredefinedTripDialog = ({
   day,
@@ -72,7 +63,7 @@ const NewPredefinedTripDialog = ({
       variant: "loading",
       description: (
         <div className="flex gap-1">
-          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          <Icons.spinner className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
           Creando viaje fijo...
         </div>
       ),
@@ -91,8 +82,8 @@ const NewPredefinedTripDialog = ({
       toast({
         description: (
           <div className="flex gap-1">
-            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Viaje fijo
-            ha sido creado con éxito
+            {<Icons.check className="h-5 w-5 text-green-600 shrink-0" />} Viaje
+            fijo ha sido creado con éxito
           </div>
         ),
       });
@@ -124,8 +115,8 @@ const NewPredefinedTripDialog = ({
         variant: "destructive",
         title: (
           <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al crear
-            viaje fijo
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}{" "}
+            Error al crear viaje fijo
           </div>
         ) as any,
         description: errorMsg
@@ -175,7 +166,7 @@ const NewPredefinedTripDialog = ({
             <div className="absolute -top-6 right-0">
               <GorgeousBorder>
                 <p className="flex select-none gap-1 h-[32px] px-4 items-center justify-between bg-card rounded-lg border border-slate-400/60 shadow-input placeholder:text-neutral-500 dark:bg-card dark:border-slate-800 dark:text-white dark:shadow-none !outline-none">
-                  <CalendarDays className="w-5 h-5 relative bottom-[1px]" />
+                  <Icons.calendar className="w-5 h-5 relative bottom-[1px]" />
                   {translateDayOfWeek(day)}
                 </p>
               </GorgeousBorder>
@@ -183,7 +174,7 @@ const NewPredefinedTripDialog = ({
             <div className="grid w-full max-w-2xl items-center gap-2">
               <Label htmlFor="name">Nombre del viaje</Label>
               <div className="relative flex items-center">
-                <HelpingHand className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                <Icons.helpingHand className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
                 <Input
                   type="text"
                   id="name"
@@ -231,7 +222,7 @@ const NewPredefinedTripDialog = ({
               <div className="grid w-full max-w-md items-center gap-2">
                 <Label htmlFor="from">Desde</Label>
                 <div className="relative flex items-center">
-                  <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                  <Icons.milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
                   <Input
                     type="text"
                     id="from"
@@ -260,7 +251,7 @@ const NewPredefinedTripDialog = ({
               <div className="grid w-full max-w-md items-center gap-2">
                 <Label htmlFor="to">Hasta</Label>
                 <div className="relative flex items-center">
-                  <Milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                  <Icons.milestone className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
                   <Input
                     type="text"
                     id="to"
@@ -292,7 +283,7 @@ const NewPredefinedTripDialog = ({
               <div className="grid w-full items-center gap-2">
                 <Label htmlFor="price">Precio</Label>
                 <div className="relative flex items-center">
-                  <DollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                  <Icons.dollarSign className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
                   <Input
                     type="number"
                     id="price"
@@ -300,8 +291,15 @@ const NewPredefinedTripDialog = ({
                     {...register("price", {
                       required: {
                         value: true,
-                        message:
-                          "Por favor, ingresar precio/persona del viaje.",
+                        message: "Por favor, ingresar precio/persona del viaje",
+                      },
+                      min: {
+                        value: 0,
+                        message: "Precio no puede ser menor a 0",
+                      },
+                      max: {
+                        value: 30000,
+                        message: "Precio no puede ser mayor a $30.000",
                       },
                     })}
                   />
@@ -314,7 +312,7 @@ const NewPredefinedTripDialog = ({
               <div className="grid w-full items-center gap-2">
                 <Label htmlFor="maxCapacity">Capacidad máxima</Label>
                 <div className="relative flex items-center">
-                  <UserMinus2 className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
+                  <Icons.userMinus className="z-30 h-5 w-5 text-accent absolute left-[10px]" />
                   <Input
                     type="number"
                     id="maxCapacity"

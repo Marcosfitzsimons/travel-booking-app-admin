@@ -68,7 +68,7 @@ const DayCard = ({
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">
-            <p className="text-card-foreground">
+            <p className="text-muted-foreground">
               No hay viajes fijos para este día
             </p>
             <NewPredefinedTripDialog day={day} setItems={setItems} />

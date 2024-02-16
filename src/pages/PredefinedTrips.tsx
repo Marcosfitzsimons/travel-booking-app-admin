@@ -1,15 +1,14 @@
-import BackButton from "@/components/BackButton";
 import Breadcrumb from "@/components/Breadcrumb";
 import DayCard from "@/components/DayCard";
 import Error from "@/components/Error";
 import Loading from "@/components/Loading";
 import SectionTitle from "@/components/SectionTitle";
+import { Icons } from "@/components/icons";
 import { useToast } from "@/hooks/ui/use-toast";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { sortByWeeklyOrder } from "@/lib/utils/sortByWeeklyOrder";
-import { DayCardType, PredefinedTrip } from "@/types/types";
-import { Check, ChevronsRight, Loader2, Map, X } from "lucide-react";
+import { DayCardType } from "@/types/types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -52,7 +51,7 @@ const PredefinedTrips = () => {
       variant: "loading",
       description: (
         <div className="flex gap-1">
-          <Loader2 className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
+          <Icons.spinner className="h-5 w-5 animate-spin text-purple-900 shrink-0" />
           Eliminando viaje fijo...
         </div>
       ),
@@ -72,8 +71,8 @@ const PredefinedTrips = () => {
       toast({
         description: (
           <div className="flex gap-1">
-            {<Check className="h-5 w-5 text-green-600 shrink-0" />} Viaje fijo
-            ha sido eliminado con éxito
+            {<Icons.check className="h-5 w-5 text-green-600 shrink-0" />} Viaje
+            fijo ha sido eliminado con éxito
           </div>
         ),
       });
@@ -89,8 +88,8 @@ const PredefinedTrips = () => {
         variant: "destructive",
         title: (
           <div className="flex gap-1">
-            {<X className="h-5 w-5 text-destructive shrink-0" />} Error al
-            eliminar viaje fijo
+            {<Icons.close className="h-5 w-5 text-destructive shrink-0" />}{" "}
+            Error al eliminar viaje fijo
           </div>
         ) as any,
         description: errorMsg
@@ -106,7 +105,10 @@ const PredefinedTrips = () => {
 
   return (
     <section className="flex flex-col gap-5 mb-6">
-      <Breadcrumb page="Viajes semanales" icon={<Map className="w-5 h-5 " />}>
+      <Breadcrumb
+        page="Viajes semanales"
+        icon={<Icons.map className="w-5 h-5 " />}
+      >
         Viajes fijos
       </Breadcrumb>
       <SectionTitle>Viajes fijos</SectionTitle>

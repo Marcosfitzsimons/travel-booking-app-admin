@@ -359,7 +359,15 @@ dark:text-slate-100 dark:bg-teal-700/60 dark:hover:text-white dark:shadow-none"
                           required: {
                             value: true,
                             message:
-                              "Por favor, ingresar precio/persona del viaje.",
+                              "Por favor, ingresar precio/persona del viaje",
+                          },
+                          min: {
+                            value: 0,
+                            message: "Precio no puede ser menor a 0",
+                          },
+                          max: {
+                            value: 30000,
+                            message: "Precio no puede ser mayor a $30.000",
                           },
                         })}
                       />
