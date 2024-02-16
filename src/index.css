@@ -81,6 +81,8 @@ input[type="number"] {
 
     --hover: 0 0% 95%;
 
+    --income-accent: 163 63% 59%;
+
     --ring: 215 20.2% 65.1%;
 
     --radius: 0.5rem;
@@ -115,6 +117,8 @@ input[type="number"] {
     --destructive-foreground: 0 85.7% 97.3%;
 
     --hover: 0 0% 40%;
+
+    --income-accent: 161 100% 65%;
 
     --ring: 217.2 32.6% 17.5%;
   }

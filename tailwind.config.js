@@ -20,6 +20,7 @@ module.exports = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         "input-bg": "hsl(var(--input-bg))",
+        "income-accent": "hsl(var(--income-accent))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
