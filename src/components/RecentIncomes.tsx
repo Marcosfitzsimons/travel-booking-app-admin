@@ -18,7 +18,7 @@ const RecentIncomes = ({ incomes, loading }: RecentIncomesProps) => {
   }, [incomes]);
 
   return (
-    <div className="relative w-full max-w-md mx-auto flex flex-col gap-2 2xl:basis-[35%] ">
+    <div className="relative w-full flex flex-col gap-2 2xl:basis-[35%]">
       <div className="absolute -top-10 self-end">
         <ActionButton
           text="Viajes semanales"
@@ -33,7 +33,7 @@ const RecentIncomes = ({ incomes, loading }: RecentIncomesProps) => {
         <p className="flex items-center gap-1 text-sm text-muted-foreground">
           <Icons.handCoins className="w-4 h-4" />
           Este mes ganaste{" "}
-          <span className="text-[#54d8b3] dark:text-[rgba(75,270,200,1)] font-semibold">
+          <span className="text-income-accent font-semibold">
             ${formatNumberWithDot(totalIncome(incomes))}
           </span>
         </p>

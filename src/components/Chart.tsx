@@ -12,6 +12,8 @@ import {
 import { Line } from "react-chartjs-2";
 import moment from "moment";
 import { Income } from "@/context/AuthContext";
+import { useState } from "react";
+import { useTheme } from "../context/ThemeProvider";
 
 ChartJs.register(
   CategoryScale,
@@ -29,6 +31,8 @@ interface ChartProps {
 }
 
 function Chart({ incomes }: ChartProps) {
+  const { theme } = useTheme();
+
   const allIncomes = incomes?.sort((a, b) => {
     const dateA = new Date(a.date);
     const dateB = new Date(b.date);
@@ -81,7 +85,10 @@ function Chart({ incomes }: ChartProps) {
     plugins: {
       legend: {
         labels: {
-          color: "hsl(225, 25%, 65%)",
+          color:
+            theme === "light"
+              ? "hsl(215.4, 16.3%, 46.9%)"
+              : "hsl(215, 20.2%, 75.1%)",
         },
       },
     },
@@ -90,10 +97,19 @@ function Chart({ incomes }: ChartProps) {
         title: {
           display: true,
           text: "Fecha",
-          color: "hsl(225, 25%, 65%)",
+          color:
+            theme === "light"
+              ? "hsl(215.4, 16.3%, 46.9%)"
+              : "hsl(215, 20.2%, 75.1%)",
         },
         ticks: {
-          color: "hsl(225, 25%, 65%)",
+          color:
+            theme === "light"
+              ? "hsl(215.4, 16.3%, 46.9%)"
+              : "hsl(215, 20.2%, 75.1%)",
+        },
+        grid: {
+          display: false,
         },
       },
 
@@ -101,10 +117,19 @@ function Chart({ incomes }: ChartProps) {
         title: {
           display: true,
           text: "Ganancias",
-          color: "hsl(225, 25%, 65%)",
+          color:
+            theme === "light"
+              ? "hsl(215.4, 16.3%, 46.9%)"
+              : "hsl(215, 20.2%, 75.1%)",
         },
         ticks: {
-          color: "hsl(225, 25%, 65%)",
+          color:
+            theme === "light"
+              ? "hsl(215.4, 16.3%, 46.9%)"
+              : "hsl(215, 20.2%, 75.1%)",
+        },
+        grid: {
+          display: false,
         },
       },
     },

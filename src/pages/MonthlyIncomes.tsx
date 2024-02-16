@@ -16,17 +16,19 @@ import {
 import Loading from "@/components/Loading";
 import { Income } from "@/context/AuthContext";
 import GorgeousBorder from "@/components/GorgeousBorder";
-import GorgeousBoxBorder from "@/components/GorgeousBoxBorder";
 import {
+  convertNumberToSpanishMonth,
   getLowestFiveIncomes,
   getTopFiveIncomes,
   totalIncome,
   totalSpecialTripIncomes,
   totalTripIncomes,
 } from "@/lib/utils/incomes/calculateIncomes";
-import IncomeStatistics from "@/components/IncomeStatistics";
 import { currentYear } from "@/lib/utils/getCurrentYear";
 import { Icons } from "@/components/icons";
+import { formatNumberWithDot } from "@/lib/utils/formatNumberWithDot";
+import MonthlyIncomesTabs from "@/components/MonthlyIncomesTabs";
+import MonthlyIncomesDatatable from "@/components/datatables/MonthlyIncomesDatatable";
 
 const MonthlyIncomes = () => {
   const [monthlyIncomes, setMonthlyIncomes] = useState<Income[]>([]);
@@ -48,6 +50,7 @@ const MonthlyIncomes = () => {
   const getIncomes = async () => {
     setIsLoading(true);
     setError(false);
+    setNoIncomes(false);
     try {
       const existingIncomes = monthlyIncomes.find((income) => {
         const incomeDate = new Date(income.date);
@@ -130,91 +133,83 @@ const MonthlyIncomes = () => {
       </div>
 
       <div className="relative w-full flex flex-col gap-12 mb-6 max-w-[1400px] 2xl:flex-row 2xl:justify-between">
-        {noIncomes ? (
-          <p className="w-full 2xl:basis-[70%]">
-            No se han registrado ingresos hasta el momento
-          </p>
-        ) : (
-          <div className="relative w-full flex flex-col gap-2 2xl:basis-[70%]">
-            <div className="flex flex-col items-center gap-1 lg:flex-row lg:justify-between">
-              <div className="self-end">
-                <GorgeousBoxBorder
-                  className="relative before:pointer-events-none focus-within:before:opacity-100 before:opacity-0 before:absolute before:-inset-1 before:rounded-[12px] before:border before:border-pink-1-800/50 before:ring-2 before:ring-slate-400/10 before:transition
-          after:pointer-events-none after:absolute after:inset-px after:rounded-[7px] after:shadow-highlight after:shadow-slate-200/20 focus-within:after:shadow-pink-1-700/30 after:transition dark:focus-within:after:shadow-pink-1-300/40 dark:before:ring-slate-800/60 dark:before:border-pink-1-300"
-                >
-                  <p className="rounded-lg bg-card p-1 border flex gap-1 shadow-input sm:px-3 dark:shadow-none">
-                    <Icons.badgeDollarSign className="hidden sm:flex shrink-0 w-5 h-5 self-center" />
-                    Ganancias acumuladas mes seleccionado
-                    <span className="text-[#3d8f78] dark:text-[rgba(75,270,200,1)] font-semibold">
-                      ${totalIncomes}
-                    </span>
-                  </p>
-                </GorgeousBoxBorder>
-              </div>
-              <div className="self-end">
-                <Select
-                  value={monthValue.toString()}
-                  onValueChange={(v) => setMonthValue(Number(v))}
-                >
-                  <SelectTrigger className="w-[180px] ">
-                    <Icons.calendar className="w-5 h-5 relative bottom-[1px]" />
-                    <SelectValue placeholder="Mes" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Enero</SelectItem>
-                    <SelectItem value="2">Febrero</SelectItem>
-                    <SelectItem value="3">Marzo</SelectItem>
-                    <SelectItem value="4">Abril</SelectItem>
-                    <SelectItem value="5">Mayo</SelectItem>
-                    <SelectItem value="6">Junio</SelectItem>
-                    <SelectItem value="7">Julio</SelectItem>
-                    <SelectItem value="8">Agosto</SelectItem>
-                    <SelectItem value="9">Septiembre</SelectItem>
-                    <SelectItem value="10">Octubre</SelectItem>
-                    <SelectItem value="11">Noviembre</SelectItem>
-                    <SelectItem value="12">Diciembre</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            {error ? (
-              <p className="text-center my-6">
-                No se encontraron datos para el mes seleccionado
-              </p>
-            ) : (
-              <>
-                {isLoading ? (
-                  <Loading />
-                ) : (
-                  <>
-                    <GorgeousBorder>
-                      <MonthlyChart monthlyIncomes={monthlyIncomes} />
-                    </GorgeousBorder>
-                  </>
-                )}
-              </>
-            )}
+        <div className="relative w-full flex flex-col gap-2 2xl:basis-[65%]">
+          <div className="self-end">
+            <Select
+              value={monthValue.toString()}
+              onValueChange={(v) => setMonthValue(Number(v))}
+            >
+              <SelectTrigger className="w-[180px]">
+                <Icons.calendar className="shrink-0 h-4 w-4" />
+                <SelectValue placeholder="Mes" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">Enero</SelectItem>
+                <SelectItem value="2">Febrero</SelectItem>
+                <SelectItem value="3">Marzo</SelectItem>
+                <SelectItem value="4">Abril</SelectItem>
+                <SelectItem value="5">Mayo</SelectItem>
+                <SelectItem value="6">Junio</SelectItem>
+                <SelectItem value="7">Julio</SelectItem>
+                <SelectItem value="8">Agosto</SelectItem>
+                <SelectItem value="9">Septiembre</SelectItem>
+                <SelectItem value="10">Octubre</SelectItem>
+                <SelectItem value="11">Noviembre</SelectItem>
+                <SelectItem value="12">Diciembre</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-        )}
-        <div className="w-full max-w-md mx-auto flex flex-col gap-2 2xl:basis-[30%] ">
-          <IncomeStatistics
-            icon={
-              <Icons.trendingUp className="w-5 h-5 text-[#3d8f78] lg:w-6 lg:h-6 dark:text-[rgba(75,270,200,1)]" />
-            }
-            title="Viajes con mayores ingresos"
-            incomes={getTopFiveIncomes(monthlyIncomes)}
-            error={error}
-            loading={isLoading}
-          />
-          <IncomeStatistics
-            icon={
-              <Icons.trendingDown className="w-5 h-5 text-destructive lg:w-6 lg:h-6" />
-            }
-            title="Viajes con menores ingresos"
-            incomes={getLowestFiveIncomes(monthlyIncomes)}
-            error={error}
-            loading={isLoading}
-          />
+
+          {error ? (
+            <p className="text-center my-6">
+              No se encontraron viajes para el mes seleccionado
+            </p>
+          ) : (
+            <>
+              {noIncomes ? (
+                <p className="w-full 2xl:basis-[70%]">
+                  No se han registrado ingresos para el mes seleccionado
+                </p>
+              ) : (
+                <>
+                  {isLoading ? (
+                    <Loading />
+                  ) : (
+                    <>
+                      <GorgeousBorder>
+                        <MonthlyChart monthlyIncomes={monthlyIncomes} />
+                      </GorgeousBorder>
+                    </>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </div>
+
+        <div className="w-full max-w-md mx-auto flex flex-col gap-2 2xl:basis-[35%]">
+          <div className="flex flex-col">
+            <h2 className="font-semibold text-lg lg:text-xl">
+              Mayores y menores ingresos en{" "}
+              {convertNumberToSpanishMonth(monthValue)}
+            </h2>
+            <p className="flex items-center gap-1 text-sm text-muted-foreground">
+              <Icons.handCoins className="w-4 h-4" />
+              Este mes ganaste
+              <span className="text-income-accent font-semibold">
+                ${formatNumberWithDot(totalIncomes)}
+              </span>
+            </p>
+          </div>
+          {totalIncomes !== 0 ? (
+            <MonthlyIncomesTabs
+              higherIncomes={getTopFiveIncomes(monthlyIncomes)}
+              lowestIncomes={getLowestFiveIncomes(monthlyIncomes)}
+              loading={isLoading}
+            />
+          ) : (
+            <MonthlyIncomesDatatable incomes={[]} loading={isLoading} />
+          )}
         </div>
       </div>
     </section>

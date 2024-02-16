@@ -47,7 +47,7 @@ const getTopFiveIncomes = (incomes: Income[]) => {
     (a, b) => b.totalIncomes - a.totalIncomes
   );
 
-  const topFiveIncomes = sortedIncomes.slice(0, 4);
+  const topFiveIncomes = sortedIncomes.slice(0, 5);
 
   return topFiveIncomes;
 };
@@ -63,7 +63,7 @@ const getLowestFiveIncomes = (incomes: Income[]) => {
     (a, b) => a.totalIncomes - b.totalIncomes
   );
 
-  const lowestFiveIncomes = sortedLowestIncomes.slice(0, 4);
+  const lowestFiveIncomes = sortedLowestIncomes.slice(0, 5);
 
   return lowestFiveIncomes;
 };

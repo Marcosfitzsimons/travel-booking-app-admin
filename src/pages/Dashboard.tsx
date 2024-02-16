@@ -100,7 +100,7 @@ const Dashboard = () => {
       </div>
       <div className="w-full flex flex-col gap-12 mb-5 max-w-[1400px] 2xl:flex-row 2xl:gap-5 2xl:justify-between">
         {noIncomes ? (
-          <p className="w-full 2xl:basis-[70%]">
+          <p className="w-full 2xl:basis-[65%]">
             No se han registrado ingresos hasta el momento
           </p>
         ) : (

@@ -20,6 +20,17 @@ export interface IncomeStatisticsProps {
     incomes: Income[]
 }
 
+export interface MonthlyIncomesDatatableProps {
+ incomes: Income[],
+  loading: boolean,
+}
+
+export interface MonthlyIncomesTabsProps {
+  higherIncomes: Income[],
+  lowestIncomes: Income[],
+  loading: boolean,
+}
+
 export interface MyTripsDataTableProps {
   columns: ColumnDef<UserTrips>[]
   userId: string;
@@ -30,6 +41,7 @@ export interface TopMonthlyIncomesProps {
   incomes: MonthlyIncome[];
   loading: boolean;
   error: boolean;
+  yearlyIncomes: MonthlyIncome[]
 }
 
 export interface RecentIncomesProps {

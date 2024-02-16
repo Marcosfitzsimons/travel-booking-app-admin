@@ -527,8 +527,8 @@ export const recentIncomesColumns: ColumnDef<Income>[] = [
     cell: ({ row }) => {
       const inc = row.original;
       return (
-        <p className="text-[#54d8b3] dark:text-[rgba(75,270,200,1)] font-semibold">
-          ${formatNumberWithDot(inc.totalIncomes || 0)}
+        <p className="text-income-accent font-semibold">
+          +${formatNumberWithDot(inc.totalIncomes || 0)}
         </p>
       );
     },
