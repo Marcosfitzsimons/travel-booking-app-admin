@@ -54,6 +54,7 @@ import {
 export const Icons = {
   close: X,
   layoutGrid: LayoutGrid,
+  dollarSign: DollarSign,
   handCoins: HandCoins,
   history: History,
   newspaper: Newspaper,
