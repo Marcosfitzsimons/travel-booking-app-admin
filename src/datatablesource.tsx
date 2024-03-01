@@ -15,6 +15,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { convertToArgentineTimezone } from "./lib/utils/convertToArgentineTimezone";
 import { Income } from "./context/AuthContext";
 import { formatNumberWithDot } from "./lib/utils/formatNumberWithDot";
+import { spawn } from "child_process";
 
 const formatDate = (date: string) => {
   const momentDate = moment.utc(date, "YYYY-MM-DDTHH:mm:ss.SSSZ");
@@ -355,9 +356,9 @@ export const passengerColumns: ColumnDef<Passenger>[] = [
                 </span>
               </p>
               <span>
-                {passenger.addressCda
-                  ? `Entre: ${passenger.addressCda.crossStreets}`
-                  : "-"}
+                {passenger.addressCda?.crossStreets && (
+                  <span>{`Entre: ${passenger.addressCda.crossStreets}`}</span>
+                )}
               </span>
             </div>
           )}
@@ -404,9 +405,16 @@ export const passengerColumns: ColumnDef<Passenger>[] = [
     cell: ({ row }) => {
       const passenger = row.original;
       const isPassenger = passenger.createdBy;
+
       return (
         <p className="">
-          {isPassenger ? <span>{passenger.createdBy?.dni}</span> : "-"}
+          {isPassenger ? (
+            <span>
+              {formatNumberWithDot(Number(passenger.createdBy?.dni)) || "-"}
+            </span>
+          ) : (
+            <span>{formatNumberWithDot(Number(passenger.dni)) || "-"}</span>
+          )}
         </p>
       );
     },
@@ -431,7 +439,7 @@ export const specialPassengerColumns: ColumnDef<SpecialPassenger>[] = [
     header: "DNI",
     cell: ({ row }) => {
       const dni = row.getValue("dni") as string;
-      return <p className="">{dni ? dni : "-"}</p>;
+      return <p className="">{dni ? formatNumberWithDot(Number(dni)) : "-"}</p>;
     },
   },
   {

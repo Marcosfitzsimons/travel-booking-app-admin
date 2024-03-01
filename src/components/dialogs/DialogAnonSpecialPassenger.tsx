@@ -39,6 +39,7 @@ const DialogAnonSpecialPassenger = ({
     register: register2,
     handleSubmit: handleSubmit2,
     formState: { errors: errors2 },
+    reset: resetForm,
   } = useForm({
     defaultValues: {
       fullName: "",
@@ -79,7 +80,7 @@ const DialogAnonSpecialPassenger = ({
           </div>
         ),
       });
-
+      resetForm();
       setIsSubmitted2(false);
     } catch (err: any) {
       if (err.response?.status === 403) {

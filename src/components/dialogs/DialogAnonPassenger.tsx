@@ -45,6 +45,7 @@ const DialogAnonPassenger = ({
     register: register2,
     handleSubmit: handleSubmit2,
     formState: { errors: errors2 },
+    reset: resetForm,
   } = useForm({
     defaultValues: {
       fullName: "",
@@ -122,6 +123,8 @@ const DialogAnonPassenger = ({
         ),
       });
       setIsSubmitted2(false);
+      resetForm();
+      setAddressCapitalValue("");
     } catch (err: any) {
       if (err.response?.status === 403) {
         setAuth({ user: null });
