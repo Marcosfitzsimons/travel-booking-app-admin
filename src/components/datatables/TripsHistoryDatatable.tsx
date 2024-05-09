@@ -215,12 +215,6 @@ const TripsHistoryDatatable = <TData, TValue>({
             isModal={true}
             setDate={setDate}
           />
-          <GorgeousBoxBorder>
-            <p className="rounded-lg py-1 px-5 flex items-center border border-slate-400/60 shadow-input dark:shadow-none dark:border-slate-800">
-              <Icons.calendar className="mr-2 w-4 h-4 relative bottom-[1px]" />
-              {getCurrentMonth()}
-            </p>
-          </GorgeousBoxBorder>
         </div>
       </div>
       <GorgeousBoxBorder>
